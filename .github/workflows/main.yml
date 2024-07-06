@@ -25,6 +25,7 @@ jobs:
         with:
           yaml_file: boneio-24-sw-07-737d50.yaml
           version: ${{ env.ESPHOME_VERSION }}
+          cache: true
 
       - run: |
           mkdir output
