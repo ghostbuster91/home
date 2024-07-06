@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 env:
-  ESPHOME_VERSION: 2024.4.2
+  ESPHOME_VERSION: 2024.6.6
 
 jobs:
   build:
@@ -19,13 +19,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4.1.7
 
-      - uses: actions/checkout@v4.1.7
-        with:
-          repository: ghostbuster91-esphome/build-action
-          path: build-action
-
       - name: build
-        uses: ./build-action
+        uses: esphome/build-action@v3.2.0
         id: esphome-build
         with:
           yaml_file: boneio-24-sw-07-737d50.yaml
