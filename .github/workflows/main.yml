@@ -33,5 +33,6 @@ jobs:
         with:
           artifactErrorsFailBuild: true
           commit: ${{ github.sha }}
+          tag: ${{ github.sha }}
           makeLatest: true
           artifacts: output/*
