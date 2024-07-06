@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@v4.1.7
 
       - name: build
-        uses: esphome/build-action@v1
+        uses: esphome/build-action@v3.2.0
         id: esphome-build
         with:
           yaml_file: boneio-24-sw-07-737d50.yaml
