@@ -1,0 +1,37 @@
+name: main
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  ESPHOME_VERSION: 2024.4.2
+
+jobs:
+  build:
+    name: build boneio-24-sw
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.1.7
+
+      - name: build
+        uses: esphome/build-action@v1
+        id: esphome-build
+        with:
+          yaml_file: boneio-24-sw-07-737d50.yaml
+          version: ${{ env.ESPHOME_VERSION }}
+
+      - run: |
+          mkdir output
+          mv "${{ steps.esphome-build.outputs.name }}" output/
+
+      - name: Create Release
+        id: create_release
+        uses: ncipollo/release-action@v1
+        with:
+          artifactErrorsFailBuild: true
+          commit: ${{ github.sha }}
+          makeLatest: true
+          artifacts: output/*
