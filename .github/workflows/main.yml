@@ -43,4 +43,4 @@ jobs:
           commit: ${{ github.sha }}
           tag: ${{ steps.short_sha.outputs.short_sha }}
           makeLatest: true
-          artifacts: output/*
+          artifacts: output/boneio-24-sw-07-737d50-esp32/*
