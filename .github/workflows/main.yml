@@ -19,8 +19,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4.1.7
 
+      - uses: actions/checkout@v4.1.7
+        with:
+          repository: ghostbuster91-esphome
+          path: build-action
+
       - name: build
-        uses: esphome/build-action@v3.2.0
+        uses: ./build-action
         id: esphome-build
         with:
           yaml_file: boneio-24-sw-07-737d50.yaml
