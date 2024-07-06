@@ -31,12 +31,16 @@ jobs:
           mkdir output
           mv "${{ steps.esphome-build.outputs.name }}" output/
 
+      - name: Get short SHA
+        id: short_sha
+        run: echo "short_sha=$(git rev-parse --short ${{ github.sha }})" >> $GITHUB_OUTPUT
+
       - name: Create Release
         id: create_release
         uses: ncipollo/release-action@v1
         with:
           artifactErrorsFailBuild: true
           commit: ${{ github.sha }}
-          tag: ${{ github.sha }}
+          tag: ${{ steps.short_sha.outputs.short_sha }}
           makeLatest: true
           artifacts: output/*
