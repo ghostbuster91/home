@@ -45,6 +45,7 @@ packages:
 
 logger:
 api:
+  reboot_timeout: 0s
 ota:
   platform: esphome
 
@@ -57,17 +58,15 @@ time:
     timezone: Europe/Warsaw
     id: homeassistant_time
 
-light:
-  - platform: binary
-    name: "Light 01"
-    output: out_01
-    id: light_01
-  - platform: binary
-    name: "Light 02"
-    output: out_02
-    id: light_02
-
 switch:
+  - platform: output
+    name: Switch 01
+    output: out_01
+    id: switch_01
+  - platform: output
+    name: Switch 02
+    output: out_02
+    id: switch_02
   - platform: output
     name: Switch 03
     output: out_03
@@ -169,7 +168,7 @@ binary_sensor:
       inverted: true
     on_press:
       then:
-        - light.toggle: light_01
+        - switch.toggle: switch_01
 
   - platform: gpio
     name: IN_02
@@ -182,7 +181,7 @@ binary_sensor:
       inverted: true
     on_press:
       then:
-        - light.toggle: light_02
+        - switch.toggle: switch_02
 
   - platform: gpio
     name: IN_03
