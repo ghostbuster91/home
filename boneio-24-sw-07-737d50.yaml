@@ -30,16 +30,16 @@ dashboard_import:
 packages:
   internals_packages:
     url: https://github.com/boneIO-eu/esphome
-    ref: v1.1.0
-    files:
-      [
+    ref: v1.6.0
+    files: [
         devices/buzzer.yaml,
         devices/serial_no.yaml,
         devices_v0_7/display.yaml,
         devices_v0_7/i2c.yaml,
-        devices_v0_7/ina219.yaml,
-        devices_v0_7/lm75b.yaml,
-        devices_v0_7/pcf_with_mcp.yaml,
+        devices_v0_7-v0_9/ina219.yaml,
+        devices_v0_7-v0_9/lm75b.yaml,
+        devices_v0_7-v0_9/pcf_with_mcp.yaml,
+        # devices_v0_7-v0_9/one_wire.yaml,
         boards/24x16_output.yaml,
       ]
 
@@ -63,98 +63,122 @@ switch:
     name: Light A
     output: out_01
     id: light_A
+    restore_mode: RESTORE_DEFAULT_OFF
   - platform: output
     name: Light D
     output: out_02
     id: light_D
+    restore_mode: RESTORE_DEFAULT_OFF
   - platform: output
     name: Light B2
     output: out_03
     id: light_B2
+    restore_mode: RESTORE_DEFAULT_OFF
   - platform: output
     name: Light B1
     output: out_04
     id: light_B1
+    restore_mode: RESTORE_DEFAULT_OFF
   - platform: output
     name: Light C
     output: out_05
     id: light_C
+    restore_mode: RESTORE_DEFAULT_OFF
   - platform: output
     name: Switch 06
     output: out_06
     id: switch_06
+    restore_mode: RESTORE_DEFAULT_OFF
   - platform: output
     name: Light M
     output: out_07
     id: light_M
+    restore_mode: RESTORE_DEFAULT_OFF
   - platform: output
     name: Light M2
     output: out_08
     id: light_M2
+    restore_mode: RESTORE_DEFAULT_OFF
   - platform: output
     name: Light N
     output: out_09
     id: light_N
+    restore_mode: RESTORE_DEFAULT_OFF
   - platform: output
     name: Light K
     output: out_10
     id: light_K
+    restore_mode: RESTORE_DEFAULT_OFF
   - platform: output
     name: Light O
     output: out_11
     id: light_O
+    restore_mode: RESTORE_DEFAULT_OFF
   - platform: output
     name: Light P
     output: out_12
     id: light_P
+    restore_mode: RESTORE_DEFAULT_OFF
   - platform: output
     name: Light Q
     output: out_13
     id: light_Q
+    restore_mode: RESTORE_DEFAULT_OFF
   - platform: output
     name: Light T
     output: out_14
     id: light_T
+    restore_mode: RESTORE_DEFAULT_OFF
   - platform: output
     name: Light X
     output: out_15
     id: light_X
+    restore_mode: RESTORE_DEFAULT_OFF
   - platform: output
     name: Light W
     output: out_16
     id: light_W
+    restore_mode: RESTORE_DEFAULT_OFF
   - platform: output
     name: Light U
     output: out_17
     id: light_U
+    restore_mode: RESTORE_DEFAULT_OFF
   - platform: output
     name: Light S
     output: out_18
     id: light_S
+    restore_mode: RESTORE_DEFAULT_OFF
   - platform: output
     name: Light I
     output: out_19
     id: light_I
+    restore_mode: RESTORE_DEFAULT_OFF
   - platform: output
     name: Light F
     output: out_20
     id: light_F
+    restore_mode: RESTORE_DEFAULT_OFF
   - platform: output
     name: Light E2
     output: out_21
     id: light_E2
+    restore_mode: RESTORE_DEFAULT_OFF
   - platform: output
     name: Light J
     output: out_22
     id: light_J
+    restore_mode: RESTORE_DEFAULT_OFF
   - platform: output
     name: Light H
     output: out_23
     id: light_H
+    restore_mode: RESTORE_DEFAULT_OFF
   - platform: output
     name: Light E1
     output: out_24
     id: light_E1
+    restore_mode: RESTORE_DEFAULT_OFF
 
 binary_sensor:
   - platform: gpio
@@ -555,14 +579,25 @@ binary_sensor:
         - switch.toggle: light_P
 
   - platform: gpio
-    name: IN_31
-    id: in_31
+    name: KT05 (pralnia)
+    id: in_kt_05
     pin:
       pcf8574: pcf_inputs_28to35_menu
       number: 2
       mode:
         input: true
       inverted: true
+    on_state:
+      then:
+        - if:
+            condition:
+              binary_sensor.is_on: in_kt_05
+            then:
+              - switch.turn_off:
+                  id: light_N
+            else:
+              - switch.turn_on:
+                  id: light_N
 
   - platform: gpio
     name: IN_32
