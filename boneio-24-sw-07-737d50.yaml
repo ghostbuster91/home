@@ -653,6 +653,12 @@ binary_sensor:
     on_press:
       then:
         - switch.toggle: light_J
+# sensor:
+#   - platform: dallas_temp
+#     address: 0xb3072331b040a528
+#     name: "Dallas Sensor 1"
+#     update_interval: 30s
+#
 ######################
 ### MODBUS SECTION ###
 ######################
