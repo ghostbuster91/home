@@ -608,6 +608,12 @@ binary_sensor:
       mode:
         input: true
       inverted: true
+    on_press:
+      then:
+        - switch.turn_off: light_F
+        - switch.turn_off: light_E1
+        - switch.turn_off: light_E2
+        - switch.turn_off: light_H
 
   - platform: gpio
     name: IN_33
@@ -617,6 +623,9 @@ binary_sensor:
       mode:
         input: true
       inverted: true
+    on_press:
+      then:
+        - switch.toggle: light_I
 
   - platform: gpio
     name: IN_34
@@ -626,6 +635,12 @@ binary_sensor:
       mode:
         input: true
       inverted: true
+    on_press:
+      then:
+        - switch.turn_off: light_F
+        - switch.turn_off: light_E1
+        - switch.turn_off: light_E2
+        - switch.turn_off: light_H
 
   - platform: gpio
     name: IN_35
@@ -635,6 +650,9 @@ binary_sensor:
       mode:
         input: true
       inverted: true
+    on_press:
+      then:
+        - switch.toggle: light_J
 ######################
 ### MODBUS SECTION ###
 ######################
