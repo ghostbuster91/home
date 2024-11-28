@@ -31,7 +31,8 @@ packages:
   internals_packages:
     url: https://github.com/boneIO-eu/esphome
     ref: v1.6.0
-    files: [
+    files:
+      [
         devices/buzzer.yaml,
         devices/serial_no.yaml,
         devices_v0_7/display.yaml,
@@ -39,7 +40,7 @@ packages:
         devices_v0_7-v0_9/ina219.yaml,
         devices_v0_7-v0_9/lm75b.yaml,
         devices_v0_7-v0_9/pcf_with_mcp.yaml,
-        # devices_v0_7-v0_9/one_wire.yaml,
+        devices_v0_7-v0_9/one_wire.yaml,
         boards/24x16_output.yaml,
       ]
 
@@ -653,12 +654,11 @@ binary_sensor:
     on_press:
       then:
         - switch.toggle: light_J
-# sensor:
-#   - platform: dallas_temp
-#     address: 0xb3072331b040a528
-#     name: "Dallas Sensor 1"
-#     update_interval: 30s
-#
+sensor:
+  - platform: dallas_temp
+    address: 0x280723322814e928
+    name: "Dallas Sensor 1"
+    update_interval: 30s
 ######################
 ### MODBUS SECTION ###
 ######################
