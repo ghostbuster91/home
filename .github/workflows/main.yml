@@ -26,21 +26,3 @@ jobs:
           yaml_file: boneio-24-sw-07-737d50.yaml
           version: ${{ env.ESPHOME_VERSION }}
           cache: true
-
-      - run: |
-          mkdir output
-          mv "${{ steps.esphome-build.outputs.name }}" output/
-
-      - name: Get short SHA
-        id: short_sha
-        run: echo "short_sha=$(git rev-parse --short ${{ github.sha }})" >> $GITHUB_OUTPUT
-
-      - name: Create Release
-        id: create_release
-        uses: ncipollo/release-action@v1
-        with:
-          artifactErrorsFailBuild: true
-          commit: ${{ github.sha }}
-          tag: ${{ steps.short_sha.outputs.short_sha }}
-          makeLatest: true
-          artifacts: output/boneio-24-sw-07-737d50-esp32/*
