@@ -74,46 +74,260 @@ text_sensor:
     update_interval: 5min
 
 globals:
-  - id: lastDirection
+  - id: lastDirection_W
+    type: bool
+    restore_value: no
+    initial_value: "true"
+  - id: lastDirection_U
+    type: bool
+    restore_value: no
+    initial_value: "true"
+  - id: lastDirection_P
     type: bool
     restore_value: no
     initial_value: "true"
 
 binary_sensor:
   - platform: gpio
-    id: btn_01
-    name: IN_01
+    id: in_01
+    name: Switch 11.2-TL
     pin:
       pcf8574: pcf_inputs
       number: 1
       mode:
         input: true
       inverted: true
+    on_click:
+      then:
+        - if:
+            condition:
+              - light.is_off: light_W
+            then:
+              - light.turn_on: light_W
+        - if:
+            condition:
+              - light.is_on: light_W
+            then:
+              - light.turn_off: light_W
+    on_press:
+      then:
+        - if:
+            condition:
+              or:
+                - light.is_off: light_W
+                - and:
+                    - lambda: "return id(lastDirection_W) == true;"
+                    - lambda: "return id(light_W).current_values.get_brightness() < 1;"
+            then:
+              - delay: 0.5s
+              - while:
+                  condition:
+                    binary_sensor.is_on: in_01
+                  then:
+                    - lambda: "id(lastDirection_W) = false;"
+                    - light.dim_relative:
+                        id: light_W
+                        relative_brightness: 5%
+                        transition_length: 0.1s
+                    - delay: 0.1s
+            else:
+              - delay: 0.5s
+              - while:
+                  condition:
+                    and:
+                      - binary_sensor.is_on: in_01
+                      - light.is_on: light_W
+                      - lambda: "return id(light_W).current_values.get_brightness() > 0.2;"
+                  then:
+                    - lambda: "id(lastDirection_W) = true;"
+                    - logger.log:
+                        format: "Current brightness %.1f"
+                        args: ["id(light_W).current_values.get_brightness()"]
+                    - light.dim_relative:
+                        id: light_W
+                        relative_brightness: -5%
+                        transition_length: 0.1s
+                    - delay: 0.1s
   - platform: gpio
-    id: btn_02
-    name: IN_02
+    id: in_02
+    name: Switch 11.2-TR
     pin:
       pcf8574: pcf_inputs
       number: 2
       mode:
         input: true
       inverted: true
+    on_click:
+      then:
+        - if:
+            condition:
+              - light.is_off: light_U
+            then:
+              - light.turn_on: light_U
+        - if:
+            condition:
+              - light.is_on: light_U
+            then:
+              - light.turn_off: light_U
+    on_press:
+      then:
+        - if:
+            condition:
+              or:
+                - light.is_off: light_U
+                - and:
+                    - lambda: "return id(lastDirection_U) == true;"
+                    - lambda: "return id(light_U).current_values.get_brightness() < 1;"
+            then:
+              - delay: 0.5s
+              - while:
+                  condition:
+                    binary_sensor.is_on: in_02
+                  then:
+                    - lambda: "id(lastDirection_U) = false;"
+                    - light.dim_relative:
+                        id: light_U
+                        relative_brightness: 5%
+                        transition_length: 0.1s
+                    - delay: 0.1s
+            else:
+              - delay: 0.5s
+              - while:
+                  condition:
+                    and:
+                      - binary_sensor.is_on: in_02
+                      - light.is_on: light_U
+                      - lambda: "return id(light_U).current_values.get_brightness() > 0.2;"
+                  then:
+                    - lambda: "id(lastDirection_U) = true;"
+                    - logger.log:
+                        format: "Current brightness %.1f"
+                        args: ["id(light_U).current_values.get_brightness()"]
+                    - light.dim_relative:
+                        id: light_U
+                        relative_brightness: -5%
+                        transition_length: 0.1s
+                    - delay: 0.1s
   - platform: gpio
-    name: IN_03
+    id: in_03
+    name: Switch 11.1-TL
     pin:
       pcf8574: pcf_inputs
       number: 3
       mode:
         input: true
       inverted: true
+    on_click:
+      then:
+        - if:
+            condition:
+              - light.is_off: light_P
+            then:
+              - light.turn_on: light_P
+        - if:
+            condition:
+              - light.is_on: light_P
+            then:
+              - light.turn_off: light_P
+    on_press:
+      then:
+        - if:
+            condition:
+              or:
+                - light.is_off: light_P
+                - and:
+                    - lambda: "return id(lastDirection_P) == true;"
+                    - lambda: "return id(light_P).current_values.get_brightness() < 1;"
+            then:
+              - delay: 0.5s
+              - while:
+                  condition:
+                    binary_sensor.is_on: in_03
+                  then:
+                    - lambda: "id(lastDirection_P) = false;"
+                    - light.dim_relative:
+                        id: light_P
+                        relative_brightness: 5%
+                        transition_length: 0.1s
+                    - delay: 0.1s
+            else:
+              - delay: 0.5s
+              - while:
+                  condition:
+                    and:
+                      - binary_sensor.is_on: in_03
+                      - light.is_on: light_P
+                      - lambda: "return id(light_P).current_values.get_brightness() > 0.2;"
+                  then:
+                    - lambda: "id(lastDirection_P) = true;"
+                    - logger.log:
+                        format: "Current brightness %.1f"
+                        args: ["id(light_P).current_values.get_brightness()"]
+                    - light.dim_relative:
+                        id: light_P
+                        relative_brightness: -5%
+                        transition_length: 0.1s
+                    - delay: 0.1s
   - platform: gpio
-    name: IN_04
+    name: Switch 10.1-TR
+    id: in_04
     pin:
       pcf8574: pcf_inputs
       number: 4
       mode:
         input: true
       inverted: true
+    on_click:
+      then:
+        - if:
+            condition:
+              - light.is_off: light_P
+            then:
+              - light.turn_on: light_P
+        - if:
+            condition:
+              - light.is_on: light_P
+            then:
+              - light.turn_off: light_P
+    on_press:
+      then:
+        - if:
+            condition:
+              or:
+                - light.is_off: light_P
+                - and:
+                    - lambda: "return id(lastDirection_P) == true;"
+                    - lambda: "return id(light_P).current_values.get_brightness() < 1;"
+            then:
+              - delay: 0.5s
+              - while:
+                  condition:
+                    binary_sensor.is_on: in_04
+                  then:
+                    - lambda: "id(lastDirection_P) = false;"
+                    - light.dim_relative:
+                        id: light_P
+                        relative_brightness: 5%
+                        transition_length: 0.1s
+                    - delay: 0.1s
+            else:
+              - delay: 0.5s
+              - while:
+                  condition:
+                    and:
+                      - binary_sensor.is_on: in_04
+                      - light.is_on: light_P
+                      - lambda: "return id(light_P).current_values.get_brightness() > 0.2;"
+                  then:
+                    - lambda: "id(lastDirection_P) = true;"
+                    - logger.log:
+                        format: "Current brightness %.1f"
+                        args: ["id(light_P).current_values.get_brightness()"]
+                    - light.dim_relative:
+                        id: light_P
+                        relative_brightness: -5%
+                        transition_length: 0.1s
+                    - delay: 0.1s
   - platform: gpio
     name: IN_05
     pin:
@@ -189,27 +403,30 @@ output:
 light:
   - platform: monochromatic
     output: chl01
-    name: CHL 01
-    id: chl_01
-    default_transition_length: 2s
+    name: Light P (przejscie)
+    id: light_P
+    default_transition_length: 0.5s
     gamma_correct: 0
+    restore_mode: RESTORE_DEFAULT_OFF
   - platform: monochromatic
     output: chl02
-    name: CHL 02
-    id: chl_02
-    default_transition_length: 2s
+    name: Light U (lodowka)
+    id: light_U
+    default_transition_length: 0.5s
     gamma_correct: 0
+    restore_mode: RESTORE_DEFAULT_OFF
   - platform: monochromatic
     output: chl03
-    name: CHL 03
-    id: chl_03
-    default_transition_length: 2s
+    name: Light W (kuchenka)
+    id: light_W
+    default_transition_length: 0.5s
     gamma_correct: 0
+    restore_mode: RESTORE_DEFAULT_OFF
   - platform: monochromatic
     output: chl04
     name: CHL 04
     id: chl_04
-    default_transition_length: 2s
+    default_transition_length: 0.5s
     gamma_correct: 0
   - platform: monochromatic
     output: chr01
