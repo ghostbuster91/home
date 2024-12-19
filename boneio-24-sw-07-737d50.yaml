@@ -406,7 +406,7 @@ binary_sensor:
       inverted: true
     on_press:
       then:
-        - switch.toggle: light_D
+        - switch.toggle: light_K
 
   - platform: gpio
     name: Switch 6-TR
@@ -419,7 +419,7 @@ binary_sensor:
       inverted: true
     on_press:
       then:
-        - switch.toggle: light_K
+        - switch.toggle: light_D
 
   - platform: gpio
     name: Switch 7.3-TL
@@ -432,8 +432,7 @@ binary_sensor:
       inverted: true
     on_press:
       then:
-        - switch.toggle: light_M2
-        - switch.toggle: light_M
+        - switch.toggle: light_D
 
   - platform: gpio
     name: Switch 7.3-TR
@@ -446,7 +445,8 @@ binary_sensor:
       inverted: true
     on_press:
       then:
-        - switch.toggle: light_D
+        - switch.toggle: light_M2
+        - switch.toggle: light_M
 
   - platform: gpio
     name: IN_21
