@@ -22,12 +22,12 @@ in
           configuration
         ];
       };
-      json = (formats.json { }).generate "uci.json" { inherit (res.config.uci) settings; };
+      yaml = (formats.yaml { }).generate "uci.yaml" res.config.uci;
     in
     {
-      inherit json;
+      json = yaml;
       command = writeShellScript "uci-commands" ''
-        ${nix-uci}/bin/nix-uci "${json}"
+        ${lib.getExe pkgs.esphome} compile "${yaml}"
       '';
     };
   inherit nix-uci;

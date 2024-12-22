@@ -15,7 +15,7 @@
     in
     {
       packages.${system} = {
-        inherit (uci) nix-uci writeUci;
+        inherit (uci) nix-uci writeUci esphome;
       };
       # `nix run .#example` will output uci configuration
       apps.${system}.example = {
@@ -27,6 +27,7 @@
         buildInputs = [
           pkgs.just
           pkgs.sops
+          pkgs.esphome
         ];
       };
     };
