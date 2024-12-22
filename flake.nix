@@ -1,28 +1,33 @@
 {
-  description = "Generate YAML files with Nix";
+  description = "A free and open source 3D creation suite (upstream binaries)";
+  inputs.nixpkgs.url = "nixpkgs/nixos-unstable";
 
-  inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-  };
-
-  outputs = { nixpkgs, ... }:
+  outputs =
+    { self
+    , nixpkgs
+    , flake-utils
+    ,
+    }:
+    let
+      system = "x86_64-linux";
+      pkgs = nixpkgs.legacyPackages.${system};
+      uci = pkgs.callPackage ./nix { };
+    in
     {
-      packages.x86_64-linux =
-        let
-          inherit (nixpkgs) lib;
-          pkgs = import nixpkgs { system = "x86_64-linux"; };
-        in
-        {
-          toYAML = pkgs.runCommand "toYAML"
-            {
-              buildInputs = with pkgs; [ yj ];
-              json = builtins.toJSON (pkgs.callPackage ./default.nix {});
-              passAsFile = [ "json" ]; # will be available as `$jsonPath`
-            } ''
-            mkdir -p $out
-            yj -jy < "$jsonPath" > $out/go.yaml
-          '';
-        };
+      packages.${system} = {
+        inherit (uci) nix-uci writeUci;
+      };
+      # `nix run .#example` will output uci configuration
+      apps.${system}.example = {
+        type = "app";
+        program = toString (self.packages.${system}.writeUci ./example.nix).command;
+      };
+      defaultPackage = self.packages.${system}.nix-uci;
+      devShell = pkgs.mkShell {
+        buildInputs = [
+          pkgs.just
+          pkgs.sops
+        ];
+      };
     };
-
 }
