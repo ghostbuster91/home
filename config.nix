@@ -3,10 +3,28 @@
     let
       light = {
         u = "light_U";
+        is_on = id: { "light.is_on" = id; };
+        is_off = id: { "light.is_off" = id; };
+        turn_on = id: {
+          "light.turn_on" = id;
+        };
+        turn_off = id: {
+          "light.turn_off" = id;
+        };
       };
       channel = {
         "02" = "chl02";
       };
+      mkIf = conf: {
+        "if" =
+          {
+            condition = conf.cond;
+            "then" = conf.then_;
+          };
+      };
+      if_on_then_off = id: (mkIf { cond = light.is_on id; then_ = light.turn_off id; });
+      if_off_then_on = id: (mkIf { cond = light.is_off id; then_ = light.turn_on id; });
+      mkOnClick = action: { "then" = action; };
     in
     {
       dimmer1 = {
@@ -130,37 +148,11 @@
               };
               inverted = true;
             };
-            on_click = {
-              "then" = [
-                {
-                  "if" =
-                    {
-                      condition =
-                        {
-                          "light.is_off" = light.u;
-                        };
-                      "then" = [
-                        {
-                          "light.turn_on" = light.u;
-                        }
-                      ];
-
-                    };
-                }
-                {
-                  "if" = {
-                    condition =
-                      {
-                        "light.is_on" = light.u;
-                      };
-                    "then" =
-                      {
-                        "light.turn_off" = light.u;
-                      };
-                  };
-                }
+            on_click =
+              mkOnClick [
+                (if_on_then_off light.u)
+                (if_off_then_on light.u)
               ];
-            };
           }
         ];
 
