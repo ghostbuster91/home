@@ -16,7 +16,7 @@
       packages.${system} = {
         inherit (pkgs) esphome;
       };
-      # `nix run .#example` will output uci configuration
+      # `nix run .#example` will output generated configuration
       apps.${system}.example = {
         type = "app";
         program = toString (esp.compileEsphome ./example.nix).command;
