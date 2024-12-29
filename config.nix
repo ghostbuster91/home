@@ -38,12 +38,6 @@
             "else" = conf.else_ or null;
           };
       };
-      mkWhile = conf: {
-        while = {
-          condition = conf.cond;
-          "then" = conf.then_;
-        };
-      };
       if_on_then_off = id: (mkIf { cond = light.is_on id; then_ = light.turn_off id; });
       if_off_then_on = id: (mkIf { cond = light.is_off id; then_ = light.turn_on id; });
       mkOnClick = action: { "then" = action; };
@@ -53,6 +47,64 @@
       lambda = {
         gt = first: second: { lambda = "return ${first} > ${second}"; };
         lt = first: second: { lambda = "return ${first} < ${second}"; };
+      };
+      decreaseBrightnessWhileHeld = conf: {
+        while = {
+          cond = {
+            and = [
+              (binary_sensor.is_on conf.binary_sensor)
+              (light.is_on conf.light)
+              (lambda.gt (light.get_brightness conf.light) "0.2")
+            ];
+          };
+          "then" = [
+            conf.var.setUp
+            {
+              "logger.log" =
+                {
+                  format = "Current brightness %.1f";
+                  args = [ (light.get_brightness conf.light) ];
+                };
+            }
+            {
+              "light.dim_relative" =
+                {
+                  id = conf.light;
+                  relative_brightness = "-5%";
+                  transition_length = "0.1s";
+                };
+            }
+            (actions.delay "0.1s")
+          ];
+        };
+      };
+      increseBrightnessWhileHeld = conf: {
+        while = {
+          condition = binary_sensor.is_on conf.binary_sensor;
+          "then" = [
+            conf.var.setDown
+            {
+              "light.dim_relative" = {
+                id = conf.light;
+                relative_brightness = "5%";
+                transition_length = "0.1s";
+
+              };
+            }
+            (actions.delay "0.1s")
+          ];
+        };
+      };
+      shouldIncreaseBrightness = conf: {
+        or = [
+          (light.is_off conf.light)
+          {
+            and = [
+              conf.var.isUp
+              (lambda.lt (light.get_brightness conf.light) "1")
+            ];
+          }
+        ];
       };
     in
     {
@@ -203,66 +255,24 @@
               on_press = {
                 "then" = [
                   (mkIf {
-                    cond = {
-                      or = [
-                        (light.is_off light.u)
-                        {
-                          and = [
-                            globals.nextDirection_U.isUp
-                            (lambda.lt (light.get_brightness light.u) "1")
-                          ];
-                        }
-                      ];
+                    cond = shouldIncreaseBrightness {
+                      light = light.u;
+                      var = globals.nextDirection_U;
                     };
                     then_ = [
                       (actions.delay "0.5s")
-                      {
-                        while = {
-                          condition = binary_sensor.is_on binary_sensor.in_01;
-                          "then" = [
-                            globals.nextDirection_U.setDown
-                            {
-                              "light.dim_relative" = {
-                                id = light.u;
-                                relative_brightness = "5%";
-                                transition_length = "0.1s";
-
-                              };
-                            }
-                            (actions.delay "0.1s")
-                          ];
-                        };
-                      }
+                      (increseBrightnessWhileHeld {
+                        light = light.u;
+                        var = globals.nextDirection_U;
+                        binary_sensor = binary_sensor.in_01;
+                      })
                     ];
-                    "else" = [
+                    else_ = [
                       (actions.delay "0.5s")
-                      (mkWhile {
-                        cond = {
-                          and = [
-                            (binary_sensor.is_on binary_sensor.in_01)
-                            (light.is_on light.u)
-                            (lambda.gt (light.get_brightness light.u) "0.2")
-                          ];
-                        };
-                        then_ = [
-                          globals.nextDirection_U.setUp
-                          {
-                            "logger.log" =
-                              {
-                                format = "Current brightness %.1f";
-                                args = [ (light.get_brightness light.u) ];
-                              };
-                          }
-                          {
-                            "light.dim_relative" =
-                              {
-                                id = light.u;
-                                relative_brightness = "-5%";
-                                transition_length = "0.1s";
-                              };
-                          }
-                          (actions.delay "0.1s")
-                        ];
+                      (decreaseBrightnessWhileHeld {
+                        light = light.u;
+                        var = globals.nextDirection_U;
+                        binary_sensor = binary_sensor.in_01;
                       })
                     ];
                   })
