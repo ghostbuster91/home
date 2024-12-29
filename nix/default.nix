@@ -19,11 +19,15 @@
           configuration
         ];
       };
-      yaml = (formats.yaml { }).generate "config.yaml" res.config.espConfig;
-    in
-    {
-      command = writeShellScript "validate-esphome" ''
+      validateCmd = yaml: writeShellScript "validate-esphome" ''
         ${lib.getExe pkgs.esphome} config "${yaml}"
       '';
-    };
+      generateCmd = config: (formats.yaml { }).generate "config.yaml" config;
+    in
+    lib.attrsets.mapAttrs
+      (deviceId: config: {
+        generate = generateCmd config;
+        validate = validateCmd (generateCmd config);
+      })
+      res.config.espConfig;
 }

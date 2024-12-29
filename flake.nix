@@ -18,6 +18,7 @@
         let
           pkgs = nixpkgs.legacyPackages.${system};
           esp = pkgs.callPackage ./nix { };
+          inherit ((esp.compileEsphome ./config.nix)) dimmer1;
         in
         {
           devShells.default = pkgs.mkShell {
@@ -29,11 +30,12 @@
 
           packages = {
             inherit (pkgs) esphome;
+            dimmer1 = dimmer1.generate;
           };
           # `nix run .#example` will output generated configuration
           apps.example = {
             type = "app";
-            program = toString (esp.compileEsphome ./example.nix).command;
+            program = toString dimmer1.validate;
           };
 
           treefmt.config = {
