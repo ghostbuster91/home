@@ -5,28 +5,26 @@
   outputs =
     { self
     , nixpkgs
-    , flake-utils
-    ,
     }:
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
-      uci = pkgs.callPackage ./nix { };
+      esp = pkgs.callPackage ./nix { };
     in
     {
+      formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixpkgs-fmt;
       packages.${system} = {
-        inherit (uci) nix-uci writeUci esphome;
+        inherit (esp) compileEsphome;
+        inherit (pkgs) esphome;
       };
       # `nix run .#example` will output uci configuration
       apps.${system}.example = {
         type = "app";
-        program = toString (self.packages.${system}.writeUci ./example.nix).command;
+        program = toString (self.packages.${system}.compileEsphome ./example.nix).command;
       };
-      defaultPackage = self.packages.${system}.nix-uci;
-      devShell = pkgs.mkShell {
+      defaultPackage = self.packages.${system}.esphome;
+      devShell.${system} = pkgs.mkShell {
         buildInputs = [
-          pkgs.just
-          pkgs.sops
           pkgs.esphome
         ];
       };

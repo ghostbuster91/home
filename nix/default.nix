@@ -4,11 +4,8 @@
 , pkgs
 ,
 }:
-let
-  nix-uci = pkgs.python3.pkgs.callPackage ./nix-uci.nix { };
-in
 {
-  writeUci =
+  compileEsphome =
     configuration:
     let
       res = lib.evalModules {
@@ -22,13 +19,11 @@ in
           configuration
         ];
       };
-      yaml = (formats.yaml { }).generate "uci.yaml" res.config.uci;
+      yaml = (formats.yaml { }).generate "config.yaml" res.config.espConfig;
     in
     {
-      json = yaml;
-      command = writeShellScript "uci-commands" ''
-        ${lib.getExe pkgs.esphome} compile "${yaml}"
+      command = writeShellScript "validate-esphome" ''
+        ${lib.getExe pkgs.esphome} config "${yaml}"
       '';
     };
-  inherit nix-uci;
 }

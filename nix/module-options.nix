@@ -1,7 +1,7 @@
 { pkgs, lib, ... }:
 {
-  options.uci = lib.mkOption {
+  options.espConfig = lib.mkOption {
     default = { };
-    inherit (pkgs.formats.json { }) type;
+    inherit (pkgs.formats.yaml { }) type;
   };
 }
