@@ -15,6 +15,16 @@
       channel = {
         "02" = "chl02";
       };
+      switch =
+        {
+          buzzer = "buzzer";
+          turn_on = id: {
+            "switch.turn_on" = id;
+          };
+          turn_off = id: {
+            "switch.turn_off" = id;
+          };
+        };
       mkIf = conf: {
         "if" =
           {
@@ -182,6 +192,38 @@
             frequency = "1000Hz";
             inverted = false;
             id = channel."02";
+          }];
+
+          sensor = [{
+            platform = "lm75";
+            id = "boneIO_temp";
+            name = "Temperature";
+            update_interval = "30s";
+            entity_category = "diagnostic";
+            on_value_range = [
+              {
+                above = 70.0;
+                "then" = switch.turn_on switch.buzzer;
+              }
+              {
+                below = 70.0;
+                "then" = switch.turn_off switch.buzzer;
+              }
+            ];
+          }];
+
+          switch = [{
+            platform = "gpio";
+            id = switch.buzzer;
+            name = "Buzzer";
+            pin = {
+              pcf8574 = "pcf_inputs";
+              number = 0;
+              mode = {
+                output = true;
+              };
+              inverted = true;
+            };
           }];
         };
     };
