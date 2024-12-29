@@ -14,19 +14,19 @@
     {
       formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixpkgs-fmt;
       packages.${system} = {
-        inherit (esp) compileEsphome;
         inherit (pkgs) esphome;
       };
       # `nix run .#example` will output uci configuration
       apps.${system}.example = {
         type = "app";
-        program = toString (self.packages.${system}.compileEsphome ./example.nix).command;
+        program = toString (esp.compileEsphome ./example.nix).command;
       };
-      defaultPackage = self.packages.${system}.esphome;
-      devShell.${system} = pkgs.mkShell {
-        buildInputs = [
-          pkgs.esphome
-        ];
+      devShells.${system} = {
+        default = pkgs.mkShell {
+          buildInputs = [
+            pkgs.esphome
+          ];
+        };
       };
     };
 }
