@@ -32,11 +32,6 @@
             inherit (pkgs) esphome;
             dimmer1 = dimmer1.generate;
           };
-          # `nix run .#example` will output generated configuration
-          apps.example = {
-            type = "app";
-            program = toString dimmer1.validate;
-          };
 
           treefmt.config = {
             projectRootFile = "flake.nix";
