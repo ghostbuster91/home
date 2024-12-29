@@ -8,44 +8,41 @@
     };
   };
 
-  outputs =
-    { self
-    , nixpkgs
-    , systems
-    , treefmt-nix
-    , ...
-    }:
-    let
-      # Small tool to iterate over each systems
-      eachSystem = f: nixpkgs.lib.genAttrs (import systems) (system: f nixpkgs.legacyPackages.${system});
+  outputs = inputs@{ nixpkgs, flake-parts, ... }:
+    flake-parts.lib.mkFlake { inherit inputs; } {
+      systems = [ "x86_64-linux" "aarch64-darwin" "x86_64-darwin" ];
+      imports = [
+        inputs.treefmt-nix.flakeModule
+      ];
+      perSystem = { system, config, pkgs, ... }:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+          esp = pkgs.callPackage ./nix { };
+        in
+        {
+          devShells.default = pkgs.mkShell {
+            packages = [ pkgs.esphome ];
+            inputsFrom = [
+              config.treefmt.build.devShell
+            ];
+          };
 
-      # Eval the treefmt modules from ./treefmt.nix
-      treefmtEval = eachSystem (pkgs: treefmt-nix.lib.evalModule pkgs ./treefmt.nix);
-      system = "x86_64-linux";
-      pkgs = nixpkgs.legacyPackages.${system};
-      esp = pkgs.callPackage ./nix { };
-    in
-    {
-      # for `nix fmt`
-      formatter = eachSystem (pkgs: treefmtEval.${pkgs.system}.config.build.wrapper);
-      # for `nix flake check`
-      checks = eachSystem (pkgs: {
-        formatting = treefmtEval.${pkgs.system}.config.build.check self;
-      });
-      packages.${system} = {
-        inherit (pkgs) esphome;
-      };
-      # `nix run .#example` will output generated configuration
-      apps.${system}.example = {
-        type = "app";
-        program = toString (esp.compileEsphome ./example.nix).command;
-      };
-      devShells.${system} = {
-        default = pkgs.mkShell {
-          buildInputs = [
-            pkgs.esphome
-          ];
+          packages = {
+            inherit (pkgs) esphome;
+          };
+          # `nix run .#example` will output generated configuration
+          apps.example = {
+            type = "app";
+            program = toString (esp.compileEsphome ./example.nix).command;
+          };
+
+          treefmt.config = {
+            projectRootFile = "flake.nix";
+
+            programs = {
+              nixpkgs-fmt.enable = true;
+            };
+          };
         };
-      };
     };
 }
