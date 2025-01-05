@@ -1,57 +1,24 @@
-{ pkgs, ... }:
+{ pkgs, espLib, ... }:
 let
-  mkBoneioDimmer = pkgs.callPackage ./lib/boneio-dr-8ch-03-4023d { };
+  mkBoneioDimmer = espLib.boneio-dr-8ch-03-4023d;
+  inherit (espLib.helpers) light lambda actions mkOnClick mkIf if_on_then_off if_off_then_on switch binary_sensor;
 in
 {
   espConfig =
     let
-      light = {
+      lights = {
         u = "light_U";
-        is_on = id: { "light.is_on" = id; };
-        is_off = id: { "light.is_off" = id; };
-        turn_on = id: {
-          "light.turn_on" = id;
-        };
-        turn_off = id: {
-          "light.turn_off" = id;
-        };
-        get_brightness = id: "id(${id}).current_values.get_brightness()";
       };
-      channel = {
+      channels = {
         "02" = "chl02";
       };
-      binary_sensor = {
+      binary_sensors = {
         in_01 = "in_01";
-        is_on = id: { "binary_sensor.is_on" = id; };
       };
-      switch =
+      switches =
         {
           buzzer = "buzzer";
-          turn_on = id: {
-            "switch.turn_on" = id;
-          };
-          turn_off = id: {
-            "switch.turn_off" = id;
-          };
         };
-      mkIf = conf: {
-        "if" =
-          {
-            condition = conf.cond;
-            "then" = conf.then_;
-            "else" = conf.else_ or null;
-          };
-      };
-      if_on_then_off = id: (mkIf { cond = light.is_on id; then_ = light.turn_off id; });
-      if_off_then_on = id: (mkIf { cond = light.is_off id; then_ = light.turn_on id; });
-      mkOnClick = action: { "then" = action; };
-      actions = {
-        delay = time: { delay = time; };
-      };
-      lambda = {
-        gt = first: second: { lambda = "return ${first} > ${second}"; };
-        lt = first: second: { lambda = "return ${first} < ${second}"; };
-      };
       decreaseBrightnessWhileHeld = conf: {
         while = {
           condition = {
@@ -157,7 +124,7 @@ in
           binary_sensor = [
             {
               platform = "gpio";
-              id = binary_sensor.in_01;
+              id = binary_sensors.in_01;
               name = "Switch 11.2-TL";
               pin = {
                 pcf8574 = "pcf_inputs";
@@ -169,31 +136,31 @@ in
               };
               on_click =
                 mkOnClick [
-                  (if_on_then_off light.u)
-                  (if_off_then_on light.u)
+                  (if_on_then_off lights.u)
+                  (if_off_then_on lights.u)
                 ];
 
               on_press = {
                 "then" = [
                   (mkIf {
                     cond = shouldIncreaseBrightness {
-                      light = light.u;
+                      light = lights.u;
                       var = globals.nextDirection_U;
                     };
                     then_ = [
                       (actions.delay "0.5s")
                       (increseBrightnessWhileHeld {
-                        light = light.u;
+                        light = lights.u;
                         var = globals.nextDirection_U;
-                        binary_sensor = binary_sensor.in_01;
+                        binary_sensor = binary_sensors.in_01;
                       })
                     ];
                     else_ = [
                       (actions.delay "0.5s")
                       (decreaseBrightnessWhileHeld {
-                        light = light.u;
+                        light = lights.u;
                         var = globals.nextDirection_U;
-                        binary_sensor = binary_sensor.in_01;
+                        binary_sensor = binary_sensors.in_01;
                       })
                     ];
                   })
@@ -204,9 +171,9 @@ in
 
           light = [{
             platform = "monochromatic";
-            output = channel."02";
+            output = channels."02";
             name = "Light U (lodowka)";
-            id = light.u;
+            id = lights.u;
             default_transition_length = "0.5s";
             gamma_correct = 0;
             restore_mode = "RESTORE_DEFAULT_OFF";
@@ -217,7 +184,7 @@ in
             pin = 32;
             frequency = "1000Hz";
             inverted = false;
-            id = channel."02";
+            id = channels."02";
           }];
 
           sensor = [{
@@ -229,18 +196,18 @@ in
             on_value_range = [
               {
                 above = 70.0;
-                "then" = switch.turn_on switch.buzzer;
+                "then" = switch.turn_on switches.buzzer;
               }
               {
                 below = 70.0;
-                "then" = switch.turn_off switch.buzzer;
+                "then" = switch.turn_off switches.buzzer;
               }
             ];
           }];
 
           switch = [{
             platform = "gpio";
-            id = switch.buzzer;
+            id = switches.buzzer;
             name = "Buzzer";
             pin = {
               pcf8574 = "pcf_inputs";

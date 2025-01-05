@@ -4,6 +4,9 @@
 , pkgs
 ,
 }:
+let
+  espLib = pkgs.callPackage ../lib { };
+in
 {
   compileEsphome =
     configuration:
@@ -12,7 +15,7 @@
         modules = [
           {
             _module.args = {
-              inherit pkgs;
+              inherit pkgs espLib;
             };
           }
           ./module-options.nix
