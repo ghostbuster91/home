@@ -130,7 +130,7 @@ binary_sensor:
               - delay: 0.5s
               - while:
                   condition:
-                    binary_sensor.is_on: in_02
+                    binary_sensor.is_on: in_01
                   then:
                     - lambda: "id(lastDirection_U) = false;"
                     - light.dim_relative:
@@ -143,7 +143,7 @@ binary_sensor:
               - while:
                   condition:
                     and:
-                      - binary_sensor.is_on: in_02
+                      - binary_sensor.is_on: in_01
                       - light.is_on: light_U
                       - lambda: "return id(light_U).current_values.get_brightness() > 0.2;"
                   then:
@@ -190,7 +190,7 @@ binary_sensor:
               - delay: 0.5s
               - while:
                   condition:
-                    binary_sensor.is_on: in_01
+                    binary_sensor.is_on: in_02
                   then:
                     - lambda: "id(lastDirection_W) = false;"
                     - light.dim_relative:
@@ -203,7 +203,7 @@ binary_sensor:
               - while:
                   condition:
                     and:
-                      - binary_sensor.is_on: in_01
+                      - binary_sensor.is_on: in_02
                       - light.is_on: light_W
                       - lambda: "return id(light_W).current_values.get_brightness() > 0.2;"
                   then:
