@@ -1,6 +1,6 @@
 {
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs?rev=9f4128e00b0ae8ec65918efeba59db998750ead6";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
     };
