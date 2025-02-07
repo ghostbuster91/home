@@ -152,7 +152,7 @@ binary_sensor:
             - delay: 0.1s
 
   - platform: gpio
-    name: IN_03
+    name: "1.2 (437)"
     id: in_03
     pin:
       pcf8574: pcf_inputs
@@ -186,7 +186,7 @@ binary_sensor:
             - delay: 0.1s
 
   - platform: gpio
-    name: IN_04
+    name: "1.2 (438)"
     id: in_04
     pin:
       pcf8574: pcf_inputs
@@ -220,7 +220,7 @@ binary_sensor:
             - delay: 0.1s
 
   - platform: gpio
-    name: IN_05
+    name: "12.1 (353)"
     id: in_05
     pin:
       number: 36
@@ -229,7 +229,7 @@ binary_sensor:
       inverted: true
 
   - platform: gpio
-    name: IN_06
+    name: "12.1 (354)"
     id: in_06
     pin:
       number: 39
@@ -238,7 +238,7 @@ binary_sensor:
       inverted: true
 
   - platform: gpio
-    name: IN_07
+    name: "12.1 (357)"
     id: in_07
     pin:
       number: 34
@@ -247,7 +247,7 @@ binary_sensor:
       inverted: true
 
   - platform: gpio
-    name: IN_08
+    name: "12.1 (358)"
     id: in_08
     pin:
       number: 35
