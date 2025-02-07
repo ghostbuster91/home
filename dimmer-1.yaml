@@ -1,6 +1,6 @@
 substitutions:
   name: boneio-dr-8ch-03-32ce68
-  friendly_name: dimmer-1
+  friendly_name: dimmer-1-hall
   serial_prefix: dim #Don't change it.
 
 esphome:
@@ -53,12 +53,12 @@ api:
 ota:
   - platform: esphome
 
-udp:
-  update_interval: 5s
-  encryption: !secret dimmer-1-enc_key #set it to yours shared secret key
-  rolling_code_enable: true
-  binary_sensors:
-    - in_01
+# udp:
+#   update_interval: 5s
+#   encryption: !secret dimmer-1-enc_key #set it to yours shared secret key
+#   rolling_code_enable: true
+#   binary_sensors:
+#     - in_01
 
 web_server:
   port: 80
@@ -83,7 +83,7 @@ text_sensor:
 
 binary_sensor:
   - platform: gpio
-    name: IN_01
+    name: "1.1 (433)"
     id: in_01
     pin:
       pcf8574: pcf_inputs
@@ -91,9 +91,34 @@ binary_sensor:
       mode:
         input: true
       inverted: true
+    on_click:
+      then:
+        - if:
+            condition:
+              - light.is_off: light_b2
+            then:
+              - light.turn_on: light_b2
+            else:
+              - if:
+                  condition:
+                    - light.is_on: light_b2
+                  then:
+                    - light.turn_off: light_b2
+    on_press:
+      - while:
+          condition:
+            binary_sensor.is_on: in_01
+          then:
+            - light.dim_relative:
+                id: light_b2
+                relative_brightness: 5%
+                transition_length: 0.1s
+                brightness_limits:
+                  max_brightness: 90%
+            - delay: 0.1s
 
   - platform: gpio
-    name: IN_02
+    name: "1.2 (434)"
     id: in_02
     pin:
       pcf8574: pcf_inputs
@@ -101,6 +126,30 @@ binary_sensor:
       mode:
         input: true
       inverted: true
+    on_click:
+      then:
+        - if:
+            condition:
+              - light.is_off: light_a
+            then:
+              - light.turn_on: light_a
+        - if:
+            condition:
+              - light.is_on: light_a
+            then:
+              - light.turn_off: light_a
+    on_press:
+      - while:
+          condition:
+            binary_sensor.is_on: in_01
+          then:
+            - light.dim_relative:
+                id: light_a
+                relative_brightness: 5%
+                transition_length: 0.1s
+                brightness_limits:
+                  max_brightness: 90%
+            - delay: 0.1s
 
   - platform: gpio
     name: IN_03
@@ -111,6 +160,30 @@ binary_sensor:
       mode:
         input: true
       inverted: true
+    on_click:
+      then:
+        - if:
+            condition:
+              - light.is_off: light_b1
+            then:
+              - light.turn_on: light_b1
+        - if:
+            condition:
+              - light.is_on: light_b1
+            then:
+              - light.turn_off: light_b1
+    on_press:
+      - while:
+          condition:
+            binary_sensor.is_on: in_01
+          then:
+            - light.dim_relative:
+                id: light_b1
+                relative_brightness: 5%
+                transition_length: 0.1s
+                brightness_limits:
+                  max_brightness: 90%
+            - delay: 0.1s
 
   - platform: gpio
     name: IN_04
@@ -121,6 +194,30 @@ binary_sensor:
       mode:
         input: true
       inverted: true
+    on_click:
+      then:
+        - if:
+            condition:
+              - light.is_off: light_d
+            then:
+              - light.turn_on: light_d
+        - if:
+            condition:
+              - light.is_on: light_d
+            then:
+              - light.turn_off: light_d
+    on_press:
+      - while:
+          condition:
+            binary_sensor.is_on: in_01
+          then:
+            - light.dim_relative:
+                id: light_d
+                relative_brightness: 5%
+                transition_length: 0.1s
+                brightness_limits:
+                  max_brightness: 90%
+            - delay: 0.1s
 
   - platform: gpio
     name: IN_05
@@ -159,55 +256,38 @@ binary_sensor:
       inverted: true
 
 light:
-  - platform: monochromatic
-    output: chl01
-    name: CHL 01
-    id: chl_01
-    default_transition_length: 2s
-    gamma_correct: 0
-  - platform: monochromatic
-    output: chl02
-    name: CHL 02
-    id: chl_02
-    default_transition_length: 2s
-    gamma_correct: 0
-  - platform: monochromatic
-    output: chl03
-    name: CHL 03
-    id: chl_03
-    default_transition_length: 2s
-    gamma_correct: 0
-  - platform: monochromatic
-    output: chl04
-    name: CHL 04
-    id: chl_04
-    default_transition_length: 2s
-    gamma_correct: 0
-
-  - platform: monochromatic
-    output: chr01
-    name: CHR 01
-    id: chr_01
-    default_transition_length: 2s
-    gamma_correct: 0
-  - platform: monochromatic
-    output: chr02
-    name: CHR 02
-    id: chr_02
-    default_transition_length: 2s
-    gamma_correct: 0
-  - platform: monochromatic
-    output: chr03
-    name: CHR 03
-    id: chr_03
-    default_transition_length: 2s
-    gamma_correct: 0
-  - platform: monochromatic
-    output: chr04
-    name: CHR 04
-    id: chr_04
-    default_transition_length: 2s
-    gamma_correct: 0
+  - platform: cwww
+    id: light_a
+    name: "Light A"
+    cold_white: chl01
+    warm_white: chl02
+    cold_white_color_temperature: 6500 K
+    warm_white_color_temperature: 2000 K
+    restore_mode: RESTORE_DEFAULT_OFF
+  - platform: cwww
+    id: light_b1
+    name: "Light B1"
+    cold_white: chl03
+    warm_white: chl04
+    cold_white_color_temperature: 6500 K
+    warm_white_color_temperature: 2000 K
+    restore_mode: RESTORE_DEFAULT_OFF
+  - platform: cwww
+    id: light_b2
+    name: "Light B2"
+    cold_white: chr01
+    warm_white: chr02
+    cold_white_color_temperature: 6500 K
+    warm_white_color_temperature: 2000 K
+    restore_mode: RESTORE_DEFAULT_OFF
+  - platform: cwww
+    id: light_d
+    name: "Light D"
+    cold_white: chr03
+    warm_white: chr04
+    cold_white_color_temperature: 6500 K
+    warm_white_color_temperature: 2000 K
+    restore_mode: RESTORE_DEFAULT_OFF
 
 sensor:
   - platform: lm75

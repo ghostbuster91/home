@@ -1,6 +1,6 @@
 substitutions:
   name: boneio-dr-8ch-03-3812b0
-  friendly_name: dimmer-2
+  friendly_name: dimmer-2-bedroom
   serial_prefix: dim #Don't change it.
 
 esphome:
