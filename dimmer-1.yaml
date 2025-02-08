@@ -95,27 +95,13 @@ binary_sensor:
       then:
         - if:
             condition:
-              - light.is_off: light_b2
+              light.is_off: light_b2
             then:
-              - light.turn_on: light_b2
-            else:
-              - if:
-                  condition:
-                    - light.is_on: light_b2
-                  then:
-                    - light.turn_off: light_b2
-    on_press:
-      - while:
-          condition:
-            binary_sensor.is_on: in_01
-          then:
-            - light.dim_relative:
+              light.turn_on:
                 id: light_b2
-                relative_brightness: 5%
-                transition_length: 0.1s
-                brightness_limits:
-                  max_brightness: 90%
-            - delay: 0.1s
+                brightness: 0.9
+            else:
+              light.turn_off: light_b2
 
   - platform: gpio
     name: 1_1_434
@@ -130,26 +116,13 @@ binary_sensor:
       then:
         - if:
             condition:
-              - light.is_off: light_a
+              light.is_off: light_a
             then:
-              - light.turn_on: light_a
-        - if:
-            condition:
-              - light.is_on: light_a
-            then:
-              - light.turn_off: light_a
-    on_press:
-      - while:
-          condition:
-            binary_sensor.is_on: in_01
-          then:
-            - light.dim_relative:
+              light.turn_on:
                 id: light_a
-                relative_brightness: 5%
-                transition_length: 0.1s
-                brightness_limits:
-                  max_brightness: 90%
-            - delay: 0.1s
+                brightness: 0.9
+            else:
+              light.turn_off: light_a
 
   - platform: gpio
     name: 1_1_437
@@ -164,26 +137,13 @@ binary_sensor:
       then:
         - if:
             condition:
-              - light.is_off: light_b1
+              light.is_off: light_b1
             then:
-              - light.turn_on: light_b1
-        - if:
-            condition:
-              - light.is_on: light_b1
-            then:
-              - light.turn_off: light_b1
-    on_press:
-      - while:
-          condition:
-            binary_sensor.is_on: in_01
-          then:
-            - light.dim_relative:
+              light.turn_on:
                 id: light_b1
-                relative_brightness: 5%
-                transition_length: 0.1s
-                brightness_limits:
-                  max_brightness: 90%
-            - delay: 0.1s
+                brightness: 0.9
+            else:
+              light.turn_off: light_b1
 
   - platform: gpio
     name: 1_1_438
@@ -198,26 +158,13 @@ binary_sensor:
       then:
         - if:
             condition:
-              - light.is_off: light_d
+              light.is_off: light_d
             then:
-              - light.turn_on: light_d
-        - if:
-            condition:
-              - light.is_on: light_d
-            then:
-              - light.turn_off: light_d
-    on_press:
-      - while:
-          condition:
-            binary_sensor.is_on: in_01
-          then:
-            - light.dim_relative:
+              light.turn_on:
                 id: light_d
-                relative_brightness: 5%
-                transition_length: 0.1s
-                brightness_limits:
-                  max_brightness: 90%
-            - delay: 0.1s
+                brightness: 0.9
+            else:
+              light.turn_off: light_d
 
   - platform: gpio
     name: 12_1_353
