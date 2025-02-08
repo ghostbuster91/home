@@ -238,6 +238,53 @@ binary_sensor:
                 brightness: 0.9
             else:
               light.turn_off: light_i
+    on_press:
+      then:
+        - logger.log:
+            args:
+              - id(light_i).current_values.get_brightness()
+            format: Current brightness %.1f
+        - if:
+            condition:
+              or:
+                - light.is_off: light_i
+                - lambda: return id(light_i).current_values.get_brightness() > 0.5;
+            then:
+              - delay: 0.5s
+              - while:
+                  condition:
+                    and:
+                      - binary_sensor.is_on: r3_in_01
+                      - lambda: return id(light_i).current_values.get_brightness() > 0.2;
+                      - light.is_on: light_i
+                  then:
+                    - logger.log:
+                        args:
+                          - id(light_i).current_values.get_brightness()
+                        format: Current brightness %.1f
+                    - light.dim_relative:
+                        id: light_i
+                        relative_brightness: -5%
+                        transition_length: 0.1s
+                    - delay: 0.1s
+            else:
+              - delay: 0.5s
+              - while:
+                  condition:
+                    and:
+                      - binary_sensor.is_on: r3_in_01
+                      - light.is_on: light_i
+                      - lambda: return id(light_i).current_values.get_brightness() < 1;
+                  then:
+                    - logger.log:
+                        args:
+                          - id(light_i).current_values.get_brightness()
+                        format: Current brightness %.1f
+                    - light.dim_relative:
+                        id: light_i
+                        relative_brightness: 5%
+                        transition_length: 0.1s
+                    - delay: 0.1s
 
   - platform: udp
     provider: boneio-dr-8ch-03-32b304

@@ -228,7 +228,7 @@ light:
     restore_mode: RESTORE_DEFAULT_OFF
   - platform: cwww
     id: light_m2
-    name: light_m1
+    name: light_m2
     cold_white: chl03
     warm_white: chl04
     cold_white_color_temperature: 6500 K
