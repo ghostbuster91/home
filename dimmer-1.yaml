@@ -83,7 +83,7 @@ text_sensor:
 
 binary_sensor:
   - platform: gpio
-    name: "1.1 (433)"
+    name: 1_1_433
     id: in_01
     pin:
       pcf8574: pcf_inputs
@@ -118,7 +118,7 @@ binary_sensor:
             - delay: 0.1s
 
   - platform: gpio
-    name: "1.2 (434)"
+    name: 1_1_434
     id: in_02
     pin:
       pcf8574: pcf_inputs
@@ -152,7 +152,7 @@ binary_sensor:
             - delay: 0.1s
 
   - platform: gpio
-    name: "1.2 (437)"
+    name: 1_1_437
     id: in_03
     pin:
       pcf8574: pcf_inputs
@@ -186,7 +186,7 @@ binary_sensor:
             - delay: 0.1s
 
   - platform: gpio
-    name: "1.2 (438)"
+    name: 1_1_438
     id: in_04
     pin:
       pcf8574: pcf_inputs
@@ -220,7 +220,7 @@ binary_sensor:
             - delay: 0.1s
 
   - platform: gpio
-    name: "12.1 (353)"
+    name: 12_1_353
     id: in_05
     pin:
       number: 36
@@ -229,7 +229,7 @@ binary_sensor:
       inverted: true
 
   - platform: gpio
-    name: "12.1 (354)"
+    name: 12_1_354
     id: in_06
     pin:
       number: 39
@@ -238,7 +238,7 @@ binary_sensor:
       inverted: true
 
   - platform: gpio
-    name: "12.1 (357)"
+    name: 12_1_357
     id: in_07
     pin:
       number: 34
@@ -247,7 +247,7 @@ binary_sensor:
       inverted: true
 
   - platform: gpio
-    name: "12.1 (358)"
+    name: 12_1_358
     id: in_08
     pin:
       number: 35
@@ -258,7 +258,7 @@ binary_sensor:
 light:
   - platform: cwww
     id: light_a
-    name: "Light A"
+    name: light_a
     cold_white: chl01
     warm_white: chl02
     cold_white_color_temperature: 6500 K
@@ -266,7 +266,7 @@ light:
     restore_mode: RESTORE_DEFAULT_OFF
   - platform: cwww
     id: light_b1
-    name: "Light B1"
+    name: light_b1
     cold_white: chl03
     warm_white: chl04
     cold_white_color_temperature: 6500 K
@@ -274,7 +274,7 @@ light:
     restore_mode: RESTORE_DEFAULT_OFF
   - platform: cwww
     id: light_b2
-    name: "Light B2"
+    name: light_b2
     cold_white: chr01
     warm_white: chr02
     cold_white_color_temperature: 6500 K
@@ -282,7 +282,7 @@ light:
     restore_mode: RESTORE_DEFAULT_OFF
   - platform: cwww
     id: light_d
-    name: "Light D"
+    name: light_d
     cold_white: chr03
     warm_white: chr04
     cold_white_color_temperature: 6500 K
