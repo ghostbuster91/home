@@ -84,6 +84,17 @@ binary_sensor:
       mode:
         input: true
       inverted: true
+    on_click:
+      then:
+        - if:
+            condition:
+              light.is_off: light_l2
+            then:
+              light.turn_on:
+                id: light_l2
+                brightness: 0.9
+            else:
+              light.turn_off: light_l2
 
   - platform: gpio
     name: "8.1 (124)"
@@ -94,6 +105,17 @@ binary_sensor:
       mode:
         input: true
       inverted: true
+    on_click:
+      then:
+        - if:
+            condition:
+              light.is_off: light_m1
+            then:
+              light.turn_on:
+                id: light_m1
+                brightness: 0.9
+            else:
+              light.turn_off: light_m1
 
   - platform: gpio
     name: "8.1 (127)"
@@ -104,6 +126,17 @@ binary_sensor:
       mode:
         input: true
       inverted: true
+    on_click:
+      then:
+        - if:
+            condition:
+              light.is_off: light_m2
+            then:
+              light.turn_on:
+                id: light_m2
+                brightness: 0.9
+            else:
+              light.turn_off: light_m2
 
   - platform: gpio
     name: "8.1 (128)"
@@ -114,30 +147,6 @@ binary_sensor:
       mode:
         input: true
       inverted: true
-    on_click:
-      then:
-        - if:
-            condition:
-              - light.is_off: light_l
-            then:
-              - light.turn_on: light_l
-        - if:
-            condition:
-              - light.is_on: light_l
-            then:
-              - light.turn_off: light_l
-    on_press:
-      - while:
-          condition:
-            binary_sensor.is_on: in_01
-          then:
-            - light.dim_relative:
-                id: light_l
-                relative_brightness: 5%
-                transition_length: 0.1s
-                brightness_limits:
-                  max_brightness: 90%
-            - delay: 0.1s
 
   - platform: gpio
     name: "7.3 (273)"
@@ -151,26 +160,13 @@ binary_sensor:
       then:
         - if:
             condition:
-              - light.is_off: light_l
+              light.is_off: light_l2
             then:
-              - light.turn_on: light_l
-        - if:
-            condition:
-              - light.is_on: light_l
-            then:
-              - light.turn_off: light_l
-    on_press:
-      - while:
-          condition:
-            binary_sensor.is_on: in_01
-          then:
-            - light.dim_relative:
-                id: light_l
-                relative_brightness: 5%
-                transition_length: 0.1s
-                brightness_limits:
-                  max_brightness: 90%
-            - delay: 0.1s
+              light.turn_on:
+                id: light_l2
+                brightness: 0.9
+            else:
+              light.turn_off: light_l2
 
   - platform: gpio
     name: "7.3 (274)"
@@ -184,26 +180,13 @@ binary_sensor:
       then:
         - if:
             condition:
-              - light.is_off: light_m1
+              light.is_off: light_m1
             then:
-              - light.turn_on: light_m1
-        - if:
-            condition:
-              - light.is_on: light_m1
-            then:
-              - light.turn_off: light_m1
-    on_press:
-      - while:
-          condition:
-            binary_sensor.is_on: in_01
-          then:
-            - light.dim_relative:
+              light.turn_on:
                 id: light_m1
-                relative_brightness: 5%
-                transition_length: 0.1s
-                brightness_limits:
-                  max_brightness: 90%
-            - delay: 0.1s
+                brightness: 0.9
+            else:
+              light.turn_off: light_m1
 
   - platform: gpio
     name: "7.3 (277)"
@@ -217,26 +200,13 @@ binary_sensor:
       then:
         - if:
             condition:
-              - light.is_off: light_m2
+              light.is_off: light_m2
             then:
-              - light.turn_on: light_m2
-        - if:
-            condition:
-              - light.is_on: light_m2
-            then:
-              - light.turn_off: light_m2
-    on_press:
-      - while:
-          condition:
-            binary_sensor.is_on: in_01
-          then:
-            - light.dim_relative:
+              light.turn_on:
                 id: light_m2
-                relative_brightness: 5%
-                transition_length: 0.1s
-                brightness_limits:
-                  max_brightness: 90%
-            - delay: 0.1s
+                brightness: 0.9
+            else:
+              light.turn_off: light_m2
 
   - platform: gpio
     name: "7.3 (278)"
@@ -246,35 +216,11 @@ binary_sensor:
       mode:
         input: true
       inverted: true
-    on_click:
-      then:
-        - if:
-            condition:
-              - light.is_off: light_n
-            then:
-              - light.turn_on: light_n
-        - if:
-            condition:
-              - light.is_on: light_n
-            then:
-              - light.turn_off: light_n
-    on_press:
-      - while:
-          condition:
-            binary_sensor.is_on: in_01
-          then:
-            - light.dim_relative:
-                id: light_n
-                relative_brightness: 5%
-                transition_length: 0.1s
-                brightness_limits:
-                  max_brightness: 90%
-            - delay: 0.1s
 
 light:
   - platform: cwww
     id: light_m1
-    name: "Light M1"
+    name: light_m1
     cold_white: chl01
     warm_white: chl02
     cold_white_color_temperature: 6500 K
@@ -282,15 +228,15 @@ light:
     restore_mode: RESTORE_DEFAULT_OFF
   - platform: cwww
     id: light_m2
-    name: "Light M2"
+    name: light_m1
     cold_white: chl03
     warm_white: chl04
     cold_white_color_temperature: 6500 K
     warm_white_color_temperature: 2000 K
     restore_mode: RESTORE_DEFAULT_OFF
   - platform: cwww
-    id: light_l
-    name: "Light L"
+    id: light_l2
+    name: light_l2
     cold_white: chr01
     warm_white: chr02
     cold_white_color_temperature: 6500 K
@@ -298,7 +244,7 @@ light:
     restore_mode: RESTORE_DEFAULT_OFF
   - platform: cwww
     id: light_n
-    name: "Light N"
+    name: light_n
     cold_white: chr03
     warm_white: chr04
     cold_white_color_temperature: 6500 K

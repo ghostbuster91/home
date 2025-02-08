@@ -123,6 +123,17 @@ binary_sensor:
       mode:
         input: true
       inverted: true
+    on_click:
+      then:
+        - if:
+            condition:
+              light.is_off: light_j
+            then:
+              light.turn_on:
+                id: light_j
+                brightness: 0.9
+            else:
+              light.turn_off: light_j
 
   - platform: gpio
     name: 5_1_474
