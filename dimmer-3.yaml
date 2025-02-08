@@ -74,6 +74,19 @@ text_sensor:
       return id(eth).get_use_address();
     update_interval: 5min
 
+udp:
+  update_interval: 5s
+  encryption: !secret dimmer-3-enc_key
+  rolling_code_enable: true
+  binary_sensors:
+    - in_01
+    - in_02
+    - in_03
+    - in_04
+    - in_06
+    - in_07
+    - in_08
+
 binary_sensor:
   - platform: gpio
     name: "4.2 (243)"
