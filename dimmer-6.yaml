@@ -76,7 +76,7 @@ text_sensor:
 
 binary_sensor:
   - platform: gpio
-    name: 10_2_113
+    name: "10.2 (113)"
     id: in_01
     pin:
       pcf8574: pcf_inputs
@@ -97,7 +97,7 @@ binary_sensor:
               light.turn_off: light_o
 
   - platform: gpio
-    name: 10_2_114
+    name: "10.2 (114)"
     id: in_02
     pin:
       pcf8574: pcf_inputs
@@ -118,7 +118,7 @@ binary_sensor:
               light.turn_off: light_p
 
   - platform: gpio
-    name: 10_2_117
+    name: "10.2 (117)"
     id: in_03
     pin:
       pcf8574: pcf_inputs
@@ -139,7 +139,7 @@ binary_sensor:
     #           light.turn_off: light_q
 
   - platform: gpio
-    name: 10_2_118
+    name: "10.2 (118)"
     id: in_04
     pin:
       pcf8574: pcf_inputs
@@ -160,7 +160,7 @@ binary_sensor:
               light.turn_off: light_s
 
   - platform: gpio
-    name: IN_05
+    name: "10.1 (313)"
     id: in_05
     pin:
       number: 36
@@ -169,7 +169,7 @@ binary_sensor:
       inverted: true
 
   - platform: gpio
-    name: IN_06
+    name: "10.1 (314)"
     id: in_06
     pin:
       number: 39
@@ -178,7 +178,7 @@ binary_sensor:
       inverted: true
 
   - platform: gpio
-    name: IN_07
+    name: "10.1 (317)"
     id: in_07
     pin:
       number: 34
@@ -187,7 +187,7 @@ binary_sensor:
       inverted: true
 
   - platform: gpio
-    name: IN_08
+    name: "10.1 (318)"
     id: in_08
     pin:
       number: 35
