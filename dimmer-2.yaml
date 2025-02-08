@@ -76,7 +76,7 @@ text_sensor:
 
 binary_sensor:
   - platform: gpio
-    name: "2.1 (213)"
+    name: 2_1_213
     id: in_01
     pin:
       pcf8574: pcf_inputs
@@ -111,7 +111,7 @@ binary_sensor:
 
 
   - platform: gpio
-    name: "2.1 (214)"
+    name: 2_1_214
     id: in_02
     pin:
       pcf8574: pcf_inputs
@@ -146,7 +146,7 @@ binary_sensor:
 
 
   - platform: gpio
-    name: "2.1 (217)"
+    name: 2_1_217
     id: in_03
     pin:
       pcf8574: pcf_inputs
@@ -181,7 +181,7 @@ binary_sensor:
 
 
   - platform: gpio
-    name: "2.1 (218)"
+    name: 2_1_218
     id: in_04
     pin:
       pcf8574: pcf_inputs
@@ -216,7 +216,7 @@ binary_sensor:
 
 
   - platform: gpio
-    name: "5.1 (323)"
+    name: 5_1_323
     id: in_05
     pin:
       number: 36
@@ -225,7 +225,7 @@ binary_sensor:
       inverted: true
 
   - platform: gpio
-    name: "5.1 (324)"
+    name: 5_1_324
     id: in_06
     pin:
       number: 39
@@ -234,7 +234,7 @@ binary_sensor:
       inverted: true
 
   - platform: gpio
-    name: "5.1 (327)"
+    name: 5_1_327
     id: in_07
     pin:
       number: 34
@@ -243,7 +243,7 @@ binary_sensor:
       inverted: true
 
   - platform: gpio
-    name: "5.1 (328)"
+    name: 5_1_328
     id: in_08
     pin:
       number: 35
@@ -280,7 +280,7 @@ binary_sensor:
 light:
   - platform: cwww
     id: light_f
-    name: "Light F"
+    name: light_f
     cold_white: chl01
     warm_white: chl02
     cold_white_color_temperature: 6500 K
@@ -288,7 +288,7 @@ light:
     restore_mode: RESTORE_DEFAULT_OFF
   - platform: cwww
     id: light_i
-    name: "Light i"
+    name: light_i
     cold_white: chl03
     warm_white: chl04
     cold_white_color_temperature: 6500 K
@@ -296,7 +296,7 @@ light:
     restore_mode: RESTORE_DEFAULT_OFF
   - platform: cwww
     id: light_e2
-    name: "Light E2"
+    name: light_e2
     cold_white: chr01
     warm_white: chr02
     cold_white_color_temperature: 6500 K
@@ -304,7 +304,7 @@ light:
     restore_mode: RESTORE_DEFAULT_OFF
   - platform: cwww
     id: light_e1
-    name: "Light E1"
+    name: light_e1
     cold_white: chr03
     warm_white: chr04
     cold_white_color_temperature: 6500 K
