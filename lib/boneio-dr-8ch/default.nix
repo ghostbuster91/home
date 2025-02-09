@@ -2,7 +2,13 @@
 let
   components = pkgs.callPackage ./components.nix { };
   genericComponents = pkgs.callPackage ../components.nix { };
-  mkBoneIOdr8ch034023d = { name, friendly_name, logger, api, globals, binary_sensor, light, sensor, switch, output }: {
+  helpers = pkgs.callPackage ../helpers.nix { };
+  inherit (helpers) switch;
+  switches =
+    {
+      buzzer = "buzzer";
+    };
+  mkBoneIOdr8ch = { name, friendly_name, logger, api, binarySensors, light, output }: {
     substitutions = {
       serial_prefix = "dim"; #Don't change it.
     };
@@ -59,8 +65,42 @@ let
 
     inherit logger api;
 
-    inherit globals binary_sensor light sensor switch output;
+    inherit light output;
+
+    binary_sensor = components.mkBinarySensors { items = binarySensors; };
+
+    sensor = [{
+      platform = "lm75";
+      id = "boneIO_temp";
+      name = "Temperature";
+      update_interval = "30s";
+      entity_category = "diagnostic";
+      on_value_range = [
+        {
+          above = 70.0;
+          "then" = switch.turn_on { id = switches.buzzer; };
+        }
+        {
+          below = 70.0;
+          "then" = switch.turn_off { id = switches.buzzer; };
+        }
+      ];
+    }];
+
+    switch = [{
+      platform = "gpio";
+      id = switches.buzzer;
+      name = "Buzzer";
+      pin = {
+        pcf8574 = "pcf_inputs";
+        number = 0;
+        mode = {
+          output = true;
+        };
+        inverted = true;
+      };
+    }];
   };
 in
-mkBoneIOdr8ch034023d
+mkBoneIOdr8ch
 
