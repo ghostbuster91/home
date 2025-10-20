@@ -116,13 +116,13 @@ binary_sensor:
       then:
         - if:
             condition:
-              light.is_off: light_a
+              light.is_off: light_a2
             then:
               light.turn_on:
-                id: light_a
+                id: light_a2
                 brightness: 0.9
             else:
-              light.turn_off: light_a
+              light.turn_off: light_a2
 
   - platform: gpio
     name: "1.1 (437)"
@@ -203,14 +203,26 @@ binary_sensor:
       inverted: true
 
 light:
-  - platform: cwww
-    id: light_a
-    name: light_a
-    cold_white: chl01
-    warm_white: chl02
-    cold_white_color_temperature: 6500 K
-    warm_white_color_temperature: 2000 K
-    restore_mode: RESTORE_DEFAULT_OFF
+  # - platform: cwww
+  #   id: light_a
+  #   name: light_a
+  #   cold_white: chl01
+  #   warm_white: chl02
+  #   cold_white_color_temperature: 6500 K
+  #   warm_white_color_temperature: 2000 K
+  #   restore_mode: RESTORE_DEFAULT_OFF
+  - platform: monochromatic
+    output: chl01
+    name: 'CHL 01'
+    id: light_a1
+    default_transition_length: 2s
+    gamma_correct: 0
+  - platform: monochromatic
+    output: chl02
+    name: 'zasilanie a'
+    id: light_a2
+    default_transition_length: 2s
+    gamma_correct: 0
   - platform: cwww
     id: light_b1
     name: light_b1
