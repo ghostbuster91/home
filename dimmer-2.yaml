@@ -383,13 +383,12 @@ binary_sensor:
               light.turn_off: light_e2
 
 light:
-  - platform: cwww
-    id: light_f
+  - platform: monochromatic
+    output: chl_pair_output
     name: light_f
-    cold_white: chl01
-    warm_white: chl02
-    cold_white_color_temperature: 6500 K
-    warm_white_color_temperature: 2000 K
+    id: light_f
+    default_transition_length: 1s
+    gamma_correct: 0
     restore_mode: RESTORE_DEFAULT_OFF
   - platform: cwww
     id: light_i
@@ -440,3 +439,15 @@ switch:
       mode:
         output: true
       inverted: true
+
+output:
+  - platform: template
+    id: chl_pair_output
+    type: float
+    write_action:
+      - output.set_level:
+          id: chl01
+          level: !lambda return state;
+      - output.set_level:
+          id: chl02
+          level: !lambda return state;
