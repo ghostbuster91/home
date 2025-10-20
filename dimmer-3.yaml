@@ -231,26 +231,14 @@ light:
     cold_white_color_temperature: 6500 K
     warm_white_color_temperature: 2000 K
     restore_mode: RESTORE_DEFAULT_OFF
-  # - platform: cwww
-  #   id: --
-  #   name: "--"
-  #   cold_white: chl03
-  #   warm_white: chl04
-  #   cold_white_color_temperature: 6500 K
-  #   warm_white_color_temperature: 2000 K
-  #   restore_mode: RESTORE_DEFAULT_OFF
-  - platform: rgb
-    name: light_h
+  - platform: cwww
     id: light_h
-    red: chr01
-    green: chr02
-    blue: chr03
-  # - platform: monochromatic
-  #   output: chr01
-  #   name: "light_y"
-  #   id: chl_01
-  #   default_transition_length: 2s
-  #   gamma_correct: 0
+    name: light_h
+    cold_white: chr01
+    warm_white: chr02
+    cold_white_color_temperature: 6500 K
+    warm_white_color_temperature: 2700 K
+    restore_mode: RESTORE_DEFAULT_OFF
 
 sensor:
   - platform: lm75
