@@ -17,6 +17,9 @@ esp32:
 external_components:
   - source: github://boneIO-eu/esphome-LM75@main #Original source and thank you note for BTomala https://github.com/boneIO-eu/esphome-lm75
     components: [lm75]
+  - source:
+      type: local
+      path: ./components
 
 packages:
   internals_packages:
@@ -90,17 +93,6 @@ binary_sensor:
       mode:
         input: true
       inverted: true
-    on_click:
-      then:
-        - if:
-            condition:
-              light.is_off: light_f
-            then:
-              light.turn_on:
-                id: light_f
-                brightness: 0.9
-            else:
-              light.turn_off: light_f
 
   - platform: gpio
     name: "3.1 (214)"
@@ -111,17 +103,6 @@ binary_sensor:
       mode:
         input: true
       inverted: true
-    on_click:
-      then:
-        - if:
-            condition:
-              light.is_off: light_e2
-            then:
-              light.turn_on:
-                id: light_e2
-                brightness: 0.9
-            else:
-              light.turn_off: light_e2
 
   - platform: gpio
     name: "3.1 (217)"
@@ -132,17 +113,6 @@ binary_sensor:
       mode:
         input: true
       inverted: true
-    on_click:
-      then:
-        - if:
-            condition:
-              light.is_off: light_e1
-            then:
-              light.turn_on:
-                id: light_e1
-                brightness: 0.9
-            else:
-              light.turn_off: light_e1
 
   - platform: gpio
     name: "3.1 (218)"
@@ -162,17 +132,6 @@ binary_sensor:
       mode:
         input: true
       inverted: true
-    on_click:
-      then:
-        - if:
-            condition:
-              light.is_off: light_f
-            then:
-              light.turn_on:
-                id: light_f
-                brightness: 0.9
-            else:
-              light.turn_off: light_f
 
   - platform: gpio
     name: "2.1 (324)"
@@ -182,17 +141,6 @@ binary_sensor:
       mode:
         input: true
       inverted: true
-    on_click:
-      then:
-        - if:
-            condition:
-              light.is_off: light_e2
-            then:
-              light.turn_on:
-                id: light_e2
-                brightness: 0.9
-            else:
-              light.turn_off: light_e2
 
   - platform: gpio
     name: "2.1 (327)"
@@ -202,17 +150,6 @@ binary_sensor:
       mode:
         input: true
       inverted: true
-    on_click:
-      then:
-        - if:
-            condition:
-              light.is_off: light_e1
-            then:
-              light.turn_on:
-                id: light_e1
-                brightness: 0.9
-            else:
-              light.turn_off: light_e1
 
   - platform: gpio
     name: "2.1 (328)"
@@ -227,160 +164,81 @@ binary_sensor:
     provider: boneio-dr-8ch-03-32b304
     id: r3_in_01
     remote_id: in_01
-    on_click:
-      then:
-        - if:
-            condition:
-              light.is_off: light_i
-            then:
-              light.turn_on:
-                id: light_i
-                brightness: 0.9
-            else:
-              light.turn_off: light_i
-    on_press:
-      then:
-        - logger.log:
-            args:
-              - id(light_i).current_values.get_brightness()
-            format: Current brightness %.1f
-        - if:
-            condition:
-              or:
-                - light.is_off: light_i
-                - lambda: return id(light_i).current_values.get_brightness() > 0.5;
-            then:
-              - delay: 0.5s
-              - while:
-                  condition:
-                    and:
-                      - binary_sensor.is_on: r3_in_01
-                      - lambda: return id(light_i).current_values.get_brightness() > 0.2;
-                      - light.is_on: light_i
-                  then:
-                    - logger.log:
-                        args:
-                          - id(light_i).current_values.get_brightness()
-                        format: Current brightness %.1f
-                    - light.dim_relative:
-                        id: light_i
-                        relative_brightness: -5%
-                        transition_length: 0.1s
-                    - delay: 0.1s
-            else:
-              - delay: 0.5s
-              - while:
-                  condition:
-                    and:
-                      - binary_sensor.is_on: r3_in_01
-                      - light.is_on: light_i
-                      - lambda: return id(light_i).current_values.get_brightness() < 1;
-                  then:
-                    - logger.log:
-                        args:
-                          - id(light_i).current_values.get_brightness()
-                        format: Current brightness %.1f
-                    - light.dim_relative:
-                        id: light_i
-                        relative_brightness: 5%
-                        transition_length: 0.1s
-                    - delay: 0.1s
 
   - platform: udp
     provider: boneio-dr-8ch-03-32b304
     id: r3_in_02
     remote_id: in_02
-    on_click:
-      then:
-        - if:
-            condition:
-              light.is_off: light_f
-            then:
-              light.turn_on:
-                id: light_f
-                brightness: 0.9
-            else:
-              light.turn_off: light_f
 
   - platform: udp
     provider: boneio-dr-8ch-03-32b304
     id: r3_in_03
     remote_id: in_03
-    on_click:
-      then:
-        - if:
-            condition:
-              light.is_off: light_e1
-            then:
-              light.turn_on:
-                id: light_e1
-                brightness: 0.9
-            else:
-              light.turn_off: light_e1
 
   - platform: udp
     provider: boneio-dr-8ch-03-32b304
     id: r3_in_04
     remote_id: in_04
-    on_click:
-      then:
-        - if:
-            condition:
-              light.is_off: light_e2
-            then:
-              light.turn_on:
-                id: light_e2
-                brightness: 0.9
-            else:
-              light.turn_off: light_e2
 
   - platform: udp
     provider: boneio-dr-8ch-03-32b304
     id: r3_in_06
     remote_id: in_06
-    on_click:
-      then:
-        - if:
-            condition:
-              light.is_off: light_f
-            then:
-              light.turn_on:
-                id: light_f
-                brightness: 0.9
-            else:
-              light.turn_off: light_f
 
   - platform: udp
     provider: boneio-dr-8ch-03-32b304
     id: r3_in_07
     remote_id: in_07
-    on_click:
-      then:
-        - if:
-            condition:
-              light.is_off: light_e1
-            then:
-              light.turn_on:
-                id: light_e1
-                brightness: 0.9
-            else:
-              light.turn_off: light_e1
 
   - platform: udp
     provider: boneio-dr-8ch-03-32b304
     id: r3_in_08
     remote_id: in_08
-    on_click:
-      then:
-        - if:
-            condition:
-              light.is_off: light_e2
-            then:
-              light.turn_on:
-                id: light_e2
-                brightness: 0.9
-            else:
-              light.turn_off: light_e2
+
+hold_dim_button:
+  - id: dim_btn_01
+    input: in_01
+    light_id: light_f
+    min_brightness: 0.2
+  - id: dim_btn_02
+    input: in_02
+    light_id: light_e2
+  - id: dim_btn_03
+    input: in_03
+    light_id: light_e1
+  - id: dim_btn_05
+    input: in_05
+    light_id: light_f
+    min_brightness: 0.2
+  - id: dim_btn_06
+    input: in_06
+    light_id: light_e2
+  - id: dim_btn_07
+    input: in_07
+    light_id: light_e1
+  - id: dim_btn_08
+    input: r3_in_01
+    light_id: light_i
+  - id: dim_btn_09
+    input: r3_in_02
+    light_id: light_f
+    min_brightness: 0.2
+  - id: dim_btn_10
+    input: r3_in_03
+    light_id: light_e1
+  - id: dim_btn_11
+    input: r3_in_04
+    light_id: light_e2
+  - id: dim_btn_12
+    input: r3_in_06
+    light_id: light_f
+    min_brightness: 0.2
+  - id: dim_btn_13
+    input: r3_in_07
+    light_id: light_e1
+  - id: dim_btn_14
+    input: r3_in_08
+    light_id: light_e2
 
 light:
   - platform: monochromatic

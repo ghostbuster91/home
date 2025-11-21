@@ -17,6 +17,9 @@ esp32:
 external_components:
   - source: github://boneIO-eu/esphome-LM75@main #Original source and thank you note for BTomala https://github.com/boneIO-eu/esphome-lm75
     components: [lm75]
+  - source:
+      type: local
+      path: ./components
 
 packages:
   internals_packages:
@@ -84,64 +87,6 @@ binary_sensor:
       mode:
         input: true
       inverted: true
-    on_click:
-      then:
-        - if:
-            condition:
-              light.is_off: light_k
-            then:
-              light.turn_on:
-                id: light_k
-                brightness: 0.9
-            else:
-              light.turn_off: light_k
-    on_press:
-      then:
-        - logger.log:
-            args:
-              - id(light_k).current_values.get_brightness()
-            format: Current brightness %.1f
-        - if:
-            condition:
-              or:
-                - light.is_off: light_k
-                - lambda: return id(light_k).current_values.get_brightness() > 0.5;
-            then:
-              - delay: 0.5s
-              - while:
-                  condition:
-                    and:
-                      - binary_sensor.is_on: in_01
-                      - lambda: return id(light_k).current_values.get_brightness() > 0.2;
-                      - light.is_on: light_k
-                  then:
-                    - logger.log:
-                        args:
-                          - id(light_k).current_values.get_brightness()
-                        format: Current brightness %.1f
-                    - light.dim_relative:
-                        id: light_k
-                        relative_brightness: -5%
-                        transition_length: 0.1s
-                    - delay: 0.1s
-            else:
-              - delay: 0.5s
-              - while:
-                  condition:
-                    and:
-                      - binary_sensor.is_on: in_01
-                      - light.is_on: light_k
-                      - lambda: return id(light_k).current_values.get_brightness() < 1;
-                  then:
-                    - logger.log:
-                        args:
-                          - id(light_k).current_values.get_brightness()
-                        format: Current brightness %.1f
-                    - light.dim_relative:
-                        id: light_k
-                        relative_brightness: 5%
-                        transition_length: 0.1s
-                    - delay: 0.1s
 
   - platform: gpio
     name: "6.1 (154)"
@@ -208,6 +153,13 @@ binary_sensor:
       mode:
         input: true
       inverted: true
+
+hold_dim_button:
+  - id: dim_btn_01
+    input: in_01
+    light_id: light_k
+    brightness: 0.7
+    min_brightness: 0.4
 
 light:
   - platform: cwww

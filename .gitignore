@@ -1,2 +1,3 @@
 .esphome
 .direnv
+__pycache__

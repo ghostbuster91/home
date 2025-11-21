@@ -19,7 +19,13 @@
       perSystem = { system, config, pkgs, ... }:
         {
           devShells.default = pkgs.mkShell {
-            packages = [ pkgs.esphome ];
+            packages = [
+              pkgs.esphome
+              pkgs.clang-tools # daje clangd
+              pkgs.gcc
+              pkgs.gnumake
+              pkgs.python3
+            ];
             inputsFrom = [
               config.treefmt.build.devShell
             ];

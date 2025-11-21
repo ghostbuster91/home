@@ -17,6 +17,9 @@ esp32:
 external_components:
   - source: github://boneIO-eu/esphome-LM75@main #Original source and thank you note for BTomala https://github.com/boneIO-eu/esphome-lm75
     components: [lm75]
+  - source:
+      type: local
+      path: ./components
 
 packages:
   internals_packages:
@@ -84,17 +87,6 @@ binary_sensor:
       mode:
         input: true
       inverted: true
-    on_click:
-      then:
-        - if:
-            condition:
-              light.is_off: light_t
-            then:
-              light.turn_on:
-                id: light_t
-                brightness: 0.9
-            else:
-              light.turn_off: light_t
     
   - platform: gpio
     name: "11.1 (374)"
@@ -105,17 +97,6 @@ binary_sensor:
       mode:
         input: true
       inverted: true
-    on_click:
-      then:
-        - if:
-            condition:
-              light.is_off: light_w
-            then:
-              light.turn_on:
-                id: light_w
-                brightness: 0.9
-            else:
-              light.turn_off: light_w
     
   - platform: gpio
     name: "11.1 (377)"
@@ -126,17 +107,6 @@ binary_sensor:
       mode:
         input: true
       inverted: true
-    on_click:
-      then:
-        - if:
-            condition:
-              light.is_off: light_x
-            then:
-              light.turn_on:
-                id: light_x
-                brightness: 0.9
-            else:
-              light.turn_off: light_x
     
   - platform: gpio
     name: "11.1 (378)"
@@ -147,17 +117,6 @@ binary_sensor:
       mode:
         input: true
       inverted: true
-    on_click:
-      then:
-        - if:
-            condition:
-              light.is_off: light_u
-            then:
-              light.turn_on:
-                id: light_u
-                brightness: 0.9
-            else:
-              light.turn_off: light_u
     
   - platform: gpio
     name: "11.2 (383)"
@@ -195,6 +154,19 @@ binary_sensor:
         input: true
       inverted: true
     
+hold_dim_button:
+  - id: dim_btn_01
+    input: in_01
+    light_id: light_t
+  - id: dim_btn_02
+    input: in_02
+    light_id: light_w
+  - id: dim_btn_03
+    input: in_03
+    light_id: light_x
+  - id: dim_btn_04
+    input: in_04
+    light_id: light_u
 
 light:
   - platform: cwww

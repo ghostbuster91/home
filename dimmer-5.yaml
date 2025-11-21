@@ -17,6 +17,9 @@ esp32:
 external_components:
   - source: github://boneIO-eu/esphome-LM75@main #Original source and thank you note for BTomala https://github.com/boneIO-eu/esphome-lm75
     components: [lm75]
+  - source:
+      type: local
+      path: ./components
 
 packages:
   internals_packages:
@@ -84,17 +87,6 @@ binary_sensor:
       mode:
         input: true
       inverted: true
-    on_click:
-      then:
-        - if:
-            condition:
-              light.is_off: light_l2
-            then:
-              light.turn_on:
-                id: light_l2
-                brightness: 0.9
-            else:
-              light.turn_off: light_l2
 
   - platform: gpio
     name: "8.1 (124)"
@@ -105,17 +97,6 @@ binary_sensor:
       mode:
         input: true
       inverted: true
-    on_click:
-      then:
-        - if:
-            condition:
-              light.is_off: light_m1
-            then:
-              light.turn_on:
-                id: light_m1
-                brightness: 0.9
-            else:
-              light.turn_off: light_m1
 
   - platform: gpio
     name: "8.1 (127)"
@@ -126,17 +107,6 @@ binary_sensor:
       mode:
         input: true
       inverted: true
-    on_click:
-      then:
-        - if:
-            condition:
-              light.is_off: light_m2
-            then:
-              light.turn_on:
-                id: light_m2
-                brightness: 0.9
-            else:
-              light.turn_off: light_m2
 
   - platform: gpio
     name: "8.1 (128)"
@@ -156,17 +126,6 @@ binary_sensor:
       mode:
         input: true
       inverted: true
-    on_click:
-      then:
-        - if:
-            condition:
-              light.is_off: light_l2
-            then:
-              light.turn_on:
-                id: light_l2
-                brightness: 0.9
-            else:
-              light.turn_off: light_l2
 
   - platform: gpio
     name: "7.3 (274)"
@@ -176,17 +135,6 @@ binary_sensor:
       mode:
         input: true
       inverted: true
-    on_click:
-      then:
-        - if:
-            condition:
-              light.is_off: light_m1
-            then:
-              light.turn_on:
-                id: light_m1
-                brightness: 0.9
-            else:
-              light.turn_off: light_m1
 
   - platform: gpio
     name: "7.3 (277)"
@@ -196,17 +144,6 @@ binary_sensor:
       mode:
         input: true
       inverted: true
-    on_click:
-      then:
-        - if:
-            condition:
-              light.is_off: light_m2
-            then:
-              light.turn_on:
-                id: light_m2
-                brightness: 0.9
-            else:
-              light.turn_off: light_m2
 
   - platform: gpio
     name: "7.3 (278)"
@@ -216,6 +153,26 @@ binary_sensor:
       mode:
         input: true
       inverted: true
+
+hold_dim_button:
+  - id: dim_btn_01
+    input: in_01
+    light_id: light_l2
+  - id: dim_btn_02
+    input: in_02
+    light_id: light_m1
+  - id: dim_btn_03
+    input: in_03
+    light_id: light_m2
+  - id: dim_btn_05
+    input: in_05
+    light_id: light_l2
+  - id: dim_btn_06
+    input: in_06
+    light_id: light_m1
+  - id: dim_btn_07
+    input: in_07
+    light_id: light_m2
 
 light:
   - platform: cwww
