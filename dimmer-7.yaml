@@ -167,6 +167,7 @@ hold_dim_button:
   - id: dim_btn_04
     input: in_04
     light_id: light_u
+    min_brightness: 0.5
 
 light:
   - platform: cwww
