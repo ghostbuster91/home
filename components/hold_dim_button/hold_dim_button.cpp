@@ -76,7 +76,7 @@ void HoldDimButton::loop() {
 
       // dimming down
       if (dir_ == DIM_DOWN) {
-        if (b <= min_brightness_)
+        if (b - step_ <= min_brightness_)
           return;
 
         ESP_LOGD(TAG, "Dimming down: %.3f", b);
