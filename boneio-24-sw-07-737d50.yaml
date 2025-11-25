@@ -1,6 +1,6 @@
 substitutions:
   name: boneio-24-sw-07-737d50
-  friendly_name: BoneIO ESP 24x16 Switches 737d50
+  friendly_name: boneio-1
   serial_prefix: esp #Don't change it.
 
 esphome:
@@ -49,6 +49,11 @@ api:
   reboot_timeout: 0s
 ota:
   platform: esphome
+
+udp:
+  providers:
+    - name: boneio-dr-8ch-03-32ce68
+      encryption: !secret dimmer-1-enc_key #set it to yours shared secret key
 
 web_server:
   port: 80
@@ -193,7 +198,7 @@ binary_sensor:
       inverted: true
     on_press:
       then:
-        - switch.toggle: light_A
+        # - switch.toggle: light_A
 
   - platform: gpio
     name: Switch 1-TL
@@ -206,7 +211,7 @@ binary_sensor:
       inverted: true
     on_press:
       then:
-        - switch.toggle: light_D
+        # - switch.toggle: light_D
 
   - platform: gpio
     name: Switch 1-BR
@@ -219,7 +224,7 @@ binary_sensor:
       inverted: true
     on_press:
       then:
-        - switch.toggle: light_C
+        # - switch.toggle: light_C
 
   - platform: gpio
     name: Switch 1-BL
@@ -232,8 +237,8 @@ binary_sensor:
       inverted: true
     on_press:
       then:
-        - switch.toggle: light_B2
-        - switch.toggle: light_B1
+        # - switch.toggle: light_B2
+        # - switch.toggle: light_B1
 
   - platform: gpio
     name: Switch 2.1-TL
@@ -246,8 +251,8 @@ binary_sensor:
       inverted: true
     on_press:
       then:
-        - switch.toggle: light_J
-        - switch.toggle: light_I
+        # - switch.toggle: light_J
+        # - switch.toggle: light_I
 
   - platform: gpio
     name: Switch 2.1-TR
@@ -260,8 +265,8 @@ binary_sensor:
       inverted: true
     on_press:
       then:
-        - switch.toggle: light_E1
-        - switch.toggle: light_E2
+        # - switch.toggle: light_E1
+        # - switch.toggle: light_E2
 
   - platform: gpio
     name: Switch 2.1-BL
@@ -274,7 +279,7 @@ binary_sensor:
       inverted: true
     on_press:
       then:
-        - switch.toggle: light_H
+        # - switch.toggle: light_H
 
   - platform: gpio
     name: Switch 2.1-BR
@@ -287,7 +292,7 @@ binary_sensor:
       inverted: true
     on_press:
       then:
-        - switch.toggle: light_F
+        # - switch.toggle: light_F
 
   - platform: gpio
     name: Switch 2.2-TL
@@ -352,8 +357,8 @@ binary_sensor:
       inverted: true
     on_press:
       then:
-        - switch.toggle: light_E1
-        - switch.toggle: light_E2
+        # - switch.toggle: light_E1
+        # - switch.toggle: light_E2
 
   - platform: gpio
     name: Switch 3-TL
@@ -366,8 +371,8 @@ binary_sensor:
       inverted: true
     on_press:
       then:
-        - switch.toggle: light_J
-        - switch.toggle: light_I
+        # - switch.toggle: light_J
+        # - switch.toggle: light_I
 
   - platform: gpio
     name: Switch 3-BR
@@ -380,7 +385,7 @@ binary_sensor:
       inverted: true
     on_press:
       then:
-        - switch.toggle: light_F
+        # - switch.toggle: light_F
 
   - platform: gpio
     name: Switch 3-BL
@@ -393,7 +398,7 @@ binary_sensor:
       inverted: true
     on_press:
       then:
-        - switch.toggle: light_H
+        # - switch.toggle: light_H
 
   - platform: gpio
     name: Switch 6-TL
@@ -406,7 +411,7 @@ binary_sensor:
       inverted: true
     on_press:
       then:
-        - switch.toggle: light_K
+        # - switch.toggle: light_K
 
   - platform: gpio
     name: Switch 6-TR
@@ -419,7 +424,7 @@ binary_sensor:
       inverted: true
     on_press:
       then:
-        - switch.toggle: light_D
+        # - switch.toggle: light_D
 
   - platform: gpio
     name: Switch 7.3-TL
@@ -432,7 +437,7 @@ binary_sensor:
       inverted: true
     on_press:
       then:
-        - switch.toggle: light_D
+        # - switch.toggle: light_D
 
   - platform: gpio
     name: Switch 7.3-TR
@@ -445,8 +450,8 @@ binary_sensor:
       inverted: true
     on_press:
       then:
-        - switch.toggle: light_M2
-        - switch.toggle: light_M
+        # - switch.toggle: light_M2
+        # - switch.toggle: light_M
 
   - platform: gpio
     name: IN_21
@@ -485,7 +490,7 @@ binary_sensor:
       inverted: true
     on_press:
       then:
-        - switch.toggle: light_N
+        # - switch.toggle: light_N
 
   - platform: gpio
     name: Switch 9.2-R
@@ -498,7 +503,7 @@ binary_sensor:
       inverted: true
     on_press:
       then:
-        - switch.toggle: light_N
+        # - switch.toggle: light_N
 
   - platform: gpio
     name: Switch 11.2-TL
@@ -511,7 +516,7 @@ binary_sensor:
       inverted: true
     on_press:
       then:
-        - switch.toggle: light_T
+        # - switch.toggle: light_T
 
   - platform: gpio
     name: Switch 11.2-TR
@@ -524,7 +529,7 @@ binary_sensor:
       inverted: true
     on_press:
       then:
-        - switch.toggle: light_S
+        # - switch.toggle: light_S
 
   - platform: gpio
     name: Switch 11.1-TL
@@ -537,8 +542,8 @@ binary_sensor:
       inverted: true
     on_press:
       then:
-        - switch.toggle: light_W
-        - switch.toggle: light_X
+        # - switch.toggle: light_W
+        # - switch.toggle: light_X
 
   - platform: gpio
     name: Switch 11.1-TR
@@ -551,7 +556,7 @@ binary_sensor:
       inverted: true
     on_press:
       then:
-        - switch.toggle: light_U
+        # - switch.toggle: light_U
 
   - platform: gpio
     name: Switch 10.1-TL
@@ -564,7 +569,7 @@ binary_sensor:
       inverted: true
     on_press:
       then:
-        - switch.toggle: light_O
+        # - switch.toggle: light_O
 
   - platform: gpio
     name: Switch 10.1-TR
@@ -577,7 +582,7 @@ binary_sensor:
       inverted: true
     on_press:
       then:
-        - switch.toggle: light_P
+        # - switch.toggle: light_P
 
   - platform: gpio
     name: KT05 (pralnia)
@@ -588,17 +593,17 @@ binary_sensor:
       mode:
         input: true
       inverted: true
-    on_state:
-      then:
-        - if:
-            condition:
-              binary_sensor.is_on: in_kt_05
-            then:
-              - switch.turn_off:
-                  id: light_N
-            else:
-              - switch.turn_on:
-                  id: light_N
+    # on_state:
+    #   then:
+    #     - if:
+    #         condition:
+    #           binary_sensor.is_on: in_kt_05
+    #         then:
+    #           - switch.turn_off:
+    #               id: light_N
+    #         else:
+    #           - switch.turn_on:
+    #               id: light_N
 
   - platform: gpio
     name: IN_32
@@ -609,12 +614,12 @@ binary_sensor:
       mode:
         input: true
       inverted: true
-    on_press:
-      then:
-        - switch.turn_off: light_F
-        - switch.turn_off: light_E1
-        - switch.turn_off: light_E2
-        - switch.turn_off: light_H
+    # on_press:
+    #   then:
+    #     - switch.turn_off: light_F
+    #     - switch.turn_off: light_E1
+    #     - switch.turn_off: light_E2
+    #     - switch.turn_off: light_H
 
   - platform: gpio
     name: IN_33
@@ -626,7 +631,7 @@ binary_sensor:
       inverted: true
     on_press:
       then:
-        - switch.toggle: light_I
+        # - switch.toggle: light_I
 
   - platform: gpio
     name: IN_34
@@ -636,12 +641,12 @@ binary_sensor:
       mode:
         input: true
       inverted: true
-    on_press:
-      then:
-        - switch.turn_off: light_F
-        - switch.turn_off: light_E1
-        - switch.turn_off: light_E2
-        - switch.turn_off: light_H
+    # on_press:
+    #   then:
+    #     - switch.turn_off: light_F
+    #     - switch.turn_off: light_E1
+    #     - switch.turn_off: light_E2
+    #     - switch.turn_off: light_H
 
   - platform: gpio
     name: IN_35
@@ -653,7 +658,15 @@ binary_sensor:
       inverted: true
     on_press:
       then:
-        - switch.toggle: light_J
+        # - switch.toggle: light_J
+
+  - platform: udp
+    provider: boneio-dr-8ch-03-32ce68
+    id: dimmer_1_in_02 #OR CHANGE TO SOMETHING MORE SUITABLE FOR YOU
+    remote_id: in_01
+    on_press:
+      - switch.toggle: light_A
+
 sensor:
   - platform: dallas_temp
     address: 0x280723322814e928

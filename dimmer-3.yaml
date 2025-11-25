@@ -1,0 +1,216 @@
+substitutions:
+  name: boneio-dr-8ch-03-32b304
+  friendly_name: dimmer-3-bedroom
+  serial_prefix: dim #Don't change it.
+
+esphome:
+  name: ${name}
+  friendly_name: ${friendly_name}
+  name_add_mac_suffix: false
+  project:
+    name: boneio.dimmer-led
+    version: "0.3"
+
+esp32:
+  board: esp32dev
+
+external_components:
+  - source: github://boneIO-eu/esphome-LM75@main #Original source and thank you note for BTomala https://github.com/boneIO-eu/esphome-lm75
+    components: [lm75]
+  - source:
+      type: local
+      path: ./components
+
+packages:
+  internals_packages:
+    url: https://github.com/boneIO-eu/esphome
+    ref: v1.5.0
+    files:
+      [
+        devices/serial_no.yaml,
+        devices/dimmer_i2c.yaml,
+        devices/dimmer_ina219.yaml,
+        boards/dimmer_output.yaml,
+      ]
+
+ethernet:
+  id: eth
+  type: LAN8720
+  mdc_pin: GPIO23
+  mdio_pin: GPIO18
+  clk_mode: GPIO0_IN
+  phy_addr: 1
+  power_pin: GPIO16
+
+dashboard_import:
+  package_import_url: github://boneIO-eu/esphome/boneio-dimmer_8ch-v0_3.yaml@latest
+  import_full_config: true
+
+pcf8574:
+  - id: pcf_inputs
+    address: 0x38
+
+logger:
+api:
+  reboot_timeout: 0s
+ota:
+  - platform: esphome
+
+web_server:
+  port: 80
+  local: true
+
+text_sensor:
+  - platform: version
+    name: boneio-dimmer- Version
+    icon: mdi:cube-outline
+    entity_category: diagnostic
+  - platform: ethernet_info
+    ip_address:
+      entity_category: diagnostic
+      name: boneio-dimmer IP
+  - platform: template
+    name: Hostname
+    id: hostname
+    entity_category: diagnostic
+    lambda: |-
+      return id(eth).get_use_address();
+    update_interval: 5min
+
+udp:
+  update_interval: 5s
+  encryption: !secret dimmer-3-enc_key
+  rolling_code_enable: true
+  binary_sensors:
+    - in_01
+    - in_02
+    - in_03
+    - in_04
+    - in_06
+    - in_07
+    - in_08
+
+binary_sensor:
+  - platform: gpio
+    name: "4.2 (243)"
+    id: in_01
+    pin:
+      pcf8574: pcf_inputs
+      number: 1
+      mode:
+        input: true
+      inverted: true
+
+  - platform: gpio
+    name: "4.2 (244)"
+    id: in_02
+    pin:
+      pcf8574: pcf_inputs
+      number: 2
+      mode:
+        input: true
+      inverted: true
+
+  - platform: gpio
+    name: "4.2 (247)"
+    id: in_03
+    pin:
+      pcf8574: pcf_inputs
+      number: 3
+      mode:
+        input: true
+      inverted: true
+
+  - platform: gpio
+    name: "4.2 (248)"
+    id: in_04
+    pin:
+      pcf8574: pcf_inputs
+      number: 4
+      mode:
+        input: true
+      inverted: true
+
+  - platform: gpio
+    name: "5.1 (473)"
+    id: in_05
+    pin:
+      number: 36
+      mode:
+        input: true
+      inverted: true
+
+  - platform: gpio
+    name: "5.1 (474)"
+    id: in_06
+    pin:
+      number: 39
+      mode:
+        input: true
+      inverted: true
+
+  - platform: gpio
+    name: "5.1 (477)"
+    id: in_07
+    pin:
+      number: 34
+      mode:
+        input: true
+      inverted: true
+
+  - platform: gpio
+    name: "5.1 (478)"
+    id: in_08
+    pin:
+      number: 35
+      mode:
+        input: true
+      inverted: true
+
+hold_dim_button:
+  - id: dim_btn_05
+    input: in_05
+    light_id: light_j
+
+light:
+  - platform: cwww
+    id: light_j
+    name: light_j
+    cold_white: chl01
+    warm_white: chl02
+    cold_white_color_temperature: 6500 K
+    warm_white_color_temperature: 2000 K
+    restore_mode: RESTORE_DEFAULT_OFF
+  - platform: cwww
+    id: light_h
+    name: light_h
+    cold_white: chr01
+    warm_white: chr02
+    cold_white_color_temperature: 6500 K
+    warm_white_color_temperature: 2700 K
+    restore_mode: RESTORE_DEFAULT_OFF
+
+sensor:
+  - platform: lm75
+    id: boneIO_temp
+    name: Temperature
+    update_interval: 30s
+    entity_category: diagnostic
+    on_value_range:
+      - above: 70.0
+        then:
+          - switch.turn_on: buzzer
+      - below: 70.0
+        then:
+          - switch.turn_off: buzzer
+
+switch:
+  - platform: gpio
+    id: buzzer
+    name: Buzzer
+    pin:
+      pcf8574: pcf_inputs
+      number: 0
+      mode:
+        output: true
+      inverted: true

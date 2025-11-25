@@ -1,0 +1,310 @@
+substitutions:
+  name: boneio-dr-8ch-03-3812b0
+  friendly_name: dimmer-2-bedroom
+  serial_prefix: dim #Don't change it.
+
+esphome:
+  name: ${name}
+  friendly_name: ${friendly_name}
+  name_add_mac_suffix: false
+  project:
+    name: boneio.dimmer-led
+    version: "0.3"
+
+esp32:
+  board: esp32dev
+
+external_components:
+  - source: github://boneIO-eu/esphome-LM75@main #Original source and thank you note for BTomala https://github.com/boneIO-eu/esphome-lm75
+    components: [lm75]
+  - source:
+      type: local
+      path: ./components
+
+packages:
+  internals_packages:
+    url: https://github.com/boneIO-eu/esphome
+    ref: v1.5.0
+    files:
+      [
+        devices/serial_no.yaml,
+        devices/dimmer_i2c.yaml,
+        devices/dimmer_ina219.yaml,
+        boards/dimmer_output.yaml,
+      ]
+
+ethernet:
+  id: eth
+  type: LAN8720
+  mdc_pin: GPIO23
+  mdio_pin: GPIO18
+  clk_mode: GPIO0_IN
+  phy_addr: 1
+  power_pin: GPIO16
+
+dashboard_import:
+  package_import_url: github://boneIO-eu/esphome/boneio-dimmer_8ch-v0_3.yaml@latest
+  import_full_config: true
+
+pcf8574:
+  - id: pcf_inputs
+    address: 0x38
+
+logger:
+api:
+  reboot_timeout: 0s
+ota:
+  - platform: esphome
+
+web_server:
+  port: 80
+  local: true
+
+text_sensor:
+  - platform: version
+    name: boneio-dimmer- Version
+    icon: mdi:cube-outline
+    entity_category: diagnostic
+  - platform: ethernet_info
+    ip_address:
+      entity_category: diagnostic
+      name: boneio-dimmer IP
+  - platform: template
+    name: Hostname
+    id: hostname
+    entity_category: diagnostic
+    lambda: |-
+      return id(eth).get_use_address();
+    update_interval: 5min
+
+udp:
+  update_interval: 5s
+  providers:
+    - name: boneio-dr-8ch-03-32b304
+      encryption: !secret dimmer-3-enc_key
+
+binary_sensor:
+  - platform: gpio
+    name: "3.1 (213)"
+    id: in_01
+    pin:
+      pcf8574: pcf_inputs
+      number: 1
+      mode:
+        input: true
+      inverted: true
+
+  - platform: gpio
+    name: "3.1 (214)"
+    id: in_02
+    pin:
+      pcf8574: pcf_inputs
+      number: 2
+      mode:
+        input: true
+      inverted: true
+
+  - platform: gpio
+    name: "3.1 (217)"
+    id: in_03
+    pin:
+      pcf8574: pcf_inputs
+      number: 3
+      mode:
+        input: true
+      inverted: true
+
+  - platform: gpio
+    name: "3.1 (218)"
+    id: in_04
+    pin:
+      pcf8574: pcf_inputs
+      number: 4
+      mode:
+        input: true
+      inverted: true
+
+  - platform: gpio
+    name: "2.1 (323)"
+    id: in_05
+    pin:
+      number: 36
+      mode:
+        input: true
+      inverted: true
+
+  - platform: gpio
+    name: "2.1 (324)"
+    id: in_06
+    pin:
+      number: 39
+      mode:
+        input: true
+      inverted: true
+
+  - platform: gpio
+    name: "2.1 (327)"
+    id: in_07
+    pin:
+      number: 34
+      mode:
+        input: true
+      inverted: true
+
+  - platform: gpio
+    name: "2.1 (328)"
+    id: in_08
+    pin:
+      number: 35
+      mode:
+        input: true
+      inverted: true
+
+  - platform: udp
+    provider: boneio-dr-8ch-03-32b304
+    id: r3_in_01
+    remote_id: in_01
+
+  - platform: udp
+    provider: boneio-dr-8ch-03-32b304
+    id: r3_in_02
+    remote_id: in_02
+
+  - platform: udp
+    provider: boneio-dr-8ch-03-32b304
+    id: r3_in_03
+    remote_id: in_03
+
+  - platform: udp
+    provider: boneio-dr-8ch-03-32b304
+    id: r3_in_04
+    remote_id: in_04
+
+  - platform: udp
+    provider: boneio-dr-8ch-03-32b304
+    id: r3_in_06
+    remote_id: in_06
+
+  - platform: udp
+    provider: boneio-dr-8ch-03-32b304
+    id: r3_in_07
+    remote_id: in_07
+
+  - platform: udp
+    provider: boneio-dr-8ch-03-32b304
+    id: r3_in_08
+    remote_id: in_08
+
+hold_dim_button:
+  - id: dim_btn_01
+    input: in_01
+    light_id: light_f
+    min_brightness: 0.2
+  - id: dim_btn_02
+    input: in_02
+    light_id: light_e2
+  - id: dim_btn_03
+    input: in_03
+    light_id: light_e1
+  - id: dim_btn_05
+    input: in_05
+    light_id: light_f
+    min_brightness: 0.2
+  - id: dim_btn_06
+    input: in_06
+    light_id: light_e2
+  - id: dim_btn_07
+    input: in_07
+    light_id: light_e1
+  - id: dim_btn_08
+    input: r3_in_01
+    light_id: light_i
+  - id: dim_btn_09
+    input: r3_in_02
+    light_id: light_f
+    min_brightness: 0.2
+  - id: dim_btn_10
+    input: r3_in_03
+    light_id: light_e1
+  - id: dim_btn_11
+    input: r3_in_04
+    light_id: light_e2
+  - id: dim_btn_12
+    input: r3_in_06
+    light_id: light_f
+    min_brightness: 0.2
+  - id: dim_btn_13
+    input: r3_in_07
+    light_id: light_e1
+  - id: dim_btn_14
+    input: r3_in_08
+    light_id: light_e2
+
+light:
+  - platform: monochromatic
+    output: chl_pair_output
+    name: light_f
+    id: light_f
+    gamma_correct: 0
+    restore_mode: RESTORE_DEFAULT_OFF
+  - platform: cwww
+    id: light_i
+    name: light_i
+    cold_white: chl03
+    warm_white: chl04
+    cold_white_color_temperature: 6500 K
+    warm_white_color_temperature: 2000 K
+    restore_mode: RESTORE_DEFAULT_OFF
+  - platform: cwww
+    id: light_e2
+    name: light_e2
+    cold_white: chr01
+    warm_white: chr02
+    cold_white_color_temperature: 6500 K
+    warm_white_color_temperature: 2000 K
+    restore_mode: RESTORE_DEFAULT_OFF
+  - platform: cwww
+    id: light_e1
+    name: light_e1
+    cold_white: chr03
+    warm_white: chr04
+    cold_white_color_temperature: 6500 K
+    warm_white_color_temperature: 2000 K
+    restore_mode: RESTORE_DEFAULT_OFF
+
+sensor:
+  - platform: lm75
+    id: boneIO_temp
+    name: Temperature
+    update_interval: 30s
+    entity_category: diagnostic
+    on_value_range:
+      - above: 70.0
+        then:
+          - switch.turn_on: buzzer
+      - below: 70.0
+        then:
+          - switch.turn_off: buzzer
+
+switch:
+  - platform: gpio
+    id: buzzer
+    name: Buzzer
+    pin:
+      pcf8574: pcf_inputs
+      number: 0
+      mode:
+        output: true
+      inverted: true
+
+output:
+  - platform: template
+    id: chl_pair_output
+    type: float
+    write_action:
+      - output.set_level:
+          id: chl01
+          level: !lambda return state;
+      - output.set_level:
+          id: chl02
+          level: !lambda return state;
