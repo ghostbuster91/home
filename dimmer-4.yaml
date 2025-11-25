@@ -159,7 +159,7 @@ hold_dim_button:
     input: in_01
     light_id: light_k
     brightness: 0.7
-    min_brightness: 0.4
+    min_brightness: 0.3
 
 light:
   - platform: cwww

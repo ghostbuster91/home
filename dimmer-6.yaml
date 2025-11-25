@@ -161,6 +161,7 @@ hold_dim_button:
   - id: dim_btn_02
     input: in_02
     light_id: light_p
+    min_brightness: 0.5
   # - id: dim_btn_03
   #   input: in_03
   #   light_id: light_q
