@@ -26,10 +26,12 @@ void HoldDimButton::loop() {
   }
 
   uint32_t now = millis();
+  bool local_hold = hold_mode_;
 
   // should we enter "hold" mode?
-  if (!hold_mode_ && (now - press_started_ms_) >= hold_delay_ms_) {
+  if (!local_hold && (now - press_started_ms_) >= hold_delay_ms_) {
     hold_mode_ = true;
+    local_hold = true;
 
     bool is_on = light_ && light_->current_values.is_on();
 
@@ -42,30 +44,18 @@ void HoldDimButton::loop() {
 
       dir_ = DIM_UP;  // first hold from OFF always UP
       ESP_LOGD(TAG, "Hold start from OFF: turning on at min=%.3f, direction=UP", min_brightness_);
-      last_step_ms_ = now;
+      last_step_ms_ = now + 2 * step_interval_ms_; // skip next 2 steps
     } else {
       // Light is on
       float b = light_->current_values.get_brightness();
-      if (!has_last_dir_) {
-        // First dimming from start - detect threshold
-        if (b > threshold_) {
-          dir_ = DIM_DOWN;
-        } else {
-          dir_ = DIM_UP;
-        }
-      } else {
-        // We have the history: change to opposite direction
-        dir_ = (last_dir_ == DIM_DOWN) ? DIM_UP : DIM_DOWN;
-      }
-
       ESP_LOGD(TAG, "Hold start, direction: %s", dir_ == DIM_DOWN ? "DOWN" : "UP");
-
       last_step_ms_ = 0;  // force first step immediately
+      dir_ = opposite(dir_);
     }
   }
 
   // while in "hold" mode: execute steps with step_interval_ms_
-  if (hold_mode_) {
+  if (local_hold) {
     if (last_step_ms_ == 0 || (now - last_step_ms_) >= step_interval_ms_) {
       last_step_ms_ = now;
 
@@ -76,32 +66,30 @@ void HoldDimButton::loop() {
 
       // dimming down
       if (dir_ == DIM_DOWN) {
-        if (b - step_ <= min_brightness_)
+        if (b - step_ <= min_brightness_) {
+          ESP_LOGD(TAG, "At min brightness: %.3f", b);
           return;
+        }
 
         ESP_LOGD(TAG, "Dimming down: %.3f", b);
         auto call = light_->turn_on();
         call.set_transition_length(transition_ms_);
         call.set_brightness(clamp(b - step_, 0.0f, 1.0f));
         call.perform();
-
-        last_dir_ = DIM_DOWN;
-        has_last_dir_ = true;
       }
 
       // dimming up
       else {
-        if (b >= 1.0f)
+        if (b >= 1.0f) {
+          ESP_LOGD(TAG, "At max brightness: %.3f", b);
           return;
+        }
 
         ESP_LOGD(TAG, "Dimming up: %.3f", b);
         auto call = light_->turn_on();
         call.set_transition_length(transition_ms_);
         call.set_brightness(clamp(b + step_, 0.0f, 1.0f));
         call.perform();
-
-        last_dir_ = DIM_UP;
-        has_last_dir_ = true;
       }
     }
   }
@@ -134,8 +122,7 @@ void HoldDimButton::on_click_() {
     ESP_LOGD(TAG, "Click -> turn on %.2f", brightness_);
 
     // After turning on with a click the first hold needs to always dimm down
-    last_dir_ = DIM_UP; 
-    has_last_dir_ = true;
+    dir_ = DIM_UP; 
   } else {
     auto call = light_->turn_off();
     call.perform();

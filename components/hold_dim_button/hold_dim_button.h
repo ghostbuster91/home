@@ -36,8 +36,6 @@ namespace esphome {
 
           enum Direction { DIM_DOWN, DIM_UP };
           Direction dir_{DIM_DOWN};
-          Direction last_dir_{DIM_DOWN};
-          bool has_last_dir_{false};
 
           light::LightState *light_{nullptr};
           binary_sensor::BinarySensor *input_{nullptr};
@@ -57,6 +55,10 @@ namespace esphome {
             if (v < lo) return lo;
             if (v > hi) return hi;
             return v;
+          }
+
+          static Direction opposite(Direction dir) {
+            return (dir == DIM_DOWN) ? DIM_UP : DIM_DOWN;
           }
         };
 
