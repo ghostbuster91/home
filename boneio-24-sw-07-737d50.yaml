@@ -423,6 +423,38 @@ sensor:
     address: 0x280723322814e928
     name: "Dallas Sensor 1"
     update_interval: 30s
+    id: temp_mata
+
+switch:
+  - platform: output
+    id: mata_grzewcza
+    name: "Mata grzewcza"
+    output: out_01
+
+climate:
+  - platform: thermostat
+    name: "Mata grzewcza – termostat"
+    sensor: temp_mata
+
+    min_heating_off_time: 60s
+    min_heating_run_time: 60s
+    min_idle_time: 30s
+
+    heat_deadband: 0.5
+    heat_overrun: 0.5
+
+    heat_action:
+      - switch.turn_on: mata_grzewcza
+    idle_action:
+      - switch.turn_off: mata_grzewcza
+
+    default_preset: Home
+    preset:
+      - name: Home
+        default_target_temperature_low: 28
+        mode: heat
+      - name: Eco
+        default_target_temperature_low: 26
 ######################
 ### MODBUS SECTION ###
 ######################
