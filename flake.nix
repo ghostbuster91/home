@@ -5,7 +5,7 @@
       url = "github:hercules-ci/flake-parts";
     };
     treefmt-nix = {
-      url = "github:numtide/treefmt-nix/fix-214";
+      url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };

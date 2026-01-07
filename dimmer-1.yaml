@@ -176,13 +176,13 @@ hold_dim_button:
 light:
   - platform: monochromatic
     output: chl01
-    name: 'CHL 01'
+    name: "CHL 01"
     id: light_a1
     gamma_correct: 0
     restore_mode: RESTORE_DEFAULT_OFF
   - platform: monochromatic
     output: chl02
-    name: 'zasilanie a'
+    name: "zasilanie a"
     id: light_a2
     restore_mode: RESTORE_DEFAULT_ON
   - platform: cwww
@@ -203,13 +203,13 @@ light:
     restore_mode: RESTORE_DEFAULT_OFF
   - platform: monochromatic
     output: chr03
-    name: 'CHR 03'
+    name: "CHR 03"
     id: light_d1
     gamma_correct: 0
     restore_mode: RESTORE_DEFAULT_OFF
   - platform: monochromatic
     output: chr04
-    name: 'zasilanie d'
+    name: "zasilanie d"
     id: light_d2
     gamma_correct: 0
     restore_mode: RESTORE_DEFAULT_ON
