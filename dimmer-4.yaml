@@ -13,6 +13,8 @@ esphome:
 
 esp32:
   board: esp32dev
+  framework:
+    type: esp-idf
 
 external_components:
   - source: github://boneIO-eu/esphome-LM75@main #Original source and thank you note for BTomala https://github.com/boneIO-eu/esphome-lm75
@@ -24,7 +26,7 @@ external_components:
 packages:
   internals_packages:
     url: https://github.com/boneIO-eu/esphome
-    ref: v1.5.0
+    ref: v1.7.1
     files:
       [
         devices/serial_no.yaml,
@@ -43,7 +45,7 @@ ethernet:
   power_pin: GPIO16
 
 dashboard_import:
-  package_import_url: github://boneIO-eu/esphome/boneio-dimmer_8ch-v0_3.yaml@latest
+  package_import_url: github://boneIO-eu/esphome/boneio-dimmer_8ch-v0_3.yaml@v1.7.1
   import_full_config: true
 
 pcf8574:
@@ -74,16 +76,18 @@ text_sensor:
     id: hostname
     entity_category: diagnostic
     lambda: |-
-      return id(eth).get_use_address();
+      return id(eth).get_ip_addresses().empty() ? "Unset" : id(eth).get_ip_addresses()[0].str();
     update_interval: 5min
 
 udp:
-  update_interval: 5s
-  providers:
-    - name: boneio-dr-8ch-03-4023d4
-      encryption: !secret dimmer-5-enc_key
-    - name: boneio-24-sw-07-737d50
-      encryption: !secret boneio-1-enc_key
+
+packet_transport:
+  - platform: udp
+    providers:
+      - name: boneio-dr-8ch-03-4023d4
+        encryption: !secret dimmer-5-enc_key
+      - name: boneio-24-sw-07-737d50
+        encryption: !secret boneio-1-enc_key
 
 binary_sensor:
   - platform: gpio
@@ -162,7 +166,7 @@ binary_sensor:
         input: true
       inverted: true
 
-  - platform: udp
+  - platform: packet_transport
     provider: boneio-24-sw-07-737d50
     id: r24_bs_mata_on
     remote_id: bs_mata_on
