@@ -13,6 +13,8 @@ esphome:
 
 esp32:
   board: nodemcu-32s
+  framework:
+    type: esp-idf
 
 ethernet:
   id: eth
@@ -24,13 +26,13 @@ ethernet:
   power_pin: GPIO16
 
 dashboard_import:
-  package_import_url: github://boneIO-eu/esphome/boneio-24x16_switches_v0_7.yaml@latest
+  package_import_url: github://boneIO-eu/esphome/boneio-24x16_switches_v0_7.yaml@v1.7.1
   import_full_config: true
 
 packages:
   internals_packages:
     url: https://github.com/boneIO-eu/esphome
-    ref: v1.6.0
+    ref: v1.7.1
     files:
       [
         devices/buzzer.yaml,
@@ -43,6 +45,127 @@ packages:
         devices_v0_7-v0_9/one_wire.yaml,
         boards/24x16_output.yaml,
       ]
+  sdm630:
+    url: https://github.com/boneIO-eu/esphome_packages
+    ref: 4c88a2ca9a76f9e483d5f79333ee5437395712b1
+    files:
+      - path: sdm630.yaml
+        vars:
+          device_name: "Licznik prądu - kuchenka"
+          modbus_device_id: "sdm630"
+          modbus_device_address: "0x01"
+          modbus_id: "boneio_modbus"
+          update_interval: "60s"
+  sdm120_01:
+    url: https://github.com/boneIO-eu/esphome_packages
+    ref: 4c88a2ca9a76f9e483d5f79333ee5437395712b1
+    files:
+      - path: sdm120m.yaml
+        vars:
+          device_name: "Licznik prądu - piekarnik"
+          modbus_device_id: "sdm120_01"
+          modbus_device_address: "0x65"
+          modbus_id: "boneio_modbus"
+          update_interval: "60s"
+  sdm120_02:
+    url: https://github.com/boneIO-eu/esphome_packages
+    ref: 4c88a2ca9a76f9e483d5f79333ee5437395712b1
+    files:
+      - path: sdm120m.yaml
+        vars:
+          device_name: "Licznik prądu - lodówka"
+          modbus_device_id: "sdm120_02"
+          modbus_device_address: "0x66"
+          modbus_id: "boneio_modbus"
+          update_interval: "60s"
+  sdm120_03:
+    url: https://github.com/boneIO-eu/esphome_packages
+    ref: 4c88a2ca9a76f9e483d5f79333ee5437395712b1
+    files:
+      - path: sdm120m.yaml
+        vars:
+          device_name: "Licznik prądu - zmywarka"
+          modbus_device_id: "sdm120_03"
+          modbus_device_address: "0x67"
+          modbus_id: "boneio_modbus"
+          update_interval: "60s"
+  sdm120_04:
+    url: https://github.com/boneIO-eu/esphome_packages
+    ref: 4c88a2ca9a76f9e483d5f79333ee5437395712b1
+    files:
+      - path: sdm120m.yaml
+        vars:
+          device_name: "Licznik prądu - klima salon"
+          modbus_device_id: "sdm120_04"
+          modbus_device_address: "0x68"
+          modbus_id: "boneio_modbus"
+          update_interval: "60s"
+  sdm120_05:
+    url: https://github.com/boneIO-eu/esphome_packages
+    ref: 4c88a2ca9a76f9e483d5f79333ee5437395712b1
+    files:
+      - path: sdm120m.yaml
+        vars:
+          device_name: "Licznik prądu - oświetlenie"
+          modbus_device_id: "sdm120_05"
+          modbus_device_address: "0x69"
+          modbus_id: "boneio_modbus"
+          update_interval: "60s"
+  sdm120_06:
+    url: https://github.com/boneIO-eu/esphome_packages
+    ref: 4c88a2ca9a76f9e483d5f79333ee5437395712b1
+    files:
+      - path: sdm120m.yaml
+        vars:
+          device_name: "Licznik prądu - pralka"
+          modbus_device_id: "sdm120_06"
+          modbus_device_address: "0x6a"
+          modbus_id: "boneio_modbus"
+          update_interval: "60s"
+  sdm120_07:
+    url: https://github.com/boneIO-eu/esphome_packages
+    ref: 4c88a2ca9a76f9e483d5f79333ee5437395712b1
+    files:
+      - path: sdm120m.yaml
+        vars:
+          device_name: "Licznik prądu - suszarka"
+          modbus_device_id: "sdm120_07"
+          modbus_device_address: "0x6b"
+          modbus_id: "boneio_modbus"
+          update_interval: "60s"
+  sdm120_08:
+    url: https://github.com/boneIO-eu/esphome_packages
+    ref: 4c88a2ca9a76f9e483d5f79333ee5437395712b1
+    files:
+      - path: sdm120m.yaml
+        vars:
+          device_name: "Licznik prądu - kompy"
+          modbus_device_id: "sdm120_08"
+          modbus_device_address: "0x66"
+          modbus_id: "boneio_modbus"
+          update_interval: "60s"
+  sdm120_09:
+    url: https://github.com/boneIO-eu/esphome_packages
+    ref: 4c88a2ca9a76f9e483d5f79333ee5437395712b1
+    files:
+      - path: sdm120m.yaml
+        vars:
+          device_name: "Licznik prądu - klima gabinet"
+          modbus_device_id: "sdm120_09"
+          modbus_device_address: "0x6c"
+          modbus_id: "boneio_modbus"
+          update_interval: "60s"
+  sdm120_10:
+    url: https://github.com/boneIO-eu/esphome_packages
+    ref: 4c88a2ca9a76f9e483d5f79333ee5437395712b1
+    files:
+      - path: sdm120m.yaml
+        vars:
+          device_name: "Licznik prądu - RTV"
+          modbus_device_id: "sdm120_10"
+          modbus_device_address: "0x6d"
+          modbus_id: "boneio_modbus"
+          update_interval: "60s"
 
 logger:
 api:
@@ -60,14 +183,17 @@ time:
     id: homeassistant_time
 
 udp:
-  update_interval: 5s
-  providers:
-    - name: boneio-dr-8ch-03-4023d4
-      encryption: !secret dimmer-5-enc_key
-  encryption: !secret boneio-1-enc_key
-  rolling_code_enable: true
-  binary_sensors:
-    - bs_mata_on
+
+packet_transport:
+  - platform: udp
+    update_interval: 5s
+    rolling_code_enable: true
+    encryption: !secret boneio-1-enc_key
+    binary_sensors:
+      - bs_mata_on
+    providers:
+      - name: boneio-dr-8ch-03-4023d4
+        encryption: !secret dimmer-5-enc_key
 
 interval:
   - interval: 10s
@@ -440,7 +566,7 @@ binary_sensor:
         input: true
       inverted: true
 
-  - platform: udp
+  - platform: packet_transport
     provider: boneio-dr-8ch-03-4023d4
     id: r5_in_08
     remote_id: in_08
@@ -512,18 +638,17 @@ climate:
 ### MODBUS SECTION ###
 ######################
 # UNCOMMENT BELOW TO USE MODBUS
-# uart:
-#   id: uart_pin14_15
-#   rx_pin: GPIO14
-#   tx_pin: GPIO15
-#   baud_rate: 9600
-#   stop_bits: 1
+uart:
+  id: uart_pin14_15
+  rx_pin: GPIO14
+  tx_pin: GPIO15
+  baud_rate: 9600
+  stop_bits: 1
 
-# modbus:
-#   send_wait_time: 200ms
-#   uart_id: uart_pin14_15
-#   id: boneio_modbus
-
+modbus:
+  send_wait_time: 200ms
+  uart_id: uart_pin14_15
+  id: boneio_modbus
 # modbus_controller:
 #   - id: YOURDEVICE ID
 #     address: 0x09
