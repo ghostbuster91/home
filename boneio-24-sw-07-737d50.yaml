@@ -59,6 +59,28 @@ time:
     timezone: Europe/Warsaw
     id: homeassistant_time
 
+udp:
+  update_interval: 5s
+  providers:
+    - name: boneio-dr-8ch-03-4023d4
+      encryption: !secret dimmer-5-enc_key
+  encryption: !secret boneio-1-enc_key
+  rolling_code_enable: true
+  binary_sensors:
+    - bs_mata_on
+
+interval:
+  - interval: 10s
+    then:
+      - lambda: |-
+          auto on = id(mata_termostat).mode != CLIMATE_MODE_OFF;
+
+          ESP_LOGD("thermostat-sync",
+                   "Interval sync: heat=%s",
+                   on ? "true" : "false");
+
+          id(bs_mata_on).publish_state(on);
+
 binary_sensor:
   - platform: gpio
     name: Switch 1-TR
@@ -418,6 +440,30 @@ binary_sensor:
         input: true
       inverted: true
 
+  - platform: udp
+    provider: boneio-dr-8ch-03-4023d4
+    id: r5_in_08
+    remote_id: in_08
+    on_click:
+      then:
+        - if:
+            condition:
+              lambda: |-
+                return id(mata_termostat).mode != climate::CLIMATE_MODE_OFF;
+            then:
+              - climate.control:
+                  id: mata_termostat
+                  mode: "OFF"
+            else:
+              - climate.control:
+                  id: mata_termostat
+                  mode: "HEAT"
+
+  - platform: template
+    id: bs_mata_on
+    name: "Mata ON (remote)"
+    internal: true
+
 sensor:
   - platform: dallas_temp
     address: 0x280723322814e928
@@ -433,6 +479,7 @@ switch:
 
 climate:
   - platform: thermostat
+    id: mata_termostat
     name: "Mata grzewcza – termostat"
     sensor: temp_mata
 
@@ -455,6 +502,12 @@ climate:
         mode: heat
       - name: Eco
         default_target_temperature_low: 26
+    on_control:
+      - logger.log: "Control input received; configuration updated!"
+      - lambda: |-
+          id(bs_mata_on).publish_state(
+            x.get_mode() != CLIMATE_MODE_OFF
+          );
 ######################
 ### MODBUS SECTION ###
 ######################

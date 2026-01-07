@@ -77,6 +77,14 @@ text_sensor:
       return id(eth).get_use_address();
     update_interval: 5min
 
+udp:
+  update_interval: 5s
+  providers:
+    - name: boneio-dr-8ch-03-4023d4
+      encryption: !secret dimmer-5-enc_key
+    - name: boneio-24-sw-07-737d50
+      encryption: !secret boneio-1-enc_key
+
 binary_sensor:
   - platform: gpio
     name: "6.1 (153)"
@@ -154,6 +162,24 @@ binary_sensor:
         input: true
       inverted: true
 
+  - platform: udp
+    provider: boneio-24-sw-07-737d50
+    id: r24_bs_mata_on
+    remote_id: bs_mata_on
+    on_state:
+      then:
+        - lambda: |-
+            ESP_LOGD("udp-led", "r24_bs_mata_on state=%s", id(r24_bs_mata_on).state ? "true" : "false");
+    on_press:
+      - light.turn_on:
+          id: light_l1
+          red: 0
+          green: 1
+          blue: 0
+          brightness: 0.9
+    on_release:
+      - light.turn_off: light_l1
+
 hold_dim_button:
   - id: dim_btn_01
     input: in_01
@@ -185,8 +211,8 @@ light:
     name: light_l1
     id: light_l1
     red: chr01
-    green: chr02
-    blue: chr03
+    blue: chr02
+    green: chr03
   # - platform: monochromatic
   #   output: chl04
   #   name: CHL 04
