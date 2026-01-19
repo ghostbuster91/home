@@ -246,7 +246,7 @@ hold_dim_button:
 
 light:
   - platform: monochromatic
-    output: chl_pair_output
+    output: chl1_2_pair_output
     name: light_f
     id: light_f
     gamma_correct: 0
@@ -259,21 +259,17 @@ light:
     cold_white_color_temperature: 6500 K
     warm_white_color_temperature: 2000 K
     restore_mode: RESTORE_DEFAULT_OFF
-  - platform: cwww
+  - platform: monochromatic
     id: light_e2
     name: light_e2
-    cold_white: chr01
-    warm_white: chr02
-    cold_white_color_temperature: 6500 K
-    warm_white_color_temperature: 2000 K
+    output: chr1_2_pair_output
+    gamma_correct: 0
     restore_mode: RESTORE_DEFAULT_OFF
-  - platform: cwww
+  - platform: monochromatic
     id: light_e1
     name: light_e1
-    cold_white: chr03
-    warm_white: chr04
-    cold_white_color_temperature: 6500 K
-    warm_white_color_temperature: 2000 K
+    gamma_correct: 0
+    output: chr3_4_pair_output
     restore_mode: RESTORE_DEFAULT_OFF
 
 sensor:
@@ -303,7 +299,7 @@ switch:
 
 output:
   - platform: template
-    id: chl_pair_output
+    id: chl1_2_pair_output
     type: float
     write_action:
       - output.set_level:
@@ -311,4 +307,24 @@ output:
           level: !lambda return state;
       - output.set_level:
           id: chl02
+          level: !lambda return state;
+  - platform: template
+    id: chr1_2_pair_output
+    type: float
+    write_action:
+      - output.set_level:
+          id: chr01
+          level: !lambda return state;
+      - output.set_level:
+          id: chr02
+          level: !lambda return state;
+  - platform: template
+    id: chr3_4_pair_output
+    type: float
+    write_action:
+      - output.set_level:
+          id: chr03
+          level: !lambda return state;
+      - output.set_level:
+          id: chr04
           level: !lambda return state;
