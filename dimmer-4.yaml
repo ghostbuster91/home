@@ -195,8 +195,8 @@ light:
   - platform: cwww
     id: light_c
     name: light_c
-    cold_white: chl01
-    warm_white: chl02
+    warm_white: chl01
+    cold_white: chl02
     cold_white_color_temperature: 6500 K
     warm_white_color_temperature: 2000 K
     restore_mode: RESTORE_DEFAULT_OFF
