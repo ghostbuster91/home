@@ -141,7 +141,7 @@ packages:
         vars:
           device_name: "Licznik prądu - kompy"
           modbus_device_id: "sdm120_08"
-          modbus_device_address: "0x66"
+          modbus_device_address: "0x6c"
           modbus_id: "boneio_modbus"
           update_interval: "60s"
   sdm120_09:
@@ -152,7 +152,7 @@ packages:
         vars:
           device_name: "Licznik prądu - klima gabinet"
           modbus_device_id: "sdm120_09"
-          modbus_device_address: "0x6c"
+          modbus_device_address: "0x6d"
           modbus_id: "boneio_modbus"
           update_interval: "60s"
   sdm120_10:
@@ -163,7 +163,7 @@ packages:
         vars:
           device_name: "Licznik prądu - RTV"
           modbus_device_id: "sdm120_10"
-          modbus_device_address: "0x6d"
+          modbus_device_address: "0x6e"
           modbus_id: "boneio_modbus"
           update_interval: "60s"
 
