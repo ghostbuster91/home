@@ -159,52 +159,29 @@ binary_sensor:
 hold_dim_button:
   - id: dim_btn_01
     input: in_01
-    light_id: light_b2
+    light_id: light_b1_b2
     min_brightness: 0.5
   - id: dim_btn_02
     input: in_02
-    light_id: light_a1
-    min_brightness: 0.2
-  - id: dim_btn_03
-    input: in_03
-    light_id: light_b1
-  - id: dim_btn_04
-    input: in_04
-    light_id: light_d1
+    light_id: light_a1_d1
     min_brightness: 0.2
 
 light:
   - platform: monochromatic
-    output: chl01
-    name: "CHL 01"
-    id: light_a1
+    output: chl1_chr3_pair_output
+    name: light_a1_d1
+    id: light_a1_d1
     gamma_correct: 0
     restore_mode: RESTORE_DEFAULT_OFF
   - platform: monochromatic
     output: chl02
     name: "zasilanie a"
     id: light_a2
-    restore_mode: RESTORE_DEFAULT_ON
-  - platform: cwww
-    id: light_b1
-    name: light_b1
-    cold_white: chl03
-    warm_white: chl04
-    cold_white_color_temperature: 6500 K
-    warm_white_color_temperature: 2000 K
-    restore_mode: RESTORE_DEFAULT_OFF
-  - platform: cwww
-    id: light_b2
-    name: light_b2
-    cold_white: chr01
-    warm_white: chr02
-    cold_white_color_temperature: 6500 K
-    warm_white_color_temperature: 2000 K
-    restore_mode: RESTORE_DEFAULT_OFF
+    restore_mode: ALWAYS_ON
   - platform: monochromatic
-    output: chr03
-    name: "CHR 03"
-    id: light_d1
+    id: light_b1_b2
+    name: light_b1_b2
+    output: b_pair_output
     gamma_correct: 0
     restore_mode: RESTORE_DEFAULT_OFF
   - platform: monochromatic
@@ -212,7 +189,35 @@ light:
     name: "zasilanie d"
     id: light_d2
     gamma_correct: 0
-    restore_mode: RESTORE_DEFAULT_ON
+    restore_mode: ALWAYS_ON
+
+output:
+  - platform: template
+    id: chl1_chr3_pair_output
+    type: float
+    write_action:
+      - output.set_level:
+          id: chl01
+          level: !lambda return state;
+      - output.set_level:
+          id: chr03
+          level: !lambda return state;
+  - platform: template
+    id: b_pair_output
+    type: float
+    write_action:
+      - output.set_level:
+          id: chl03
+          level: !lambda return state;
+      # - output.set_level:
+      #     id: chl04
+      #     level: !lambda return state;
+      - output.set_level:
+          id: chr01
+          level: !lambda return state;
+      # - output.set_level:
+      #     id: chr02
+      #     level: !lambda return state;
 
 sensor:
   - platform: lm75
