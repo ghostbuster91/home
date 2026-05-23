@@ -167,6 +167,18 @@ packages:
           modbus_id: "boneio_modbus"
           update_interval: "60s"
 
+  sdm120_11:
+    url: https://github.com/boneIO-eu/esphome_packages
+    ref: 4c88a2ca9a76f9e483d5f79333ee5437395712b1
+    files:
+      - path: sdm120m.yaml
+        vars:
+          device_name: "Licznik prądu - Mata grzewcza"
+          modbus_device_id: "sdm120_11"
+          modbus_device_address: "0x6f"
+          modbus_id: "boneio_modbus"
+          update_interval: "60s"
+
 logger:
 api:
   reboot_timeout: 0s
@@ -187,7 +199,7 @@ udp:
 packet_transport:
   - platform: udp
     update_interval: 5s
-    rolling_code_enable: true
+    rolling_code_enable: false
     encryption: !secret boneio-1-enc_key
     binary_sensors:
       - bs_mata_on
