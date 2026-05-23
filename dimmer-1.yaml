@@ -89,7 +89,7 @@ packet_transport:
     binary_sensors:
       - in_01
       - in_02
-      - in_06
+      - in_05
       - in_07
 
 binary_sensor:
@@ -183,7 +183,7 @@ hold_dim_button:
     light_id: light_a1_d1
     min_brightness: 0.2
   - id: dim_btn_03
-    input: in_05
+    input: in_06
     light_id: light_a1_d1
     min_brightness: 0.2
 
