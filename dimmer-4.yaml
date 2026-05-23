@@ -204,9 +204,29 @@ binary_sensor:
       then:
         - light.toggle: light_c
 
+  - platform: packet_transport
+    provider: boneio-dr-8ch-03-32ce68
+    id: r1_in_06
+    remote_id: in_06
+
+  - platform: packet_transport
+    provider: boneio-dr-8ch-03-32ce68
+    id: r1_in_07
+    remote_id: in_07
+
 hold_dim_button:
   - id: dim_btn_01
     input: in_01
+    light_id: light_k
+    brightness: 0.7
+    min_brightness: 0.3
+  - id: dim_btn_r1_06
+    input: r1_in_06
+    light_id: light_c
+    brightness: 0.7
+    min_brightness: 0.3
+  - id: dim_btn_r1_07
+    input: r1_in_07
     light_id: light_k
     brightness: 0.7
     min_brightness: 0.3

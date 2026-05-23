@@ -89,6 +89,8 @@ packet_transport:
     binary_sensors:
       - in_01
       - in_02
+      - in_06
+      - in_07
 
 binary_sensor:
   - platform: gpio
@@ -178,6 +180,10 @@ hold_dim_button:
     min_brightness: 0.5
   - id: dim_btn_02
     input: in_04
+    light_id: light_a1_d1
+    min_brightness: 0.2
+  - id: dim_btn_03
+    input: in_05
     light_id: light_a1_d1
     min_brightness: 0.2
 
