@@ -83,6 +83,11 @@ udp:
 
 packet_transport:
   - platform: udp
+    update_interval: 5s
+    rolling_code_enable: false
+    encryption: !secret dimmer-6-enc_key
+    binary_sensors:
+      - in_05
     providers:
       - name: boneio-dr-8ch-03-32ce68
         encryption: !secret dimmer-1-enc_key
@@ -138,6 +143,12 @@ binary_sensor:
       mode:
         input: true
       inverted: true
+    on_click:
+      then:
+        - light.turn_off: light_o
+        - light.turn_off: light_p
+        - light.turn_off: light_q
+        - light.turn_off: light_s
 
   - platform: gpio
     name: "10.1 (314)"
@@ -190,9 +201,9 @@ hold_dim_button:
     input: in_02
     light_id: light_p
     min_brightness: 0.5
-  # - id: dim_btn_03
-  #   input: in_03
-  #   light_id: light_q
+  - id: dim_btn_03
+    input: in_03
+    light_id: light_q
   - id: dim_btn_04
     input: in_04
     light_id: light_s
