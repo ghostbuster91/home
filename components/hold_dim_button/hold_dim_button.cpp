@@ -56,7 +56,7 @@ void HoldDimButton::loop() {
 
   // while in "hold" mode: execute steps with step_interval_ms_
   if (local_hold) {
-    if (last_step_ms_ == 0 || (now - last_step_ms_) >= step_interval_ms_) {
+    if (last_step_ms_ == 0 || (int32_t)(now - last_step_ms_) >= (int32_t)step_interval_ms_) {
       last_step_ms_ = now;
 
       if (!light_ || !light_->current_values.is_on())
