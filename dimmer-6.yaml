@@ -79,6 +79,14 @@ text_sensor:
       return id(eth).get_ip_addresses().empty() ? "Unset" : id(eth).get_ip_addresses()[0].str();
     update_interval: 5min
 
+udp:
+
+packet_transport:
+  - platform: udp
+    providers:
+      - name: boneio-dr-8ch-03-32ce68
+        encryption: !secret dimmer-1-enc_key
+
 binary_sensor:
   - platform: gpio
     name: "10.2 (113)"
@@ -155,6 +163,17 @@ binary_sensor:
       mode:
         input: true
       inverted: true
+
+  - platform: packet_transport
+    provider: boneio-dr-8ch-03-32ce68
+    id: r1_in_01
+    remote_id: in_01
+    on_click:
+      then:
+        - light.turn_off: light_o
+        - light.turn_off: light_p
+        - light.turn_off: light_q
+        - light.turn_off: light_s
 
 hold_dim_button:
   - id: dim_btn_01

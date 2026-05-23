@@ -79,6 +79,16 @@ text_sensor:
       return id(eth).get_ip_addresses().empty() ? "Unset" : id(eth).get_ip_addresses()[0].str();
     update_interval: 5min
 
+udp:
+
+packet_transport:
+  - platform: udp
+    update_interval: 5s
+    rolling_code_enable: false
+    encryption: !secret dimmer-1-enc_key
+    binary_sensors:
+      - in_01
+
 binary_sensor:
   - platform: gpio
     name: "1.1 (433)"
@@ -89,6 +99,10 @@ binary_sensor:
       mode:
         input: true
       inverted: true
+    on_click:
+      then:
+        - light.turn_off: light_a1_d1
+        - light.turn_off: light_b1_b2
 
   - platform: gpio
     name: "1.1 (434)"
@@ -158,11 +172,11 @@ binary_sensor:
 
 hold_dim_button:
   - id: dim_btn_01
-    input: in_01
+    input: in_03
     light_id: light_b1_b2
     min_brightness: 0.5
   - id: dim_btn_02
-    input: in_02
+    input: in_04
     light_id: light_a1_d1
     min_brightness: 0.2
 

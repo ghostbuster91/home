@@ -94,6 +94,9 @@ packet_transport:
       - in_06
       - in_07
       - in_08
+    providers:
+      - name: boneio-dr-8ch-03-32ce68
+        encryption: !secret dimmer-1-enc_key
 
 binary_sensor:
   - platform: gpio
@@ -171,6 +174,15 @@ binary_sensor:
       mode:
         input: true
       inverted: true
+
+  - platform: packet_transport
+    provider: boneio-dr-8ch-03-32ce68
+    id: r1_in_01
+    remote_id: in_01
+    on_click:
+      then:
+        - light.turn_off: light_j
+        - light.turn_off: light_h
 
 hold_dim_button:
   - id: dim_btn_05
