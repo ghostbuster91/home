@@ -84,7 +84,7 @@ udp:
 packet_transport:
   - platform: udp
     update_interval: 5s
-    rolling_code_enable: true
+    rolling_code_enable: false
     encryption: !secret dimmer-3-enc_key
     binary_sensors:
       - in_01
