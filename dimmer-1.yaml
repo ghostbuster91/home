@@ -88,6 +88,7 @@ packet_transport:
     encryption: !secret dimmer-1-enc_key
     binary_sensors:
       - in_01
+      - in_02
 
 binary_sensor:
   - platform: gpio
