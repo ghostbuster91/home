@@ -83,6 +83,11 @@ udp:
 
 packet_transport:
   - platform: udp
+    update_interval: 5s
+    rolling_code_enable: false
+    encryption: !secret dimmer-2-enc_key
+    binary_sensors:
+      - in_04
     providers:
       - name: boneio-dr-8ch-03-32b304
         encryption: !secret dimmer-3-enc_key
@@ -129,6 +134,12 @@ binary_sensor:
       mode:
         input: true
       inverted: true
+    on_click:
+      then:
+        - light.turn_off: light_f
+        - light.turn_off: light_i
+        - light.turn_off: light_e2
+        - light.turn_off: light_e1
 
   - platform: gpio
     name: "2.1 (323)"
