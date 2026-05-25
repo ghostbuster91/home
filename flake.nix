@@ -8,6 +8,10 @@
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    agenix = {
+      url = "github:ryantm/agenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs@{ nixpkgs, flake-parts, ... }:
@@ -21,6 +25,7 @@
           devShells.default = pkgs.mkShell {
             packages = [
               pkgs.esphome
+              inputs.agenix.packages.${system}.default
               pkgs.clang-tools # daje clangd
               pkgs.gcc
               pkgs.gnumake
@@ -29,6 +34,28 @@
             inputsFrom = [
               config.treefmt.build.devShell
             ];
+
+            # Decrypt secrets.yaml.age once per shell into a tmpfs file,
+            # then symlink $PWD/secrets.yaml -> that path so esphome's
+            # native `!secret` resolution finds it. Plaintext stays on
+            # tmpfs; the symlink in $PWD is gitignored.
+            shellHook = ''
+              _tmpfs_secrets="''${XDG_RUNTIME_DIR:-/tmp}/boneio-secrets.yaml"
+              _repo_secrets="$PWD/secrets.yaml"
+              _age_identity="''${AGE_IDENTITY:-$HOME/.ssh/id_ed25519}"
+              if [ -e "$_repo_secrets" ] && [ ! -L "$_repo_secrets" ]; then
+                echo "boneio-esp-1: $_repo_secrets exists and is not a symlink — refusing to overwrite" >&2
+              elif [ ! -r "$_age_identity" ] || [ ! -f "$PWD/secrets.yaml.age" ]; then
+                echo "boneio-esp-1: skipping secret decryption ($_age_identity or secrets.yaml.age missing)" >&2
+              elif (umask 077 && ${pkgs.age}/bin/age -d -i "$_age_identity" "$PWD/secrets.yaml.age" > "$_tmpfs_secrets"); then
+                ln -sf "$_tmpfs_secrets" "$_repo_secrets"
+                trap "rm -f '$_repo_secrets' '$_tmpfs_secrets'" EXIT
+              else
+                echo "boneio-esp-1: failed to decrypt secrets.yaml.age" >&2
+                rm -f "$_tmpfs_secrets"
+              fi
+              unset _tmpfs_secrets _repo_secrets _age_identity
+            '';
           };
 
           treefmt.config = {

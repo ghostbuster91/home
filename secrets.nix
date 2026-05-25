@@ -1,0 +1,7 @@
+let
+  kghost = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFFeU4GXH+Ae00DipGGJN7uSqPJxWFmgRo9B+xjV3mK4";
+  recipients = [ kghost ];
+in
+{
+  "secrets.yaml.age".publicKeys = recipients;
+}
