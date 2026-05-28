@@ -49,7 +49,13 @@
                 echo "boneio-esp-1: skipping secret decryption ($_age_identity or secrets.yaml.age missing)" >&2
               elif (umask 077 && ${pkgs.age}/bin/age -d -i "$_age_identity" "$PWD/secrets.yaml.age" > "$_tmpfs_secrets"); then
                 ln -sf "$_tmpfs_secrets" "$_repo_secrets"
-                trap "rm -f '$_repo_secrets' '$_tmpfs_secrets'" EXIT
+                # Skip the cleanup trap under direnv: it would replace direnv's
+                # own EXIT trap (which runs `direnv dump`), losing PATH and all
+                # other devshell exports — and it would fire immediately when
+                # the .envrc subshell exits, removing the freshly-created symlink.
+                if [ -z "''${DIRENV_IN_ENVRC:-}" ]; then
+                  trap "rm -f '$_repo_secrets' '$_tmpfs_secrets'" EXIT
+                fi
               else
                 echo "boneio-esp-1: failed to decrypt secrets.yaml.age" >&2
                 rm -f "$_tmpfs_secrets"
