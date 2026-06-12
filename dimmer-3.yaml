@@ -187,6 +187,15 @@ binary_sensor:
         - light.turn_off: light_h
 
   - platform: packet_transport
+    provider: boneio-dr-8ch-03-32ce68
+    id: r1_ha_all_off
+    remote_id: ha_all_off
+    on_click:
+      then:
+        - light.turn_off: light_j
+        - light.turn_off: light_h
+
+  - platform: packet_transport
     provider: boneio-dr-8ch-03-3812b0
     id: r2_in_04
     remote_id: in_04

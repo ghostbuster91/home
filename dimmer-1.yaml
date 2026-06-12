@@ -91,6 +91,7 @@ packet_transport:
       - in_02
       - in_05
       - in_07
+      - ha_all_off
 
 binary_sensor:
   - platform: gpio
@@ -172,6 +173,25 @@ binary_sensor:
       mode:
         input: true
       inverted: true
+
+  - platform: template
+    id: ha_all_off
+    internal: true
+
+button:
+  - platform: template
+    name: "Wyłącz wszystkie światła"
+    on_press:
+      then:
+        - light.turn_off: light_a1_d1
+        - light.turn_off: light_b1_b2
+        - binary_sensor.template.publish:
+            id: ha_all_off
+            state: true
+        - delay: 150ms
+        - binary_sensor.template.publish:
+            id: ha_all_off
+            state: false
 
 hold_dim_button:
   - id: dim_btn_01
