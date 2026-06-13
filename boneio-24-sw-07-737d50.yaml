@@ -43,8 +43,10 @@ packages:
         devices_v0_7-v0_9/lm75b.yaml,
         devices_v0_7-v0_9/pcf_with_mcp.yaml,
         devices_v0_7-v0_9/one_wire.yaml,
-        boards/24x16_output.yaml,
       ]
+  # Inlined from boards/24x16_output.yaml so the curtain channels can be driven
+  # as gpio switches with interlock (see switch: section below).
+  outputs: !include boards/24x16_output.yaml
   sdm630:
     url: https://github.com/boneIO-eu/esphome_packages
     ref: 4c88a2ca9a76f9e483d5f79333ee5437395712b1
@@ -203,9 +205,12 @@ packet_transport:
     encryption: !secret boneio-1-enc_key
     binary_sensors:
       - bs_mata_on
+      - in_01
     providers:
       - name: boneio-dr-8ch-03-4023d4
         encryption: !secret dimmer-5-enc_key
+      - name: boneio-dr-8ch-03-32b304
+        encryption: !secret dimmer-3-enc_key
 
 interval:
   - interval: 10s
@@ -249,6 +254,9 @@ binary_sensor:
       mode:
         input: true
       inverted: true
+    on_click:
+      then:
+        - cover.toggle: bedroom_right_curtain
 
   - platform: gpio
     name: Switch 1-BL
@@ -259,6 +267,9 @@ binary_sensor:
       mode:
         input: true
       inverted: true
+    on_click:
+      then:
+        - cover.toggle: bedroom_left_curtain
 
   - platform: gpio
     name: Switch 2.1-TL
@@ -614,6 +625,39 @@ switch:
     id: mata_grzewcza
     name: "Mata grzewcza"
     output: out_01
+
+  # The bedroom curtain channels (out_13..out_16) are defined as interlocked
+  # gpio switch pairs in boards/24x16_output.yaml:
+  #   cover 01 -> cover_open_01_out13 / cover_close_01_out14
+  #   cover 02 -> cover_open_02_out15 / cover_close_02_out16
+  # The cover entities below drive them.
+
+cover:
+  - platform: time_based
+    name: "Sypialnia prawa zasłona"
+    id: bedroom_right_curtain
+    open_action:
+      - switch.turn_on: cover_open_01_out13
+    open_duration: 14s
+    close_action:
+      - switch.turn_on: cover_close_01_out14
+    close_duration: 14s
+    stop_action:
+      - switch.turn_off: cover_open_01_out13
+      - switch.turn_off: cover_close_01_out14
+
+  - platform: time_based
+    name: "Sypialnia lewa zasłona"
+    id: bedroom_left_curtain
+    open_action:
+      - switch.turn_on: cover_open_02_out15
+    open_duration: 11s
+    close_action:
+      - switch.turn_on: cover_close_02_out16
+    close_duration: 11s
+    stop_action:
+      - switch.turn_off: cover_open_02_out15
+      - switch.turn_off: cover_close_02_out16
 
 climate:
   - platform: thermostat
