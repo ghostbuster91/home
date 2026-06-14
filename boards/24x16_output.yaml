@@ -7,9 +7,9 @@
 # The cover entities + friendly names live in the device config.
 
 switch:
-  # Cover 01 -> out_13 (open) / out_14 (close)
+  # Cover 01 -> out_13 (close) / out_14 (open)
   - platform: gpio
-    id: cover_open_01_out13
+    id: cover_close_01_out13
     internal: true
     pin:
       mcp23xxx: mcp_left
@@ -17,11 +17,11 @@ switch:
       mode:
         output: true
       inverted: false
-    interlock: &cover_interlock_01 [cover_open_01_out13, cover_close_01_out14]
+    interlock: &cover_interlock_01 [cover_close_01_out13, cover_open_01_out14]
     interlock_wait_time: 500ms
     restore_mode: always off
   - platform: gpio
-    id: cover_close_01_out14
+    id: cover_open_01_out14
     internal: true
     pin:
       mcp23xxx: mcp_left
@@ -33,9 +33,9 @@ switch:
     interlock_wait_time: 500ms
     restore_mode: always off
 
-  # Cover 02 -> out_15 (open) / out_16 (close)
+  # Cover 02 -> out_15 (close) / out_16 (open)
   - platform: gpio
-    id: cover_open_02_out15
+    id: cover_close_02_out15
     internal: true
     pin:
       mcp23xxx: mcp_left
@@ -43,11 +43,11 @@ switch:
       mode:
         output: true
       inverted: false
-    interlock: &cover_interlock_02 [cover_open_02_out15, cover_close_02_out16]
+    interlock: &cover_interlock_02 [cover_close_02_out15, cover_open_02_out16]
     interlock_wait_time: 500ms
     restore_mode: always off
   - platform: gpio
-    id: cover_close_02_out16
+    id: cover_open_02_out16
     internal: true
     pin:
       mcp23xxx: mcp_left

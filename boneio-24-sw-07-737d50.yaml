@@ -628,8 +628,8 @@ switch:
 
   # The bedroom curtain channels (out_13..out_16) are defined as interlocked
   # gpio switch pairs in boards/24x16_output.yaml:
-  #   cover 01 -> cover_open_01_out13 / cover_close_01_out14
-  #   cover 02 -> cover_open_02_out15 / cover_close_02_out16
+  #   cover 01 -> cover_close_01_out13 / cover_open_01_out14
+  #   cover 02 -> cover_close_02_out15 / cover_open_02_out16
   # The cover entities below drive them.
 
 cover:
@@ -637,27 +637,27 @@ cover:
     name: "Sypialnia prawa zasłona"
     id: bedroom_right_curtain
     open_action:
-      - switch.turn_on: cover_open_01_out13
+      - switch.turn_on: cover_open_01_out14
     open_duration: 14s
     close_action:
-      - switch.turn_on: cover_close_01_out14
+      - switch.turn_on: cover_close_01_out13
     close_duration: 14s
     stop_action:
-      - switch.turn_off: cover_open_01_out13
-      - switch.turn_off: cover_close_01_out14
+      - switch.turn_off: cover_close_01_out13
+      - switch.turn_off: cover_open_01_out14
 
   - platform: time_based
     name: "Sypialnia lewa zasłona"
     id: bedroom_left_curtain
     open_action:
-      - switch.turn_on: cover_open_02_out15
+      - switch.turn_on: cover_open_02_out16
     open_duration: 11s
     close_action:
-      - switch.turn_on: cover_close_02_out16
+      - switch.turn_on: cover_close_02_out15
     close_duration: 11s
     stop_action:
-      - switch.turn_off: cover_open_02_out15
-      - switch.turn_off: cover_close_02_out16
+      - switch.turn_off: cover_close_02_out15
+      - switch.turn_off: cover_open_02_out16
 
 climate:
   - platform: thermostat
