@@ -207,11 +207,11 @@ hold_dim_button:
   - id: dim_btn_02
     input: in_04
     light_id: light_a1_d1
-    min_brightness: 0.2
+    min_brightness: 0.1
   - id: dim_btn_03
     input: in_06
     light_id: light_a1_d1
-    min_brightness: 0.2
+    min_brightness: 0.1
 
 light:
   - platform: monochromatic

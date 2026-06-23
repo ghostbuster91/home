@@ -42,15 +42,17 @@ void HoldDimButton::loop() {
       call.set_brightness(clamp(min_brightness_, 0.0f, 1.0f));
       call.perform();
 
-      dir_ = DIM_UP;  // first hold from OFF always UP
+      dir_ = DIM_DOWN;  // next hold will reverse to DIM_UP
+      step_dir_ = DIM_UP;
       ESP_LOGD(TAG, "Hold start from OFF: turning on at min=%.3f, direction=UP", min_brightness_);
       last_step_ms_ = now + 2 * step_interval_ms_; // skip next 2 steps
     } else {
       // Light is on
       float b = light_->current_values.get_brightness();
-      ESP_LOGD(TAG, "Hold start, direction: %s", dir_ == DIM_DOWN ? "DOWN" : "UP");
-      last_step_ms_ = 0;  // force first step immediately
       dir_ = opposite(dir_);
+      step_dir_ = dir_;
+      ESP_LOGD(TAG, "Hold start, direction: %s", step_dir_ == DIM_DOWN ? "DOWN" : "UP");
+      last_step_ms_ = 0;  // force first step immediately
     }
   }
 
@@ -65,7 +67,7 @@ void HoldDimButton::loop() {
       float b = light_->current_values.get_brightness();
 
       // dimming down
-      if (dir_ == DIM_DOWN) {
+      if (step_dir_ == DIM_DOWN) {
         if (b - step_ <= min_brightness_) {
           ESP_LOGD(TAG, "At min brightness: %.3f", b);
           return;

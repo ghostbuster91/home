@@ -36,6 +36,7 @@ namespace esphome {
 
           enum Direction { DIM_DOWN, DIM_UP };
           Direction dir_{DIM_DOWN};
+          Direction step_dir_{DIM_UP};
 
           light::LightState *light_{nullptr};
           binary_sensor::BinarySensor *input_{nullptr};
