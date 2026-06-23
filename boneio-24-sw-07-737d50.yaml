@@ -659,6 +659,21 @@ cover:
       - switch.turn_off: cover_close_02_out15
       - switch.turn_off: cover_open_02_out16
 
+button:
+  - platform: template
+    name: "Sypialnia zasłony otwórz"
+    id: bedroom_curtains_open
+    on_press:
+      - cover.open: bedroom_right_curtain
+      - cover.open: bedroom_left_curtain
+
+  - platform: template
+    name: "Sypialnia zasłony zamknij"
+    id: bedroom_curtains_close
+    on_press:
+      - cover.close: bedroom_right_curtain
+      - cover.close: bedroom_left_curtain
+
 climate:
   - platform: thermostat
     id: mata_termostat
