@@ -214,24 +214,22 @@ binary_sensor:
 hold_dim_button:
   - id: dim_btn_01
     input: in_01
-    light_id: light_k
-    brightness: 1.0
-    min_brightness: 0.1
+    <<: &light_k
+      light_id: light_k
+      brightness: 1.0
+      min_brightness: 0.1
   - id: dim_btn_r1_05
     input: r1_in_05
-    light_id: light_c
-    brightness: 0.5
-    min_brightness: 0.1
+    <<: &light_c
+      light_id: light_c
+      brightness: 0.5
+      min_brightness: 0.1
   - id: dim_btn_r1_02
     input: r1_in_02
-    light_id: light_c
-    brightness: 0.5
-    min_brightness: 0.1
+    <<: *light_c
   - id: dim_btn_r1_07
     input: r1_in_07
-    light_id: light_k
-    brightness: 1.0
-    min_brightness: 0.1
+    <<: *light_k
 
 light:
   - platform: cwww

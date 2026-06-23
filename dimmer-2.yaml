@@ -226,8 +226,9 @@ binary_sensor:
 hold_dim_button:
   - id: dim_btn_01
     input: in_01
-    light_id: light_f
-    min_brightness: 0.2
+    <<: &light_f
+      light_id: light_f
+      min_brightness: 0.2
   - id: dim_btn_02
     input: in_02
     light_id: light_e2
@@ -236,8 +237,7 @@ hold_dim_button:
     light_id: light_e1
   - id: dim_btn_05
     input: in_05
-    light_id: light_f
-    min_brightness: 0.2
+    <<: *light_f
   - id: dim_btn_06
     input: in_06
     light_id: light_e2
@@ -249,8 +249,7 @@ hold_dim_button:
     light_id: light_i
   - id: dim_btn_09
     input: r3_in_02
-    light_id: light_f
-    min_brightness: 0.2
+    <<: *light_f
   - id: dim_btn_10
     input: r3_in_03
     light_id: light_e1
@@ -259,8 +258,7 @@ hold_dim_button:
     light_id: light_e2
   - id: dim_btn_12
     input: r3_in_06
-    light_id: light_f
-    min_brightness: 0.2
+    <<: *light_f
   - id: dim_btn_13
     input: r3_in_07
     light_id: light_e1
