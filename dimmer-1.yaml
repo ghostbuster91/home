@@ -87,7 +87,6 @@ packet_transport:
     rolling_code_enable: false
     encryption: !secret dimmer-1-enc_key
     binary_sensors:
-      - in_01
       - in_02
       - in_05
       - in_07
@@ -107,6 +106,13 @@ binary_sensor:
       then:
         - light.turn_off: light_a1_d1
         - light.turn_off: light_b1_b2
+        - binary_sensor.template.publish:
+            id: ha_all_off
+            state: true
+        - delay: 150ms
+        - binary_sensor.template.publish:
+            id: ha_all_off
+            state: false
 
   - platform: gpio
     name: "1.1 (434)"
