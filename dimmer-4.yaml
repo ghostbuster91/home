@@ -83,6 +83,11 @@ udp:
 
 packet_transport:
   - platform: udp
+    update_interval: 5s
+    rolling_code_enable: false
+    encryption: !secret dimmer-4-enc_key
+    binary_sensors:
+      - in_03
     providers:
       - name: boneio-dr-8ch-03-4023d4
         encryption: !secret dimmer-5-enc_key

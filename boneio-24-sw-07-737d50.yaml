@@ -211,6 +211,8 @@ packet_transport:
         encryption: !secret dimmer-5-enc_key
       - name: boneio-dr-8ch-03-32b304
         encryption: !secret dimmer-3-enc_key
+      - name: boneio-dr-8ch-03-39835c
+        encryption: !secret dimmer-4-enc_key
 
 interval:
   - interval: 10s
@@ -608,6 +610,14 @@ binary_sensor:
                   id: mata_termostat
                   mode: "HEAT"
 
+  - platform: packet_transport
+    provider: boneio-dr-8ch-03-39835c
+    id: r4_in_03
+    remote_id: in_03
+    on_click:
+      then:
+        - cover.toggle: study_curtains
+
   - platform: template
     id: bs_mata_on
     name: "Mata ON (remote)"
@@ -661,8 +671,8 @@ cover:
       - switch.turn_off: cover_open_02_out16
 
   - platform: time_based
-    name: "Zasłona 03"
-    id: cover_03
+    name: "Gabinet zasłony"
+    id: study_curtains
     open_action:
       - switch.turn_on: cover_open_03_out18
     open_duration: 14s
