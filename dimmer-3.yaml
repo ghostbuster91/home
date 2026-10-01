@@ -91,8 +91,8 @@ packet_transport:
       - in_02
       - in_03
       - in_04
+      - in_05
       - in_06
-      - in_07
       - in_08
     providers:
       - name: boneio-dr-8ch-03-32ce68
@@ -130,6 +130,11 @@ binary_sensor:
       mode:
         input: true
       inverted: true
+    # "All bedroom lights off except light_i and light_j": light_h is local;
+    # light_f/e1/e2 are turned off on dimmer-2, which listens to this button.
+    on_click:
+      then:
+        - light.turn_off: light_h
 
   - platform: gpio
     name: "4.2 (248)"
@@ -149,6 +154,11 @@ binary_sensor:
       mode:
         input: true
       inverted: true
+    # "All bedroom lights off except light_i and light_j", same as in_03 (247):
+    # light_h is local; light_f/e1/e2 are turned off on dimmer-2.
+    on_click:
+      then:
+        - light.turn_off: light_h
 
   - platform: gpio
     name: "5.1 (474)"
@@ -197,7 +207,7 @@ binary_sensor:
 
 hold_dim_button:
   - id: dim_btn_05
-    input: in_05
+    input: in_07
     light_id: light_j
 
 light:

@@ -182,6 +182,8 @@ binary_sensor:
       then:
         - light.toggle: light_f
 
+  # dimmer-3 buttons in_01/in_02 toggle+dim dimmer-2 lights via hold_dim_button
+  # below; in_03 turns the bedroom lights off. The lights live here on dimmer-2.
   - platform: packet_transport
     provider: boneio-dr-8ch-03-32b304
     id: r3_in_01
@@ -192,25 +194,28 @@ binary_sensor:
     id: r3_in_02
     remote_id: in_02
 
+  # Turn off all bedroom lights except light_i and light_j (light_h is turned off
+  # locally on dimmer-3). Shared by dimmer-3 in_03 (247) and in_05 (473).
   - platform: packet_transport
     provider: boneio-dr-8ch-03-32b304
     id: r3_in_03
     remote_id: in_03
+    on_click: &bedroom_lights_off
+      then:
+        - light.turn_off: light_f
+        - light.turn_off: light_e1
+        - light.turn_off: light_e2
 
   - platform: packet_transport
     provider: boneio-dr-8ch-03-32b304
-    id: r3_in_04
-    remote_id: in_04
+    id: r3_in_05
+    remote_id: in_05
+    on_click: *bedroom_lights_off
 
   - platform: packet_transport
     provider: boneio-dr-8ch-03-32b304
-    id: r3_in_06
-    remote_id: in_06
-
-  - platform: packet_transport
-    provider: boneio-dr-8ch-03-32b304
-    id: r3_in_07
-    remote_id: in_07
+    id: r3_in_08
+    remote_id: in_08
 
   - platform: packet_transport
     provider: boneio-dr-8ch-03-32ce68
@@ -255,19 +260,12 @@ hold_dim_button:
     light_id: light_i
   - id: dim_btn_09
     input: r3_in_02
-    <<: *light_f
-  - id: dim_btn_10
-    input: r3_in_03
-    light_id: *e1_dim
-  - id: dim_btn_11
-    input: r3_in_04
-    light_id: *e2_dim
+    <<: &light_f_single
+      light_id: light_f
+      min_brightness: 0.2
   - id: dim_btn_12
-    input: r3_in_06
-    <<: *light_f
-  - id: dim_btn_13
-    input: r3_in_07
-    light_id: *e1_dim
+    input: r3_in_08
+    <<: *light_f_single
 
 light:
   - platform: monochromatic
