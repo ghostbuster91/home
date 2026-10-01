@@ -87,7 +87,7 @@ packet_transport:
     rolling_code_enable: false
     encryption: !secret dimmer-2-enc_key
     binary_sensors:
-      - in_04
+      - in_07
     providers:
       - name: boneio-dr-8ch-03-32b304
         encryption: !secret dimmer-3-enc_key
@@ -134,12 +134,6 @@ binary_sensor:
       mode:
         input: true
       inverted: true
-    on_click:
-      then:
-        - light.turn_off: light_f
-        - light.turn_off: light_i
-        - light.turn_off: light_e2
-        - light.turn_off: light_e1
 
   - platform: gpio
     name: "2.1 (323)"
@@ -167,6 +161,14 @@ binary_sensor:
       mode:
         input: true
       inverted: true
+    # Unconditional "all bedroom lights off": local lights here, plus light_j/light_h
+    # on dimmer-3 which listens for this sensor over packet_transport (see export below).
+    on_click:
+      then:
+        - light.turn_off: light_f
+        - light.turn_off: light_i
+        - light.turn_off: light_e2
+        - light.turn_off: light_e1
 
   - platform: gpio
     name: "2.1 (328)"
@@ -176,6 +178,9 @@ binary_sensor:
       mode:
         input: true
       inverted: true
+    on_click:
+      then:
+        - light.toggle: light_f
 
   - platform: packet_transport
     provider: boneio-dr-8ch-03-32b304
@@ -208,11 +213,6 @@ binary_sensor:
     remote_id: in_07
 
   - platform: packet_transport
-    provider: boneio-dr-8ch-03-32b304
-    id: r3_in_08
-    remote_id: in_08
-
-  - platform: packet_transport
     provider: boneio-dr-8ch-03-32ce68
     id: r1_ha_all_off
     remote_id: ha_all_off
@@ -224,26 +224,32 @@ binary_sensor:
         - light.turn_off: light_e1
 
 hold_dim_button:
+  # in_01 drives all three as one group: a click toggles them together
+  # (any on -> all off, else all on); a hold dims all three together.
   - id: dim_btn_01
     input: in_01
     <<: &light_f
-      light_id: light_f
-      min_brightness: 0.2
+      light_id:
+        - id: light_f
+          min_brightness: 0.2
+        - &e1_dim
+          id: light_e1
+          min_brightness: 0.3
+        - &e2_dim
+          id: light_e2
+          min_brightness: 0.3
   - id: dim_btn_02
     input: in_02
-    light_id: light_e2
+    light_id: *e2_dim
   - id: dim_btn_03
     input: in_03
-    light_id: light_e1
+    light_id: *e1_dim
   - id: dim_btn_05
     input: in_05
-    <<: *light_f
+    light_id: [*e1_dim, *e2_dim]
   - id: dim_btn_06
     input: in_06
-    light_id: light_e2
-  - id: dim_btn_07
-    input: in_07
-    light_id: light_e1
+    <<: *light_f
   - id: dim_btn_08
     input: r3_in_01
     light_id: light_i
@@ -252,19 +258,16 @@ hold_dim_button:
     <<: *light_f
   - id: dim_btn_10
     input: r3_in_03
-    light_id: light_e1
+    light_id: *e1_dim
   - id: dim_btn_11
     input: r3_in_04
-    light_id: light_e2
+    light_id: *e2_dim
   - id: dim_btn_12
     input: r3_in_06
     <<: *light_f
   - id: dim_btn_13
     input: r3_in_07
-    light_id: light_e1
-  - id: dim_btn_14
-    input: r3_in_08
-    light_id: light_e2
+    light_id: *e1_dim
 
 light:
   - platform: monochromatic

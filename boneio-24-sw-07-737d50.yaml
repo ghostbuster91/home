@@ -256,9 +256,6 @@ binary_sensor:
       mode:
         input: true
       inverted: true
-    on_click:
-      then:
-        - cover.toggle: bedroom_right_curtain
 
   - platform: gpio
     name: Switch 1-BL
@@ -271,7 +268,16 @@ binary_sensor:
       inverted: true
     on_click:
       then:
-        - cover.toggle: bedroom_left_curtain
+        # Explicit toggle: cover.toggle doesn't reliably drive a template cover,
+        # so decide direction from the right curtain's real position and fan the
+        # open/close out to both via the combined cover's actions.
+        - if:
+            condition:
+              lambda: "return id(bedroom_right_curtain).position > 0.01;"
+            then:
+              - cover.close: bedroom_curtains
+            else:
+              - cover.open: bedroom_curtains
 
   - platform: gpio
     name: Switch 2.1-TL
@@ -682,6 +688,28 @@ cover:
     stop_action:
       - switch.turn_off: cover_close_03_out17
       - switch.turn_off: cover_open_03_out18
+
+  # Combined bedroom curtains: a single template cover that fans every command
+  # out to both physical curtains, the way the light template outputs fan one
+  # value out to several PCA channels. Controlling only this entity keeps the two
+  # curtains in sync; its state mirrors the right curtain so cover.toggle picks a
+  # sane direction even if they ever drifted apart.
+  - platform: template
+    name: "Sypialnia zasłony"
+    id: bedroom_curtains
+    device_class: curtain
+    assumed_state: true
+    lambda: |-
+      return id(bedroom_right_curtain).position;
+    open_action:
+      - cover.open: bedroom_right_curtain
+      - cover.open: bedroom_left_curtain
+    close_action:
+      - cover.close: bedroom_right_curtain
+      - cover.close: bedroom_left_curtain
+    stop_action:
+      - cover.stop: bedroom_right_curtain
+      - cover.stop: bedroom_left_curtain
 
 button:
   - platform: template

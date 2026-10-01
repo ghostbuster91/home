@@ -16,10 +16,21 @@ CONF_TRANSITION = "transition"
 hold_dim_ns = cg.esphome_ns.namespace("hold_dim_button")
 HoldDimButton = hold_dim_ns.class_("HoldDimButton", cg.Component)
 
+# A light entry is either a bare light id (uses the button-level min_brightness)
+# or a mapping {id: <light>, min_brightness: <float>} to override the minimum
+# for that one light.
+LIGHT_ENTRY_SCHEMA = cv.Any(
+    cv.use_id(light.LightState),
+    cv.Schema({
+        cv.Required(CONF_ID): cv.use_id(light.LightState),
+        cv.Optional(CONF_MIN_BRIGHTNESS): cv.float_range(0.0, 1.0),
+    }),
+)
+
 SINGLE_SCHEMA = cv.Schema({
     cv.Required(CONF_ID): cv.declare_id(HoldDimButton),
     cv.Required(CONF_INPUT): cv.use_id(binary_sensor.BinarySensor),
-    cv.Required(CONF_LIGHT_ID): cv.use_id(light.LightState),
+    cv.Required(CONF_LIGHT_ID): cv.ensure_list(LIGHT_ENTRY_SCHEMA),
 
     cv.Optional(CONF_BRIGHTNESS, default=0.9): cv.float_range(0.0, 1.0),
     cv.Optional(CONF_THRESHOLD, default=0.5): cv.float_range(0.0, 1.0),
@@ -38,16 +49,21 @@ async def to_code(config):
         await cg.register_component(var, conf)
 
         inp = await cg.get_variable(conf[CONF_INPUT])
-        l = await cg.get_variable(conf[CONF_LIGHT_ID])
-
         cg.add(var.set_input(inp))
-        cg.add(var.set_light(l))
+
+        default_min = conf[CONF_MIN_BRIGHTNESS]
+        for item in conf[CONF_LIGHT_ID]:
+            if isinstance(item, dict):
+                l = await cg.get_variable(item[CONF_ID])
+                min_brightness = item.get(CONF_MIN_BRIGHTNESS, default_min)
+            else:
+                l = await cg.get_variable(item)
+                min_brightness = default_min
+            cg.add(var.add_light(l, min_brightness))
 
         cg.add(var.set_brightness(conf[CONF_BRIGHTNESS]))
         cg.add(var.set_threshold(conf[CONF_THRESHOLD]))
         cg.add(var.set_step(conf[CONF_STEP]))
-        cg.add(var.set_min_brightness(conf[CONF_MIN_BRIGHTNESS]))
         cg.add(var.set_hold_delay_ms(conf[CONF_HOLD_DELAY]))
         cg.add(var.set_step_interval_ms(conf[CONF_STEP_INTERVAL]))
         cg.add(var.set_transition_ms(conf[CONF_TRANSITION]))
-

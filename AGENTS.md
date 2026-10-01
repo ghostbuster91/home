@@ -31,10 +31,10 @@ CI (`.github/workflows/main.yml`) only builds `boneio-24-sw-07-737d50.yaml` and 
 
 **Cross-device messaging.** Devices talk over UDP via ESPHome's `packet_transport` (`udp:` + `packet_transport:`), authenticated with per-device keys in `secrets.yaml`. Pattern: device A exposes a `binary_sensor` (or sensor) under its `packet_transport` block; device B declares a `binary_sensor` with `platform: packet_transport`, `provider: <device-A-name>`, and `remote_id: <id-on-A>`. Example: the switch board listens for `in_08` from `boneio-dr-8ch-03-4023d4` (dimmer-5) to toggle the bathroom heating mat thermostat. `rolling_code_enable: false` everywhere — re-enabling it has caused a desync bug (see commit `ebe1460`).
 
-**Custom external component `hold_dim_button`.** Lives in `components/hold_dim_button/` and is loaded by every dimmer via `external_components: - source: { type: local, path: ./components }`. Implements click-vs-hold semantics for a single binary_sensor driving a single light:
+**Custom external component `hold_dim_button`.** Lives in `components/hold_dim_button/` and is loaded by every dimmer via `external_components: - source: { type: local, path: ./components }`. Implements click-vs-hold semantics for a single binary_sensor driving one or more lights. `light_id` accepts either a single id or a list; a list makes the button act on all lights as one group:
 
-- Short press toggles the light at the configured default `brightness`.
-- Holding past `hold_delay` enters dim mode and steps brightness by `step` every `step_interval`. Each new hold reverses direction. Holding from OFF turns on at `min_brightness` and dims up.
+- Short press toggles the light(s). With a list it's a group toggle: if *any* light is on, all turn off; otherwise all turn on at the configured default `brightness`. (So a single light is just the one-element case.)
+- Holding past `hold_delay` enters dim mode and steps brightness by `step` every `step_interval`. Each new hold reverses direction. Holding from OFF turns on at `min_brightness` and dims up. With a list, all lights dim together, driven from the brightest member so they re-sync.
 - Python schema in `__init__.py` defines the YAML config; C++ runtime in `hold_dim_button.{h,cpp}`. When changing the schema, update both sides and re-run `esphome config <dimmer>.yaml`.
 
 **Light topology.** Dimmer boards expose ESPHome `light` entities (`monochromatic` or `cwww`) wired to PCA9685 outputs (`chl01`..`chr04`) declared in the upstream `boards/dimmer_output.yaml`. `hold_dim_button` entries target these `light_*` IDs by id.
