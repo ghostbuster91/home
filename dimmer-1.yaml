@@ -87,7 +87,7 @@ packet_transport:
     rolling_code_enable: false
     encryption: !secret dimmer-1-enc_key
     binary_sensors:
-      - in_02
+      - in_03
       - in_05
       - in_07
       - ha_all_off
@@ -201,7 +201,7 @@ button:
 
 hold_dim_button:
   - id: dim_btn_01
-    input: in_03
+    input: in_02
     light_id: light_b1_b2
     min_brightness: 0.5
   - id: dim_btn_02

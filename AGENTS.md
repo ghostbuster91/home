@@ -39,6 +39,24 @@ CI (`.github/workflows/main.yml`) only builds `boneio-24-sw-07-737d50.yaml` and 
 
 **Light topology.** Dimmer boards expose ESPHome `light` entities (`monochromatic` or `cwww`) wired to PCA9685 outputs (`chl01`..`chr04`) declared in the upstream `boards/dimmer_output.yaml`. `hold_dim_button` entries target these `light_*` IDs by id.
 
+**Wall-switch binary_sensor naming.** Every `binary_sensor` on a dimmer/switch board carries a `name` of the form `"<switch>.<group> (NNN)"`, e.g. `"3.1 (213)"`. The number in parentheses encodes the wiring:
+
+- The **first two digits** identify the cable (przewód), the **third digit** identifies the core (żyła) within that cable. So `213` = cable 21, core 3; `418` = cable 41, core 8.
+- Cores are always the same four: **3 = white-green, 4 = green, 7 = white-brown, 8 = brown**. Each physical wall switch gathers exactly one cable's cores 3/4/7/8.
+- Buttons are always wired the same way physically: **full colors on top, half (white-X) colors on the bottom, green on the left**:
+
+  ```
+                TOP (full colors)
+     ┌──────────────────┬──────────────────┐
+     │  green (…4)       │  brown (…8)       │
+     ├──────────────────┼──────────────────┤
+     │  white-green (…3) │  white-brown (…7) │
+     └──────────────────┴──────────────────┘
+               BOTTOM (half colors)
+  ```
+
+  So for cable 21 the four buttons are: top-left `214`, top-right `218`, bottom-left `213`, bottom-right `217`. Preserve this scheme when adding or relabeling inputs.
+
 ## Secrets
 
 `secrets.yaml` contains per-device `packet_transport` encryption keys. It is committed (this is a private repo for a home install); do not move keys out of it without coordinating, since every YAML references them by `!secret`.
