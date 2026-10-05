@@ -95,6 +95,8 @@ packet_transport:
         encryption: !secret boneio-1-enc_key
       - name: boneio-dr-8ch-03-32ce68
         encryption: !secret dimmer-1-enc_key
+      - name: boneio-dr-8ch-03-32b610
+        encryption: !secret dimmer-6-enc_key
 
 binary_sensor:
   - platform: gpio
@@ -205,6 +207,17 @@ binary_sensor:
     provider: boneio-dr-8ch-03-32ce68
     id: r1_in_03
     remote_id: in_03
+
+  # dimmer-6 button 314 (in_06): turn off all lights except living room + kitchen
+  - platform: packet_transport
+    provider: boneio-dr-8ch-03-32b610
+    id: r6_in_06
+    remote_id: in_06
+    on_click:
+      then:
+        - light.turn_off: light_c
+        - light.turn_off: light_k
+        - light.turn_off: light_l1
 
   - platform: packet_transport
     provider: boneio-dr-8ch-03-32ce68

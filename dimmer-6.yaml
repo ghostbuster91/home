@@ -88,6 +88,7 @@ packet_transport:
     encryption: !secret dimmer-6-enc_key
     binary_sensors:
       - in_01
+      - in_06
     providers:
       - name: boneio-dr-8ch-03-32ce68
         encryption: !secret dimmer-1-enc_key
@@ -196,7 +197,7 @@ binary_sensor:
 hold_dim_button:
   - id: dim_btn_02
     input: in_02
-    light_id: light_0
+    light_id: light_o
   - id: dim_btn_03
     input: in_03
     light_id: light_p
