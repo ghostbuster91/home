@@ -589,25 +589,6 @@ binary_sensor:
       inverted: true
 
   - platform: packet_transport
-    provider: boneio-dr-8ch-03-4023d4
-    id: r5_in_08
-    remote_id: in_08
-    on_click:
-      then:
-        - if:
-            condition:
-              lambda: |-
-                return id(mata_termostat).mode != climate::CLIMATE_MODE_OFF;
-            then:
-              - climate.control:
-                  id: mata_termostat
-                  mode: "OFF"
-            else:
-              - climate.control:
-                  id: mata_termostat
-                  mode: "HEAT"
-
-  - platform: packet_transport
     provider: boneio-dr-8ch-03-39835c
     id: r4_in_04
     remote_id: in_04
