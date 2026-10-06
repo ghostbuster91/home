@@ -191,8 +191,13 @@ binary_sensor:
 
   - platform: packet_transport
     provider: boneio-dr-8ch-03-31e2c8
-    id: r7_in_01
-    remote_id: in_01
+    id: r7_in_02
+    remote_id: in_02
+
+  - platform: packet_transport
+    provider: boneio-dr-8ch-03-31e2c8
+    id: r7_in_04
+    remote_id: in_04
 
 hold_dim_button:
   - id: dim_btn_02
@@ -205,9 +210,12 @@ hold_dim_button:
   - id: dim_btn_04
     input: in_04
     light_id: [light_s, light_p, light_o]
-  - id: dim_btn_r7_01
-    input: r7_in_01
+  - id: dim_btn_r7_02
+    input: r7_in_02
     light_id: light_s
+  - id: dim_btn_r7_04
+    input: r7_in_04
+    light_id: light_q
   - id: dim_btn_05
     input: in_05
     light_id: light_q
