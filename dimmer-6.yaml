@@ -180,9 +180,9 @@ binary_sensor:
 
   - platform: packet_transport
     provider: boneio-dr-8ch-03-32ce68
-    id: r1_ha_all_off
-    remote_id: ha_all_off
-    on_click:
+    id: r1_udp_all_off
+    remote_id: udp_all_off
+    on_click: &all_off_local
       then:
         - light.turn_off: light_o
         - light.turn_off: light_p
@@ -198,6 +198,14 @@ binary_sensor:
     provider: boneio-dr-8ch-03-31e2c8
     id: r7_in_04
     remote_id: in_04
+
+# Turns off only this dimmer's lights, pressed by the HA "all lights off"
+# automation (a reliable per-dimmer path parallel to dimmer-1's UDP broadcast).
+button:
+  - platform: template
+    name: "Wyłącz wszystkie światła HA"
+    id: ha_all_off
+    on_press: *all_off_local
 
 hold_dim_button:
   - id: dim_btn_02

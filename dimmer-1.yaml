@@ -90,7 +90,7 @@ packet_transport:
       - in_03
       - in_05
       - in_07
-      - ha_all_off
+      - udp_all_off
     providers:
       - name: boneio-dr-8ch-03-32b610
         encryption: !secret dimmer-6-enc_key
@@ -110,11 +110,11 @@ binary_sensor:
         - light.turn_off: light_a1_d1
         - light.turn_off: light_b1_b2
         - binary_sensor.template.publish:
-            id: ha_all_off
+            id: udp_all_off
             state: true
         - delay: 150ms
         - binary_sensor.template.publish:
-            id: ha_all_off
+            id: udp_all_off
             state: false
 
   - platform: gpio
@@ -194,7 +194,7 @@ binary_sensor:
         - light.turn_off: light_b1_b2
 
   - platform: template
-    id: ha_all_off
+    id: udp_all_off
     internal: true
 
 button:
@@ -205,12 +205,23 @@ button:
         - light.turn_off: light_a1_d1
         - light.turn_off: light_b1_b2
         - binary_sensor.template.publish:
-            id: ha_all_off
+            id: udp_all_off
             state: true
         - delay: 150ms
         - binary_sensor.template.publish:
-            id: ha_all_off
+            id: udp_all_off
             state: false
+
+  # Turns off only this dimmer's lights. Pressed by the HA "all lights off"
+  # automation, which presses this button on every dimmer directly (bypassing
+  # the UDP broadcast above) as a more reliable path when HA is up.
+  - platform: template
+    name: "Wyłącz wszystkie światła HA"
+    id: ha_all_off
+    on_press:
+      then:
+        - light.turn_off: light_a1_d1
+        - light.turn_off: light_b1_b2
 
 hold_dim_button:
   - id: dim_btn_01
