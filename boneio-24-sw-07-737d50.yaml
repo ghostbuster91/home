@@ -609,8 +609,8 @@ binary_sensor:
 
   - platform: packet_transport
     provider: boneio-dr-8ch-03-39835c
-    id: r4_in_03
-    remote_id: in_03
+    id: r4_in_04
+    remote_id: in_04
     on_click:
       then:
         - cover.toggle: study_curtains
