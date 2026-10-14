@@ -201,6 +201,18 @@ binary_sensor:
         - light.turn_off: light_m2
         - light.turn_off: light_l2
 
+  # boneio-24 button 333 (in_06): turn off all lights except the bedroom.
+  # light_n is intentionally left on, matching the other all-off paths here.
+  - platform: packet_transport
+    provider: boneio-24-sw-07-737d50
+    id: r24_in_06
+    remote_id: in_06
+    on_click:
+      then:
+        - light.turn_off: light_m1
+        - light.turn_off: light_m2
+        - light.turn_off: light_l2
+
 # Turns off only this dimmer's lights, pressed by the HA "all lights off"
 # automation (a reliable per-dimmer path parallel to dimmer-1's UDP broadcast).
 button:
