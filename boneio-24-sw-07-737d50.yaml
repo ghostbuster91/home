@@ -228,7 +228,7 @@ interval:
 
 binary_sensor:
   - platform: gpio
-    name: Switch 1-TR
+    name: "kt05 (pralnia)"
     id: in_01
     pin:
       pcf8574: pcf_inputs_1to14
@@ -238,7 +238,7 @@ binary_sensor:
       inverted: true
 
   - platform: gpio
-    name: Switch 1-TL
+    name: IN_02
     id: in_02
     pin:
       pcf8574: pcf_inputs_1to14
@@ -248,7 +248,7 @@ binary_sensor:
       inverted: true
 
   - platform: gpio
-    name: Switch 1-BR
+    name: "2.2 (334)"
     id: in_03
     pin:
       pcf8574: pcf_inputs_1to14
@@ -258,7 +258,7 @@ binary_sensor:
       inverted: true
 
   - platform: gpio
-    name: Switch 1-BL
+    name: "2.2 (338)"
     id: in_04
     pin:
       pcf8574: pcf_inputs_1to14
@@ -271,7 +271,7 @@ binary_sensor:
         - script.execute: toggle_bedroom_curtains
 
   - platform: gpio
-    name: Switch 2.1-TL
+    name: "2.2 (337)"
     id: in_05
     pin:
       pcf8574: pcf_inputs_1to14
@@ -281,7 +281,7 @@ binary_sensor:
       inverted: true
 
   - platform: gpio
-    name: Switch 2.1-TR
+    name: "2.2 (333)"
     id: in_06
     pin:
       pcf8574: pcf_inputs_1to14
@@ -291,7 +291,7 @@ binary_sensor:
       inverted: true
 
   - platform: gpio
-    name: Switch 2.1-BL
+    name: IN_07
     id: in_07
     pin:
       pcf8574: pcf_inputs_1to14
@@ -301,7 +301,7 @@ binary_sensor:
       inverted: true
 
   - platform: gpio
-    name: Switch 2.1-BR
+    name: IN_08
     id: in_08
     pin:
       pcf8574: pcf_inputs_1to14
@@ -311,7 +311,7 @@ binary_sensor:
       inverted: true
 
   - platform: gpio
-    name: Switch 2.2-TL
+    name: IN_09
     id: in_09
     pin:
       pcf8574: pcf_inputs_1to14
@@ -321,7 +321,7 @@ binary_sensor:
       inverted: true
 
   - platform: gpio
-    name: Switch 2.2-TR
+    name: IN_10
     id: in_10
     pin:
       pcf8574: pcf_inputs_1to14
@@ -331,7 +331,7 @@ binary_sensor:
       inverted: true
 
   - platform: gpio
-    name: Switch 2.2-BL
+    name: IN_11
     id: in_11
     pin:
       pcf8574: pcf_inputs_1to14
@@ -341,7 +341,7 @@ binary_sensor:
       inverted: true
 
   - platform: gpio
-    name: Switch 2.2-BR
+    name: IN_12
     id: in_12
     pin:
       pcf8574: pcf_inputs_1to14
@@ -351,7 +351,7 @@ binary_sensor:
       inverted: true
 
   - platform: gpio
-    name: Switch 3-TR
+    name: IN_13
     id: in_13
     pin:
       pcf8574: pcf_inputs_1to14
@@ -361,7 +361,7 @@ binary_sensor:
       inverted: true
 
   - platform: gpio
-    name: Switch 3-TL
+    name: IN_14
     id: in_14
     pin:
       pcf8574: pcf_inputs_1to14
@@ -371,7 +371,7 @@ binary_sensor:
       inverted: true
 
   - platform: gpio
-    name: Switch 3-BR
+    name: IN_15
     id: in_15
     pin:
       pcf8574: pcf_inputs_15to28
@@ -381,7 +381,7 @@ binary_sensor:
       inverted: true
 
   - platform: gpio
-    name: Switch 3-BL
+    name: IN_16
     id: in_16
     pin:
       pcf8574: pcf_inputs_15to28
@@ -391,7 +391,7 @@ binary_sensor:
       inverted: true
 
   - platform: gpio
-    name: Switch 6-TL
+    name: IN_17
     id: in_17
     pin:
       pcf8574: pcf_inputs_15to28
@@ -401,7 +401,7 @@ binary_sensor:
       inverted: true
 
   - platform: gpio
-    name: Switch 6-TR
+    name: IN_18
     id: in_18
     pin:
       pcf8574: pcf_inputs_15to28
@@ -411,7 +411,7 @@ binary_sensor:
       inverted: true
 
   - platform: gpio
-    name: Switch 7.3-TL
+    name: IN_19
     id: in_19
     pin:
       pcf8574: pcf_inputs_15to28
@@ -421,7 +421,7 @@ binary_sensor:
       inverted: true
 
   - platform: gpio
-    name: Switch 7.3-TR
+    name: IN_20
     id: in_20
     pin:
       pcf8574: pcf_inputs_15to28
@@ -451,7 +451,7 @@ binary_sensor:
       inverted: true
 
   - platform: gpio
-    name: Switch 9.2-L
+    name: IN_23
     id: in_23
     pin:
       pcf8574: pcf_inputs_15to28
@@ -461,7 +461,7 @@ binary_sensor:
       inverted: true
 
   - platform: gpio
-    name: Switch 9.2-R
+    name: IN_24
     id: in_24
     pin:
       pcf8574: pcf_inputs_15to28
@@ -471,7 +471,7 @@ binary_sensor:
       inverted: true
 
   - platform: gpio
-    name: Switch 11.2-TL
+    name: IN_25
     id: in_25
     pin:
       pcf8574: pcf_inputs_15to28
@@ -481,7 +481,7 @@ binary_sensor:
       inverted: true
 
   - platform: gpio
-    name: Switch 11.2-TR
+    name: IN_26
     id: in_26
     pin:
       pcf8574: pcf_inputs_15to28
@@ -491,7 +491,7 @@ binary_sensor:
       inverted: true
 
   - platform: gpio
-    name: Switch 11.1-TL
+    name: IN_27
     id: in_27
     pin:
       pcf8574: pcf_inputs_15to28
@@ -501,7 +501,7 @@ binary_sensor:
       inverted: true
 
   - platform: gpio
-    name: Switch 11.1-TR
+    name: IN_28
     id: in_28
     pin:
       pcf8574: pcf_inputs_15to28
@@ -511,7 +511,7 @@ binary_sensor:
       inverted: true
 
   - platform: gpio
-    name: Switch 10.1-TL
+    name: IN_29
     id: in_29
     pin:
       pcf8574: pcf_inputs_28to35_menu
@@ -521,7 +521,7 @@ binary_sensor:
       inverted: true
 
   - platform: gpio
-    name: Switch 10.1-TR
+    name: IN_30
     id: in_30
     pin:
       pcf8574: pcf_inputs_28to35_menu
@@ -531,25 +531,14 @@ binary_sensor:
       inverted: true
 
   - platform: gpio
-    name: KT05 (pralnia)
-    id: in_kt_05
+    name: IN_31
+    id: in_31
     pin:
       pcf8574: pcf_inputs_28to35_menu
       number: 2
       mode:
         input: true
       inverted: true
-    # on_state:
-    #   then:
-    #     - if:
-    #         condition:
-    #           binary_sensor.is_on: in_kt_05
-    #         then:
-    #           - switch.turn_off:
-    #               id: light_N
-    #         else:
-    #           - switch.turn_on:
-    #               id: light_N
 
   - platform: gpio
     name: IN_32
