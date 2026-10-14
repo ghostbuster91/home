@@ -206,6 +206,7 @@ packet_transport:
     binary_sensors:
       - bs_mata_on
       - in_01
+      - in_05
       - in_06
     providers:
       - name: boneio-dr-8ch-03-4023d4
