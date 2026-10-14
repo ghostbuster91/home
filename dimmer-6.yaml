@@ -199,6 +199,15 @@ binary_sensor:
     id: r7_in_04
     remote_id: in_04
 
+  - platform: packet_transport
+    provider: boneio-dr-8ch-03-31e2c8
+    id: r7_in_03
+    remote_id: in_03
+    on_click:
+      then:
+        - light.turn_off: light_s
+        - light.turn_off: light_q
+
 # Turns off only this dimmer's lights, pressed by the HA "all lights off"
 # automation (a reliable per-dimmer path parallel to dimmer-1's UDP broadcast).
 button:
