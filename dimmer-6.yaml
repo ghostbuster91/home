@@ -89,7 +89,7 @@ packet_transport:
     binary_sensors:
       - in_01
       - in_06
-      - in_07
+      - in_08
     providers:
       - name: boneio-dr-8ch-03-32ce68
         encryption: !secret dimmer-1-enc_key
