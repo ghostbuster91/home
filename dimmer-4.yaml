@@ -222,6 +222,12 @@ binary_sensor:
         - light.turn_off: light_k
         - light.turn_off: light_l1
 
+  # dimmer-6 button in_07 (317): click-toggle + hold-dim light_c (see hold_dim_button).
+  - platform: packet_transport
+    provider: boneio-dr-8ch-03-32b610
+    id: r6_in_07
+    remote_id: in_07
+
   - platform: packet_transport
     provider: boneio-dr-8ch-03-32ce68
     id: r1_in_05
@@ -259,6 +265,9 @@ hold_dim_button:
   - id: dim_btn_r1_07
     input: r1_in_07
     <<: *light_k
+  - id: dim_btn_r6_07
+    input: r6_in_07
+    <<: *light_c
 
 light:
   - platform: cwww
