@@ -64,7 +64,7 @@ packages:
     files:
       - path: sdm120m.yaml
         vars:
-          device_name: "Licznik prądu - piekarnik"
+          device_name: "Licznik prądu - lodówka"
           modbus_device_id: "sdm120_01"
           modbus_device_address: "0x65"
           modbus_id: "boneio_modbus"
@@ -75,7 +75,7 @@ packages:
     files:
       - path: sdm120m.yaml
         vars:
-          device_name: "Licznik prądu - lodówka"
+          device_name: "Licznik prądu - piekarnik"
           modbus_device_id: "sdm120_02"
           modbus_device_address: "0x66"
           modbus_id: "boneio_modbus"
