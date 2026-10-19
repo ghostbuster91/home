@@ -87,6 +87,7 @@ packet_transport:
     rolling_code_enable: false
     encryption: !secret dimmer-4-enc_key
     binary_sensors:
+      - in_01
       - in_04
     providers:
       - name: boneio-dr-8ch-03-4023d4
@@ -108,6 +109,13 @@ binary_sensor:
       mode:
         input: true
       inverted: true
+    # "All lights off except light_k": light_c/light_l1 are local, every other
+    # dimmer turns off its own lights by listening to this sensor over
+    # packet_transport (see the export above).
+    on_click:
+      then:
+        - light.turn_off: light_c
+        - light.turn_off: light_l1
 
   - platform: gpio
     name: "6.1 (154)"
@@ -216,11 +224,7 @@ binary_sensor:
     provider: boneio-dr-8ch-03-32b610
     id: r6_in_06
     remote_id: in_06
-    on_click:
-      then:
-        - light.turn_off: light_c
-        - light.turn_off: light_k
-        - light.turn_off: light_l1
+    on_click: *all_off_local
 
   # dimmer-6 button in_08 (318): click-toggle + hold-dim light_c (see hold_dim_button).
   - platform: packet_transport
@@ -233,11 +237,7 @@ binary_sensor:
     provider: boneio-24-sw-07-737d50
     id: r24_in_06
     remote_id: in_06
-    on_click:
-      then:
-        - light.turn_off: light_c
-        - light.turn_off: light_k
-        - light.turn_off: light_l1
+    on_click: *all_off_local
 
   # boneio-24 button 337 (in_05): click-toggle + hold-dim light_c (see hold_dim_button).
   - platform: packet_transport

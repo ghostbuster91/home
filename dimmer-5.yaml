@@ -92,6 +92,8 @@ packet_transport:
         encryption: !secret boneio-1-enc_key
       - name: boneio-dr-8ch-03-32b610
         encryption: !secret dimmer-6-enc_key
+      - name: boneio-dr-8ch-03-39835c
+        encryption: !secret dimmer-4-enc_key
 
 binary_sensor:
   - platform: gpio
@@ -195,11 +197,7 @@ binary_sensor:
     provider: boneio-dr-8ch-03-32b610
     id: r6_in_06
     remote_id: in_06
-    on_click:
-      then:
-        - light.turn_off: light_m1
-        - light.turn_off: light_m2
-        - light.turn_off: light_l2
+    on_click: *all_off_local
 
   # boneio-24 button 333 (in_06): turn off all lights except the bedroom.
   # light_n is intentionally left on, matching the other all-off paths here.
@@ -207,11 +205,15 @@ binary_sensor:
     provider: boneio-24-sw-07-737d50
     id: r24_in_06
     remote_id: in_06
-    on_click:
-      then:
-        - light.turn_off: light_m1
-        - light.turn_off: light_m2
-        - light.turn_off: light_l2
+    on_click: *all_off_local
+
+  # dimmer-4 button 153 (in_01): turn off all lights except light_k (study).
+  # light_n is left on here, same as the other all-off paths.
+  - platform: packet_transport
+    provider: boneio-dr-8ch-03-39835c
+    id: r4_in_01
+    remote_id: in_01
+    on_click: *all_off_local
 
 # Turns off only this dimmer's lights, pressed by the HA "all lights off"
 # automation (a reliable per-dimmer path parallel to dimmer-1's UDP broadcast).

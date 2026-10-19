@@ -96,6 +96,8 @@ packet_transport:
         encryption: !secret dimmer-6-enc_key
       - name: boneio-24-sw-07-737d50
         encryption: !secret boneio-1-enc_key
+      - name: boneio-dr-8ch-03-39835c
+        encryption: !secret dimmer-4-enc_key
 
 binary_sensor:
   - platform: gpio
@@ -107,7 +109,9 @@ binary_sensor:
       mode:
         input: true
       inverted: true
-    on_click:
+    # Turns off the local lights and pulses udp_all_off so every other device
+    # turns off its own lights too.
+    on_click: &all_off_broadcast
       then:
         - light.turn_off: light_a1_d1
         - light.turn_off: light_b1_b2
@@ -190,7 +194,7 @@ binary_sensor:
     provider: boneio-dr-8ch-03-32b610
     id: r6_in_06
     remote_id: in_06
-    on_click:
+    on_click: &all_off_local
       then:
         - light.turn_off: light_a1_d1
         - light.turn_off: light_b1_b2
@@ -200,10 +204,14 @@ binary_sensor:
     provider: boneio-24-sw-07-737d50
     id: r24_in_06
     remote_id: in_06
-    on_click:
-      then:
-        - light.turn_off: light_a1_d1
-        - light.turn_off: light_b1_b2
+    on_click: *all_off_local
+
+  # dimmer-4 button 153 (in_01): turn off all lights except light_k (study).
+  - platform: packet_transport
+    provider: boneio-dr-8ch-03-39835c
+    id: r4_in_01
+    remote_id: in_01
+    on_click: *all_off_local
 
   - platform: template
     id: udp_all_off
@@ -212,17 +220,7 @@ binary_sensor:
 button:
   - platform: template
     name: "Wyłącz wszystkie światła"
-    on_press:
-      then:
-        - light.turn_off: light_a1_d1
-        - light.turn_off: light_b1_b2
-        - binary_sensor.template.publish:
-            id: udp_all_off
-            state: true
-        - delay: 150ms
-        - binary_sensor.template.publish:
-            id: udp_all_off
-            state: false
+    on_press: *all_off_broadcast
 
   # Turns off only this dimmer's lights. Pressed by the HA "all lights off"
   # automation, which presses this button on every dimmer directly (bypassing
@@ -230,10 +228,7 @@ button:
   - platform: template
     name: "Wyłącz wszystkie światła HA"
     id: ha_all_off
-    on_press:
-      then:
-        - light.turn_off: light_a1_d1
-        - light.turn_off: light_b1_b2
+    on_press: *all_off_local
 
 hold_dim_button:
   - id: dim_btn_01
