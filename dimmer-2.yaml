@@ -180,9 +180,6 @@ binary_sensor:
       mode:
         input: true
       inverted: true
-    on_click:
-      then:
-        - light.toggle: light_f
 
   # dimmer-3 buttons in_01/in_02 toggle+dim dimmer-2 lights via hold_dim_button
   # below; in_03 turns the bedroom lights off. The lights live here on dimmer-2.
@@ -278,6 +275,9 @@ hold_dim_button:
     input: in_06
     <<: *light_f
   - id: dim_btn_08
+    input: in_08
+    <<: *light_f
+  - id: dim_btn_r301
     input: r3_in_01
     light_id: light_i
   - id: dim_btn_09
