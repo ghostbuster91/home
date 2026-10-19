@@ -1,0 +1,69 @@
+# One heating zone: an Ampio room temperature imported from Home Assistant, a
+# thermoelectric valve on a relay output, and a local thermostat tying the two
+# together. The temperature rides the API connection that already exists for HA -
+# no second network client on the device - while the control loop itself stays
+# local, so the timers and hysteresis don't depend on HA round-trips.
+#
+# HA is where the Ampio side is wired: its MQTT integration turns
+# ampio/from/<mac>/state/t/<n> into the sensor entity named in temp_entity.
+#
+# Instantiate once per zone from packages: with vars
+#   zone_id       - slug used for entity ids (ascii, no spaces)
+#   zone_label    - friendly name shown in HA
+#   temp_entity   - HA entity_id carrying this room's temperature
+#   valve_output  - output id from boards/24x16_output.yaml
+# target_home / target_eco are optional and fall back to the defaults below.
+defaults:
+  target_home: "21.5"
+  target_eco: "19"
+
+sensor:
+  - platform: homeassistant
+    id: temp_${zone_id}
+    entity_id: ${temp_entity}
+    # Internal: the source is already an HA entity, so re-exporting it would just
+    # duplicate it. The thermostat publishes the value as its current_temperature.
+    internal: true
+    unit_of_measurement: "°C"
+    device_class: temperature
+    accuracy_decimals: 1
+    filters:
+      # Ampio reports only when the reading changes, so this has to be generous or
+      # a stable room trips it. On timeout the filter emits NAN, which forces the
+      # thermostat action to OFF and closes the valve - the fail-safe for a dead
+      # sensor or an HA outage that stops the updates.
+      - timeout: 3h
+
+switch:
+  - platform: output
+    id: valve_${zone_id}
+    name: "Zaworek - ${zone_label}"
+    output: ${valve_output}
+    restore_mode: ALWAYS_OFF
+
+climate:
+  - platform: thermostat
+    id: termostat_${zone_id}
+    name: "Ogrzewanie - ${zone_label}"
+    sensor: temp_${zone_id}
+
+    # Thermoelectric actuators need ~3 min to open or close, so keep cycles long.
+    min_heating_off_time: 300s
+    min_heating_run_time: 300s
+    min_idle_time: 150s
+
+    heat_deadband: 0.3
+    heat_overrun: 0.2
+
+    heat_action:
+      - switch.turn_on: valve_${zone_id}
+    idle_action:
+      - switch.turn_off: valve_${zone_id}
+
+    default_preset: Home
+    preset:
+      - name: Home
+        default_target_temperature_low: ${target_home}
+        mode: heat
+      - name: Eco
+        default_target_temperature_low: ${target_eco}

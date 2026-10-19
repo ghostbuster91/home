@@ -47,6 +47,39 @@ packages:
   # Inlined from boards/24x16_output.yaml so the curtain channels can be driven
   # as gpio switches with interlock (see switch: section below).
   outputs: !include boards/24x16_output.yaml
+  # Heating zones. Room temperatures are imported from Home Assistant, which gets
+  # them off the Ampio mserver's MQTT broker (ampio/from/<mac>/state/t/1 ->
+  # sensor.ampio_<room>_temp); each zone drives one thermoelectric valve.
+  zone_lazienka: !include
+    file: zones/heating_zone.yaml
+    vars:
+      zone_id: lazienka
+      zone_label: Łazienka
+      temp_entity: sensor.czujnik_lazienka # ampio/from/1B6B0/state/t/1
+      valve_output: out_21
+      target_home: "23"
+      target_eco: "21"
+  zone_sypialnia: !include
+    file: zones/heating_zone.yaml
+    vars:
+      zone_id: sypialnia
+      zone_label: Sypialnia
+      temp_entity: sensor.homelab_temp1_temperature # ampio/from/1C60E/state/t/1
+      valve_output: out_19
+  zone_salon: !include
+    file: zones/heating_zone.yaml
+    vars:
+      zone_id: salon
+      zone_label: Salon
+      temp_entity: sensor.czujnik_salon # ampio/from/1C625/state/t/1
+      valve_output: out_22
+  zone_gabinet: !include
+    file: zones/heating_zone.yaml
+    vars:
+      zone_id: gabinet
+      zone_label: Gabinet
+      temp_entity: sensor.czujnik_gabinet # ampio/from/1C6ED/state/t/1
+      valve_output: out_20
   sdm630:
     url: https://github.com/boneIO-eu/esphome_packages
     ref: 4c88a2ca9a76f9e483d5f79333ee5437395712b1
