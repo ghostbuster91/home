@@ -32,7 +32,7 @@ SINGLE_SCHEMA = cv.Schema({
     cv.Required(CONF_INPUT): cv.use_id(binary_sensor.BinarySensor),
     cv.Required(CONF_LIGHT_ID): cv.ensure_list(LIGHT_ENTRY_SCHEMA),
 
-    cv.Optional(CONF_BRIGHTNESS, default=0.9): cv.float_range(0.0, 1.0),
+    cv.Optional(CONF_BRIGHTNESS, default=1.0): cv.float_range(0.0, 1.0),
     cv.Optional(CONF_THRESHOLD, default=0.5): cv.float_range(0.0, 1.0),
     cv.Optional(CONF_STEP, default=0.05): cv.float_range(0.001, 1.0),
     cv.Optional(CONF_MIN_BRIGHTNESS, default=0.3): cv.float_range(0.0, 1.0),
