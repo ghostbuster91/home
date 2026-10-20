@@ -33,7 +33,7 @@ CI (`.github/workflows/main.yml`) only builds `boneio-24-sw-07-737d50.yaml` and 
 
 **Custom external component `hold_dim_button`.** Lives in `components/hold_dim_button/` and is loaded by every dimmer via `external_components: - source: { type: local, path: ./components }`. Implements click-vs-hold semantics for a single binary_sensor driving one or more lights. `light_id` accepts either a single id or a list; a list makes the button act on all lights as one group:
 
-- Short press toggles the light(s). With a list it's a group toggle: if _any_ light is on, all turn off; otherwise all turn on at the configured default `brightness`. (So a single light is just the one-element case.)
+- Short press toggles the light(s). With a list it's a group toggle that re-syncs before it turns off: if _all_ lights are on, they all turn off; otherwise every light in the group is set to the configured default `brightness` — including the ones already on, so they snap back to the default too. So from a partially-on group the first click brings the whole group to the default and the next one turns everything off. (A single light is just the one-element case: on ↔ off.)
 - Holding past `hold_delay` enters dim mode and steps brightness by `step` every `step_interval`. Each new hold reverses direction. Holding from OFF turns on at `min_brightness` and dims up. With a list, all lights dim together, driven from the brightest member so they re-sync.
 - Python schema in `__init__.py` defines the YAML config; C++ runtime in `hold_dim_button.{h,cpp}`. When changing the schema, update both sides and re-run `esphome config <dimmer>.yaml`.
 

@@ -38,6 +38,7 @@ namespace esphome {
 
           // Group helpers: the button acts on all its lights together.
           bool any_on_() const;              // is at least one light on?
+          bool all_on_() const;              // are all lights on?
           void turn_on_all_at_min_();        // turn each light on at its own min (used when starting from OFF)
           // One dim step across the group: each on-light moves by `step` toward
           // its own min (down) or max (up), clamped at that limit. Lights that have

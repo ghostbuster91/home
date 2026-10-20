@@ -28,6 +28,14 @@ bool HoldDimButton::any_on_() const {
   return false;
 }
 
+bool HoldDimButton::all_on_() const {
+  for (auto &e : lights_) {
+    if (e.light != nullptr && !e.light->current_values.is_on())
+      return false;
+  }
+  return true;
+}
+
 bool HoldDimButton::dim_step_(bool down) {
   bool any_changed = false;
   for (auto &e : lights_) {
@@ -156,8 +164,11 @@ void HoldDimButton::on_release_() {
 void HoldDimButton::on_click_() {
   if (lights_.empty()) return;
 
-  // Group toggle: if any light is on, turn them all off; otherwise turn them all on.
-  if (any_on_()) {
+  // Group toggle: turning off only happens once the whole group is on. While any
+  // light is still off a click instead brings the whole group to the default
+  // brightness (the on ones included), so the group re-syncs on "all on" and only
+  // the next click turns everything off.
+  if (all_on_()) {
     turn_off_all_();
     ESP_LOGD(TAG, "Click -> all off");
   } else {
