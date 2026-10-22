@@ -39,6 +39,8 @@ CI (`.github/workflows/main.yml`) only builds `boneio-24-sw-07-737d50.yaml` and 
 
 **Light topology.** Dimmer boards expose ESPHome `light` entities (`monochromatic` or `cwww`) wired to PCA9685 outputs (`chl01`..`chr04`) declared in the upstream `boards/dimmer_output.yaml`. `hold_dim_button` entries target these `light_*` IDs by id.
 
+**Water valves.** The four motorised water valves (kitchen/bathroom × hot/cold) are not raw relay switches: `valves/water_valve.yaml` is instantiated once per valve from `packages:` and turns two relay outputs into one `valve` entity. The hardware rule is the valve's own: voltage on red + green opens, voltage on red alone closes, no voltage leaves it where it is. The relays stay latched in the commanded combination (the valve's limit switches cut the motor), and `restore_mode: RESTORE_AND_CALL` re-drives them after a reboot. The two output switches are `internal: true` so nothing can energise green without red. Feedback cores exist on the valves (white + blue shorted = closed, yellow + orange = open) but are not wired to the board yet.
+
 **Wall-switch binary_sensor naming.** Every `binary_sensor` on a dimmer/switch board carries a `name` of the form `"<switch>.<group> (NNN)"`, e.g. `"3.1 (213)"`. The number in parentheses encodes the wiring:
 
 - The **first two digits** identify the cable (przewód), the **third digit** identifies the core (żyła) within that cable. So `213` = cable 21, core 3; `418` = cable 41, core 8.

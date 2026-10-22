@@ -1,0 +1,69 @@
+# One motorised water valve on two relay outputs.
+#
+# The valve has no spring return and no position feedback. Its datasheet states
+# the control rules in terms of its own wire colours, so this package keeps them:
+#
+#   voltage on red + green -> valve opens
+#   voltage on red alone   -> valve closes
+#   no voltage             -> motor idle, valve stays where it is
+#
+# Internal limit switches cut the motor at the end of travel, so the relays are
+# left latched in the commanded combination instead of being pulsed. That costs
+# the valve's standby current but makes the position deterministic: the two
+# relays *are* the commanded state, so a reboot (restore_mode below) re-drives
+# the valve to it rather than leaving it wherever the outage caught it.
+#
+# Ordering inside the actions matters. Red alone means CLOSE, so opening raises
+# green first and only then red - otherwise the valve would twitch towards
+# closed for one I2C write. Closing is the reverse: drop green, then make sure
+# red is energised.
+#
+# The valves also carry a feedback harness that is not wired to the board yet:
+# white + blue shorted means closed, yellow + orange shorted means open. Once two
+# board inputs per valve are available, add them here as internal binary_sensors
+# and replace optimistic/assumed_state with a lambda reading them - the actions
+# below stay as they are, only the reported state stops being an assumption.
+#
+# Instantiate once per valve from packages: with vars
+#   valve_id      - slug used for entity ids (ascii, no spaces)
+#   valve_label   - friendly name shown in HA
+#   red_output    - output id driving the valve's red wire
+#   green_output  - output id driving the valve's green wire
+# Which cable core carries red and which green is wiring, not convention, so
+# note the core colour next to each output at the instantiation site.
+
+switch:
+  # Internal: these two are an implementation detail of the valve entity below.
+  # Exposing them would let HA (or a stray automation) produce green without
+  # red - the one combination the datasheet has no meaning for.
+  - platform: output
+    id: valve_${valve_id}_red
+    output: ${red_output}
+    internal: true
+    restore_mode: ALWAYS_OFF
+  - platform: output
+    id: valve_${valve_id}_green
+    output: ${green_output}
+    internal: true
+    restore_mode: ALWAYS_OFF
+
+valve:
+  - platform: template
+    id: valve_${valve_id}
+    name: "Zawór - ${valve_label}"
+    device_class: water
+    # No feedback from the valve, so the entity is the only source of truth:
+    # optimistic state, assumed_state so HA keeps both buttons live, and
+    # RESTORE_AND_CALL to re-drive the relays to the last commanded state after
+    # a reboot.
+    optimistic: true
+    assumed_state: true
+    restore_mode: RESTORE_AND_CALL
+    # red + green
+    open_action:
+      - switch.turn_on: valve_${valve_id}_green
+      - switch.turn_on: valve_${valve_id}_red
+    # red alone
+    close_action:
+      - switch.turn_off: valve_${valve_id}_green
+      - switch.turn_on: valve_${valve_id}_red

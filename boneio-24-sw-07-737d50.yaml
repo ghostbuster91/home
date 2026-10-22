@@ -80,6 +80,40 @@ packages:
       zone_label: Gabinet
       temp_entity: sensor.czujnik_gabinet # ampio/from/1C6ED/state/t/1
       valve_output: out_20
+  # Motorised water valves, one package instance per valve. Each pair comes off a
+  # single 4-core cable per room, so the comments map the core colour onto the
+  # valve's own red/green wires: in the brown/blue pair brown is red, in the
+  # white/green pair white is red. Which pair feeds hot and which feeds cold is
+  # not the same in both rooms - in the bathroom they are swapped relative to the
+  # kitchen, so go by the output ids below, not by the colour.
+  valve_kitchen_hot: !include
+    file: valves/water_valve.yaml
+    vars:
+      valve_id: kitchen_hot
+      valve_label: Kuchnia ciepła
+      red_output: out_07 # brown
+      green_output: out_01 # blue
+  valve_kitchen_cold: !include
+    file: valves/water_valve.yaml
+    vars:
+      valve_id: kitchen_cold
+      valve_label: Kuchnia zimna
+      red_output: out_04 # white
+      green_output: out_10 # green
+  valve_bathroom_hot: !include
+    file: valves/water_valve.yaml
+    vars:
+      valve_id: bathroom_hot
+      valve_label: Łazienka ciepła
+      red_output: out_05 # white
+      green_output: out_11 # green
+  valve_bathroom_cold: !include
+    file: valves/water_valve.yaml
+    vars:
+      valve_id: bathroom_cold
+      valve_label: Łazienka zimna
+      red_output: out_08 # brown
+      green_output: out_02 # blue
   sdm630:
     url: https://github.com/boneIO-eu/esphome_packages
     ref: 4c88a2ca9a76f9e483d5f79333ee5437395712b1
@@ -667,32 +701,8 @@ sensor:
     id: temp_mata
 
 switch:
-
-  - platform: output
-    id: valve_kitchen_hot_blue
-    output: out_01
-  - platform: output
-    id: valve_kitchen_hot_brown
-    output: out_07
-  - platform: output
-    id: valve_kitchen_cold_white
-    output: out_04
-  - platform: output
-    id: valve_kitchen_cold_green
-    output: out_10
-
-  - platform: output
-    id: valve_bathroom_hot_blue
-    output: out_02
-  - platform: output
-    id: valve_bathroom_hot_brown
-    output: out_08
-  - platform: output
-    id: valve_bathroom_cold_white
-    output: out_05
-  - platform: output
-    id: valve_bathroom_cold_green
-    output: out_11
+  # The water valves used to sit here as eight raw output switches; they are now
+  # four valve entities built from valves/water_valve.yaml (see packages: above).
 
   - platform: output
     id: mata_grzewcza
