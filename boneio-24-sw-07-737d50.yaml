@@ -88,7 +88,7 @@ packages:
         vars:
           device_name: "Licznik prądu - kuchenka"
           modbus_device_id: "sdm630"
-          modbus_device_address: "0x01"
+          modbus_device_address: "0xC9"
           modbus_id: "boneio_modbus"
           update_interval: "60s"
   sdm120_01:
@@ -211,6 +211,20 @@ packages:
           device_name: "Licznik prądu - Mata grzewcza"
           modbus_device_id: "sdm120_11"
           modbus_device_address: "0x6f"
+          modbus_id: "boneio_modbus"
+          update_interval: "60s"
+
+  # SHT40 temp/humidity na RS-485. Nowszy ref niż liczniki SDM: ten plik nie
+  # istnieje jeszcze w commicie 4c88a2ca.
+  boneio_edge_temp:
+    url: https://github.com/boneIO-eu/esphome_packages
+    ref: e706289535c90b82e36bb59b304c7342854c6312
+    files:
+      - path: boneio-edge-temp.yaml
+        vars:
+          device_name: "boneIO Edge Temp"
+          modbus_device_id: "boneio_edge_temp"
+          modbus_device_address: "0x01" # musi zgadzać się z adresem ustawionym na czujniku
           modbus_id: "boneio_modbus"
           update_interval: "60s"
 
@@ -385,25 +399,29 @@ binary_sensor:
         input: true
       inverted: true
 
+  # on = door open, which is exactly what HA's `door` class means
   - platform: gpio
-    name: IN_13
+    name: "Czujnik otwarcia drzwi"
     id: in_13
+    device_class: door
     pin:
       pcf8574: pcf_inputs_1to14
       number: 13
       mode:
         input: true
-      inverted: true
+      inverted: false
 
   - platform: gpio
-    name: IN_14
+    name: "Czujnik zasuwy drzwi"
     id: in_14
+    device_class: lock
+    # The pin reads off = bolt thrown (locked)
     pin:
       pcf8574: pcf_inputs_1to14
       number: 14
       mode:
         input: true
-      inverted: true
+      inverted: false
 
   - platform: gpio
     name: IN_15
@@ -649,10 +667,37 @@ sensor:
     id: temp_mata
 
 switch:
+
+  - platform: output
+    id: valve_kitchen_hot_blue
+    output: out_01
+  - platform: output
+    id: valve_kitchen_hot_brown
+    output: out_07
+  - platform: output
+    id: valve_kitchen_cold_white
+    output: out_04
+  - platform: output
+    id: valve_kitchen_cold_green
+    output: out_10
+
+  - platform: output
+    id: valve_bathroom_hot_blue
+    output: out_02
+  - platform: output
+    id: valve_bathroom_hot_brown
+    output: out_08
+  - platform: output
+    id: valve_bathroom_cold_white
+    output: out_05
+  - platform: output
+    id: valve_bathroom_cold_green
+    output: out_11
+
   - platform: output
     id: mata_grzewcza
     name: "Mata grzewcza"
-    output: out_01
+    output: out_24
 
   # The curtain channels (out_13..out_18) are defined as interlocked
   # gpio switch pairs in boards/24x16_output.yaml:
