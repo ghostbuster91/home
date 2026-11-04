@@ -67,6 +67,16 @@ time:
     timezone: Europe/Warsaw
     id: homeassistant_time
 
+# A click inside this window turns the group on at night_brightness instead of
+# brightness. Merged into every hold_dim_button entry below via `<<: *night_mode`.
+# The clock comes from Home Assistant (see time: above), so until it syncs after a
+# reboot the day brightness applies.
+.night_mode: &night_mode
+  time_id: homeassistant_time
+  night_brightness: 0.3
+  night_start: "20:00"
+  night_end: "05:00"
+
 text_sensor:
   - platform: version
     name: boneio-dimmer- Version
@@ -261,42 +271,50 @@ hold_dim_button:
   # (any on -> all off, else all on); a hold dims all three together.
   - id: dim_btn_01
     input: in_01
-    <<: &light_f
-      light_id:
-        - id: light_f
-          min_brightness: 0.2
-        - &e1_dim
-          id: light_e1
-          min_brightness: 0.1
-        - &e2_dim
-          id: light_e2
-          min_brightness: 0.1
+    <<:
+      - *night_mode
+      - &light_f
+        light_id:
+          - id: light_f
+            min_brightness: 0.2
+          - &e1_dim
+            id: light_e1
+            min_brightness: 0.1
+          - &e2_dim
+            id: light_e2
+            min_brightness: 0.1
   - id: dim_btn_02
+    <<: *night_mode
     input: in_02
     light_id: *e2_dim
   - id: dim_btn_03
+    <<: *night_mode
     input: in_03
     light_id: *e1_dim
   - id: dim_btn_05
+    <<: *night_mode
     input: in_05
     light_id: [*e1_dim, *e2_dim]
   - id: dim_btn_06
     input: in_06
-    <<: *light_f
+    <<: [*night_mode, *light_f]
   - id: dim_btn_08
     input: in_08
-    <<: *light_f
+    <<: [*night_mode, *light_f]
   - id: dim_btn_r301
+    <<: *night_mode
     input: r3_in_01
     light_id: light_i
   - id: dim_btn_09
     input: r3_in_02
-    <<: &light_f_single
-      light_id: light_f
-      min_brightness: 0.2
+    <<:
+      - *night_mode
+      - &light_f_single
+        light_id: light_f
+        min_brightness: 0.2
   - id: dim_btn_12
     input: r3_in_08
-    <<: *light_f_single
+    <<: [*night_mode, *light_f_single]
 
 light:
   - platform: monochromatic

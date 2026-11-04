@@ -67,6 +67,16 @@ time:
     timezone: Europe/Warsaw
     id: homeassistant_time
 
+# A click inside this window turns the group on at night_brightness instead of
+# brightness. Merged into every hold_dim_button entry below via `<<: *night_mode`.
+# The clock comes from Home Assistant (see time: above), so until it syncs after a
+# reboot the day brightness applies.
+.night_mode: &night_mode
+  time_id: homeassistant_time
+  night_brightness: 0.3
+  night_start: "20:00"
+  night_end: "05:00"
+
 text_sensor:
   - platform: version
     name: boneio-dimmer- Version
@@ -230,24 +240,31 @@ button:
 
 hold_dim_button:
   - id: dim_btn_r1_01
+    <<: *night_mode
     input: r_boneio1_in_01
     light_id: light_n
   - id: dim_btn_04
+    <<: *night_mode
     input: in_04
     light_id: light_l2
   - id: dim_btn_02
+    <<: *night_mode
     input: in_02
     light_id: light_m1 # floor
   - id: dim_btn_03
+    <<: *night_mode
     input: in_03
     light_id: light_m2
   - id: dim_btn_06
+    <<: *night_mode
     input: in_06
     light_id: light_m1 # mirror
   - id: dim_btn_07
+    <<: *night_mode
     input: in_07
     light_id: light_m2 # hanging
   - id: dim_btn_08
+    <<: *night_mode
     input: in_08
     light_id: light_l2 # main
 

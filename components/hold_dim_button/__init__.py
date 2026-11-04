@@ -1,11 +1,14 @@
 import esphome.codegen as cg
 import esphome.config_validation as cv
-from esphome.components import binary_sensor, light
-from esphome.const import CONF_ID
+from esphome.components import binary_sensor, light, time as time_
+from esphome.const import CONF_ID, CONF_TIME_ID
 
 CONF_INPUT = "input"
 CONF_LIGHT_ID = "light_id"
 CONF_BRIGHTNESS = "brightness"
+CONF_NIGHT_BRIGHTNESS = "night_brightness"
+CONF_NIGHT_START = "night_start"
+CONF_NIGHT_END = "night_end"
 CONF_THRESHOLD = "threshold"
 CONF_STEP = "step"
 CONF_MIN_BRIGHTNESS = "min_brightness"
@@ -15,6 +18,10 @@ CONF_TRANSITION = "transition"
 
 hold_dim_ns = cg.esphome_ns.namespace("hold_dim_button")
 HoldDimButton = hold_dim_ns.class_("HoldDimButton", cg.Component)
+
+# The C++ header includes time/real_time_clock.h, so the time component's sources
+# must be in the build even on a button that doesn't use the night window.
+DEPENDENCIES = ["time"]
 
 # A light entry is either a bare light id (uses the button-level min_brightness)
 # or a mapping {id: <light>, min_brightness: <float>} to override the minimum
@@ -33,6 +40,15 @@ SINGLE_SCHEMA = cv.Schema({
     cv.Required(CONF_LIGHT_ID): cv.ensure_list(LIGHT_ENTRY_SCHEMA),
 
     cv.Optional(CONF_BRIGHTNESS, default=1.0): cv.float_range(0.0, 1.0),
+
+    # Night window: a click inside it turns the group on at `night_brightness`
+    # instead of `brightness`. Only active when `time_id` is given; the window may
+    # wrap midnight (the default 20:00 -> 05:00 does).
+    cv.Optional(CONF_TIME_ID): cv.use_id(time_.RealTimeClock),
+    cv.Optional(CONF_NIGHT_BRIGHTNESS, default=0.3): cv.float_range(0.0, 1.0),
+    cv.Optional(CONF_NIGHT_START, default="20:00"): cv.time_of_day,
+    cv.Optional(CONF_NIGHT_END, default="05:00"): cv.time_of_day,
+
     cv.Optional(CONF_THRESHOLD, default=0.5): cv.float_range(0.0, 1.0),
     cv.Optional(CONF_STEP, default=0.05): cv.float_range(0.001, 1.0),
     cv.Optional(CONF_MIN_BRIGHTNESS, default=0.3): cv.float_range(0.0, 1.0),
@@ -42,6 +58,12 @@ SINGLE_SCHEMA = cv.Schema({
 }).extend(cv.COMPONENT_SCHEMA)
 
 CONFIG_SCHEMA = cv.ensure_list(SINGLE_SCHEMA)
+
+
+def _minutes_of_day(tod):
+    # cv.time_of_day yields {"hour": .., "minute": .., "second": ..}; seconds are
+    # irrelevant for a window this coarse, so they're dropped.
+    return tod["hour"] * 60 + tod["minute"]
 
 async def to_code(config):
     for conf in config:
@@ -62,6 +84,17 @@ async def to_code(config):
             cg.add(var.add_light(l, min_brightness))
 
         cg.add(var.set_brightness(conf[CONF_BRIGHTNESS]))
+
+        # No time_id -> night mode stays off (night_brightness_ keeps its < 0 sentinel).
+        if CONF_TIME_ID in conf:
+            rtc = await cg.get_variable(conf[CONF_TIME_ID])
+            cg.add(var.set_time(rtc))
+            cg.add(var.set_night_brightness(conf[CONF_NIGHT_BRIGHTNESS]))
+            cg.add(var.set_night_window(
+                _minutes_of_day(conf[CONF_NIGHT_START]),
+                _minutes_of_day(conf[CONF_NIGHT_END]),
+            ))
+
         cg.add(var.set_threshold(conf[CONF_THRESHOLD]))
         cg.add(var.set_step(conf[CONF_STEP]))
         cg.add(var.set_hold_delay_ms(conf[CONF_HOLD_DELAY]))

@@ -4,6 +4,7 @@
 #include "esphome/core/component.h"
 #include "esphome/components/binary_sensor/binary_sensor.h"
 #include "esphome/components/light/light_state.h"
+#include "esphome/components/time/real_time_clock.h"
 
 namespace esphome {
     namespace hold_dim_button {
@@ -16,6 +17,13 @@ namespace esphome {
           }
 
           void set_brightness(float b) { brightness_ = clamp(b, 0.0f, 1.0f); }
+          void set_time(time::RealTimeClock *t) { this->time_ = t; }
+          void set_night_brightness(float b) { night_brightness_ = clamp(b, 0.0f, 1.0f); }
+          // Window as minutes since midnight; start > end means it wraps midnight.
+          void set_night_window(uint16_t start_min, uint16_t end_min) {
+            night_start_min_ = start_min;
+            night_end_min_ = end_min;
+          }
           void set_threshold(float t) { threshold_ = clamp(t, 0.0f, 1.0f); }
           void set_step(float s) { step_ = clamp(s, 0.001f, 1.0f); }
           void set_hold_delay_ms(uint32_t d) { hold_delay_ms_ = d; }
@@ -48,6 +56,14 @@ namespace esphome {
           void turn_off_all_();
           void turn_on_all_(float b);
 
+          // Brightness a click should turn the group on at. Normally `brightness`,
+          // but `night_brightness` while the clock is inside the night window.
+          // Falls back to `brightness` when night mode is off, no time source is
+          // configured, or the clock has not synced yet (HA may not be up right
+          // after a reboot) — better one bright turn-on than dimming at noon.
+          float effective_brightness_() const;
+          bool is_night_() const;
+
           bool raw_state_{false};
           bool last_raw_state_{false};
 
@@ -61,9 +77,13 @@ namespace esphome {
 
           std::vector<LightEntry> lights_;
           binary_sensor::BinarySensor *input_{nullptr};
+          time::RealTimeClock *time_{nullptr};
 
           // Params
           float brightness_;
+          float night_brightness_{-1.0f};  // < 0 disables night mode
+          uint16_t night_start_min_{0};
+          uint16_t night_end_min_{0};
           float threshold_;
           float step_;
           uint32_t hold_delay_ms_;

@@ -13,6 +13,11 @@ void HoldDimButton::setup() {
   }
   ESP_LOGW(TAG, "CONFIG: lights=%u step=%.3f thresh=%.3f initial=%.3f",
          (unsigned) lights_.size(), step_, threshold_, brightness_);
+  if (night_brightness_ >= 0.0f && this->time_ != nullptr) {
+    ESP_LOGW(TAG, "CONFIG: night=%.3f between %02u:%02u and %02u:%02u",
+             night_brightness_, night_start_min_ / 60, night_start_min_ % 60,
+             night_end_min_ / 60, night_end_min_ % 60);
+  }
 
   input_->add_on_state_callback([this](bool state) {
     if (state) this->on_press_();
@@ -82,6 +87,31 @@ void HoldDimButton::turn_off_all_() {
     auto call = e.light->turn_off();
     call.perform();
   }
+}
+
+bool HoldDimButton::is_night_() const {
+  auto now = this->time_->now();
+  if (!now.is_valid())
+    return false;
+
+  uint16_t mins = (uint16_t) now.hour * 60 + now.minute;
+  if (night_start_min_ == night_end_min_)
+    return false;  // empty window
+  if (night_start_min_ < night_end_min_)
+    return mins >= night_start_min_ && mins < night_end_min_;
+  return mins >= night_start_min_ || mins < night_end_min_;  // wraps midnight
+}
+
+float HoldDimButton::effective_brightness_() const {
+  if (night_brightness_ < 0.0f || this->time_ == nullptr)
+    return brightness_;
+
+  if (!this->time_->now().is_valid()) {
+    ESP_LOGW(TAG, "Clock not synced yet, using day brightness %.2f", brightness_);
+    return brightness_;
+  }
+
+  return is_night_() ? night_brightness_ : brightness_;
 }
 
 void HoldDimButton::turn_on_all_(float b) {
@@ -172,8 +202,9 @@ void HoldDimButton::on_click_() {
     turn_off_all_();
     ESP_LOGD(TAG, "Click -> all off");
   } else {
-    turn_on_all_(brightness_);
-    ESP_LOGD(TAG, "Click -> all on %.2f", brightness_);
+    float b = effective_brightness_();
+    turn_on_all_(b);
+    ESP_LOGD(TAG, "Click -> all on %.2f%s", b, b != brightness_ ? " (night)" : "");
 
     // After turning on with a click the first hold needs to always dim down
     dir_ = DIM_UP;
