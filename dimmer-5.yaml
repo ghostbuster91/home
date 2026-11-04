@@ -62,6 +62,11 @@ web_server:
   port: 80
   local: true
 
+time:
+  - platform: homeassistant
+    timezone: Europe/Warsaw
+    id: homeassistant_time
+
 text_sensor:
   - platform: version
     name: boneio-dimmer- Version
