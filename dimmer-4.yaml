@@ -301,7 +301,7 @@ light:
     warm_white: chl01
     cold_white: chl02
     cold_white_color_temperature: 6500 K
-    warm_white_color_temperature: 2000 K
+    warm_white_color_temperature: 2700 K
     restore_mode: RESTORE_DEFAULT_OFF
 
   - platform: cwww
