@@ -118,7 +118,9 @@ void HoldDimButton::turn_on_all_(float b) {
   for (auto &e : lights_) {
     if (e.light == nullptr) continue;
     auto call = e.light->turn_on();
-    call.set_brightness(clamp(b, 0.0f, 1.0f));
+    // A light whose own minimum sits above the requested brightness (typically
+    // the night brightness) stops at that minimum instead of going under it.
+    call.set_brightness(clamp(b, e.min_brightness, 1.0f));
     call.perform();
   }
 }

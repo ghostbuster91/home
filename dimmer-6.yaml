@@ -73,8 +73,8 @@ time:
 # reboot the day brightness applies.
 .night_mode: &night_mode
   time_id: homeassistant_time
-  night_brightness: 0.3
-  night_start: "20:00"
+  night_brightness: 0.5
+  night_start: "20:30"
   night_end: "05:00"
 
 text_sensor:
@@ -263,7 +263,11 @@ hold_dim_button:
   - id: dim_btn_04
     <<: *night_mode
     input: in_04
-    light_id: [light_s, light_p, light_o]
+    light_id:
+      - light_s
+      - id: light_p
+        min_brightness: 0.5
+      - light_o
   - id: dim_btn_r7_02
     <<: *night_mode
     input: r7_in_02
