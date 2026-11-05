@@ -67,14 +67,16 @@ time:
     timezone: Europe/Warsaw
     id: homeassistant_time
 
-# A click inside this window turns the group on at night_brightness instead of
-# brightness. Merged into every hold_dim_button entry below via `<<: *night_mode`.
-# The clock comes from Home Assistant (see time: above), so until it syncs after a
-# reboot the day brightness applies.
+# Night policy, merged into every hold_dim_button entry below via
+# `<<: *night_mode`. A click inside the window turns the group on at
+# night_brightness instead of brightness; it is not a ceiling, so a hold still
+# reaches 100%. The clock comes from Home Assistant (see time: above), so until it
+# syncs after a reboot the day level applies. The per-fixture floor is a separate
+# thing and lives on each light as min_brightness.
 .night_mode: &night_mode
   time_id: homeassistant_time
-  night_brightness: 0.3
-  night_start: "20:00"
+  night_brightness: 0.5
+  night_start: "20:30"
   night_end: "05:00"
 
 text_sensor:
@@ -256,10 +258,9 @@ hold_dim_button:
     <<: *night_mode
     input: in_08
     light_id: light_u
-    min_brightness: 0.5
 
 light:
-  - platform: cwww
+  - platform: cwww_dim
     id: light_t
     name: light_t
     cold_white: chl01
@@ -267,7 +268,7 @@ light:
     cold_white_color_temperature: 6500 K
     warm_white_color_temperature: 2000 K
     restore_mode: RESTORE_DEFAULT_OFF
-  - platform: cwww
+  - platform: cwww_dim
     id: light_x
     name: light_x
     cold_white: chl03
@@ -275,7 +276,7 @@ light:
     cold_white_color_temperature: 6500 K
     warm_white_color_temperature: 2700 K
     restore_mode: RESTORE_DEFAULT_OFF
-  - platform: cwww
+  - platform: cwww_dim
     id: light_w
     name: light_w
     cold_white: chr01
@@ -283,9 +284,12 @@ light:
     cold_white_color_temperature: 6500 K
     warm_white_color_temperature: 2700 K
     restore_mode: RESTORE_DEFAULT_OFF
-  - platform: cwww
+  - platform: cwww_dim
     id: light_u
     name: light_u
+    # a 0.5 floor is high, so 1% at night just lands on it
+    min_brightness: 0.5
+    night_brightness: 0.01
     cold_white: chr03
     warm_white: chr04
     cold_white_color_temperature: 6500 K

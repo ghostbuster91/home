@@ -67,14 +67,16 @@ time:
     timezone: Europe/Warsaw
     id: homeassistant_time
 
-# A click inside this window turns the group on at night_brightness instead of
-# brightness. Merged into every hold_dim_button entry below via `<<: *night_mode`.
-# The clock comes from Home Assistant (see time: above), so until it syncs after a
-# reboot the day brightness applies.
+# Night policy, merged into every hold_dim_button entry below via
+# `<<: *night_mode`. A click inside the window turns the group on at
+# night_brightness instead of brightness; it is not a ceiling, so a hold still
+# reaches 100%. The clock comes from Home Assistant (see time: above), so until it
+# syncs after a reboot the day level applies. The per-fixture floor is a separate
+# thing and lives on each light as min_brightness.
 .night_mode: &night_mode
   time_id: homeassistant_time
-  night_brightness: 0.3
-  night_start: "20:00"
+  night_brightness: 0.5
+  night_start: "20:30"
   night_end: "05:00"
 
 text_sensor:
@@ -250,23 +252,21 @@ hold_dim_button:
     <<: *night_mode
     input: in_02
     light_id: light_b1_b2
-    min_brightness: 0.5
   - id: dim_btn_02
+    <<: *night_mode
     input: in_04
-    <<:
-      - *night_mode
-      - &a1_d1
-        light_id: light_a1_d1
-        min_brightness: 0.1
+    light_id: light_a1_d1
   - id: dim_btn_03
+    <<: *night_mode
     input: in_06
-    <<: [*night_mode, *a1_d1]
+    light_id: light_a1_d1
 
 light:
-  - platform: monochromatic
+  - platform: monochromatic_dim
     output: chl1_chr3_pair_output
     name: light_a1_d1
     id: light_a1_d1
+    min_brightness: 0.1
     gamma_correct: 0
     restore_mode: RESTORE_DEFAULT_OFF
   - platform: monochromatic
@@ -274,10 +274,13 @@ light:
     name: "zasilanie a"
     id: light_a2
     restore_mode: ALWAYS_ON
-  - platform: monochromatic
+  - platform: monochromatic_dim
     id: light_b1_b2
     name: light_b1_b2
     output: b_pair_output
+    # a 0.5 floor is high, so 1% at night just lands on it
+    min_brightness: 0.5
+    night_brightness: 0.01
     gamma_correct: 0
     restore_mode: RESTORE_DEFAULT_OFF
   - platform: monochromatic

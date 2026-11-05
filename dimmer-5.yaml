@@ -67,14 +67,16 @@ time:
     timezone: Europe/Warsaw
     id: homeassistant_time
 
-# A click inside this window turns the group on at night_brightness instead of
-# brightness. Merged into every hold_dim_button entry below via `<<: *night_mode`.
-# The clock comes from Home Assistant (see time: above), so until it syncs after a
-# reboot the day brightness applies.
+# Night policy, merged into every hold_dim_button entry below via
+# `<<: *night_mode`. A click inside the window turns the group on at
+# night_brightness instead of brightness; it is not a ceiling, so a hold still
+# reaches 100%. The clock comes from Home Assistant (see time: above), so until it
+# syncs after a reboot the day level applies. The per-fixture floor is a separate
+# thing and lives on each light as min_brightness.
 .night_mode: &night_mode
   time_id: homeassistant_time
-  night_brightness: 0.3
-  night_start: "20:00"
+  night_brightness: 0.5
+  night_start: "20:30"
   night_end: "05:00"
 
 text_sensor:
@@ -269,7 +271,7 @@ hold_dim_button:
     light_id: light_l2 # main
 
 light:
-  - platform: cwww
+  - platform: cwww_dim
     id: light_m1
     name: light_m1
     cold_white: chl01
@@ -277,7 +279,7 @@ light:
     cold_white_color_temperature: 6500 K
     warm_white_color_temperature: 2000 K
     restore_mode: RESTORE_DEFAULT_OFF
-  - platform: cwww
+  - platform: cwww_dim
     id: light_m2
     name: light_m2
     cold_white: chl03
@@ -285,7 +287,7 @@ light:
     cold_white_color_temperature: 6500 K
     warm_white_color_temperature: 2000 K
     restore_mode: RESTORE_DEFAULT_OFF
-  - platform: cwww
+  - platform: cwww_dim
     id: light_l2
     name: light_l2
     cold_white: chr01
@@ -293,7 +295,7 @@ light:
     cold_white_color_temperature: 6500 K
     warm_white_color_temperature: 2000 K
     restore_mode: RESTORE_DEFAULT_OFF
-  - platform: cwww
+  - platform: cwww_dim
     id: light_n
     name: light_n
     cold_white: chr03

@@ -67,14 +67,16 @@ time:
     timezone: Europe/Warsaw
     id: homeassistant_time
 
-# A click inside this window turns the group on at night_brightness instead of
-# brightness. Merged into every hold_dim_button entry below via `<<: *night_mode`.
-# The clock comes from Home Assistant (see time: above), so until it syncs after a
-# reboot the day brightness applies.
+# Night policy, merged into every hold_dim_button entry below via
+# `<<: *night_mode`. A click inside the window turns the group on at
+# night_brightness instead of brightness; it is not a ceiling, so a hold still
+# reaches 100%. The clock comes from Home Assistant (see time: above), so until it
+# syncs after a reboot the day level applies. The per-fixture floor is a separate
+# thing and lives on each light as min_brightness.
 .night_mode: &night_mode
   time_id: homeassistant_time
-  night_brightness: 0.3
-  night_start: "20:00"
+  night_brightness: 0.5
+  night_start: "20:30"
   night_end: "05:00"
 
 text_sensor:
@@ -270,60 +272,51 @@ hold_dim_button:
   # in_01 drives all three as one group: a click toggles them together
   # (any on -> all off, else all on); a hold dims all three together.
   - id: dim_btn_01
+    <<: *night_mode
     input: in_01
-    <<:
-      - *night_mode
-      - &light_f
-        light_id:
-          - id: light_f
-            min_brightness: 0.2
-          - &e1_dim
-            id: light_e1
-            min_brightness: 0.1
-          - &e2_dim
-            id: light_e2
-            min_brightness: 0.1
+    light_id: &group_f_e1_e2 [light_f, light_e1, light_e2]
   - id: dim_btn_02
     <<: *night_mode
     input: in_02
-    light_id: *e2_dim
+    light_id: light_e2
   - id: dim_btn_03
     <<: *night_mode
     input: in_03
-    light_id: *e1_dim
+    light_id: light_e1
   - id: dim_btn_05
     <<: *night_mode
     input: in_05
-    light_id: [*e1_dim, *e2_dim]
+    light_id: [light_e1, light_e2]
   - id: dim_btn_06
+    <<: *night_mode
     input: in_06
-    <<: [*night_mode, *light_f]
+    light_id: *group_f_e1_e2
   - id: dim_btn_08
+    <<: *night_mode
     input: in_08
-    <<: [*night_mode, *light_f]
+    light_id: *group_f_e1_e2
   - id: dim_btn_r301
     <<: *night_mode
     input: r3_in_01
     light_id: light_i
   - id: dim_btn_09
+    <<: *night_mode
     input: r3_in_02
-    <<:
-      - *night_mode
-      - &light_f_single
-        light_id: light_f
-        min_brightness: 0.2
+    light_id: light_f
   - id: dim_btn_12
+    <<: *night_mode
     input: r3_in_08
-    <<: [*night_mode, *light_f_single]
+    light_id: light_f
 
 light:
-  - platform: monochromatic
+  - platform: monochromatic_dim
     output: chl1_2_pair_output
     name: light_f
     id: light_f
+    min_brightness: 0.2
     gamma_correct: 0
     restore_mode: RESTORE_DEFAULT_OFF
-  - platform: cwww
+  - platform: cwww_dim
     id: light_i
     name: light_i
     cold_white: chl03
@@ -331,15 +324,17 @@ light:
     cold_white_color_temperature: 6500 K
     warm_white_color_temperature: 2000 K
     restore_mode: RESTORE_DEFAULT_OFF
-  - platform: monochromatic
+  - platform: monochromatic_dim
     id: light_e2
     name: light_e2
     output: chr1_2_pair_output
+    min_brightness: 0.1
     gamma_correct: 0
     restore_mode: RESTORE_DEFAULT_OFF
-  - platform: monochromatic
+  - platform: monochromatic_dim
     id: light_e1
     name: light_e1
+    min_brightness: 0.1
     gamma_correct: 0
     output: chr3_4_pair_output
     restore_mode: RESTORE_DEFAULT_OFF
