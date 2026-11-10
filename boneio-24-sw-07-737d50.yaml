@@ -749,10 +749,10 @@ cover:
     id: bedroom_left_curtain
     open_action:
       - switch.turn_on: cover_open_02_out16
-    open_duration: 11s
+    open_duration: 14s
     close_action:
       - switch.turn_on: cover_close_02_out15
-    close_duration: 11s
+    close_duration: 14s
     stop_action:
       - switch.turn_off: cover_close_02_out15
       - switch.turn_off: cover_open_02_out16
