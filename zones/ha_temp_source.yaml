@@ -1,0 +1,30 @@
+# Temperature source for a heating zone: a room temperature imported from Home
+# Assistant. Pairs with zones/heating_zone.yaml, which consumes the sensor id
+# this file defines (temp_${zone_id}) and does not create one itself.
+#
+# HA is where the Ampio side is wired: its MQTT integration turns
+# ampio/from/<mac>/state/t/<n> into the sensor entity named in temp_entity.
+#
+# Instantiate once per zone from packages: with vars
+#   zone_id      - slug used for entity ids; must match the heating_zone instance
+#   temp_entity  - HA entity_id carrying this room's temperature
+#   timeout      - optional, see below
+defaults:
+  # Ampio reports only when the reading changes, so this has to be generous or a
+  # stable room trips it. On timeout the filter emits NAN, which forces the
+  # thermostat action to OFF and closes the valve - the fail-safe for a dead
+  # sensor or an HA outage that stops the updates.
+  timeout: 3h
+
+sensor:
+  - platform: homeassistant
+    id: temp_${zone_id}
+    entity_id: ${temp_entity}
+    # Internal: the source is already an HA entity, so re-exporting it would just
+    # duplicate it. The thermostat publishes the value as its current_temperature.
+    internal: true
+    unit_of_measurement: "°C"
+    device_class: temperature
+    accuracy_decimals: 1
+    filters:
+      - timeout: ${timeout}

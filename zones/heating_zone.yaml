@@ -1,38 +1,28 @@
-# One heating zone: an Ampio room temperature imported from Home Assistant, a
-# thermoelectric valve on a relay output, and a local thermostat tying the two
-# together. The temperature rides the API connection that already exists for HA -
-# no second network client on the device - while the control loop itself stays
-# local, so the timers and hysteresis don't depend on HA round-trips.
+# One heating zone: a room temperature, a thermoelectric valve on a relay output,
+# and a local thermostat tying the two together. The control loop stays on the
+# device, so the timers and hysteresis don't depend on HA round-trips.
 #
-# HA is where the Ampio side is wired: its MQTT integration turns
-# ampio/from/<mac>/state/t/<n> into the sensor entity named in temp_entity.
+# This file does NOT define the temperature sensor; it reads whatever
+# temp_sensor_id names. Two ways to feed it:
+#   - imported from HA: instantiate zones/ha_temp_source.yaml with the same
+#     zone_id and leave temp_sensor_id at its default (it defines temp_<zone_id>)
+#   - a sensor already on this device, e.g. a boneIO Edge Temp probe on the
+#     RS-485 bus: pass temp_sensor_id and instantiate no source package. The zone
+#     then needs no HA round-trip and survives an HA or MQTT outage.
+# Either way the source needs a `timeout` filter as its fail-safe - see the
+# source file, or the sensor: !extend block in the device config.
 #
 # Instantiate once per zone from packages: with vars
-#   zone_id       - slug used for entity ids (ascii, no spaces)
-#   zone_label    - friendly name shown in HA
-#   temp_entity   - HA entity_id carrying this room's temperature
-#   valve_output  - output id from boards/24x16_output.yaml
-# target_home / target_eco are optional and fall back to the defaults below.
+#   zone_id        - slug used for entity ids (ascii, no spaces); must match the
+#                    zone_id given to the temperature source package, if any
+#   zone_label     - friendly name shown in HA
+#   valve_output   - output id from boards/24x16_output.yaml
+# temp_sensor_id / target_home / target_eco are optional and fall back to the
+# defaults below.
 defaults:
   target_home: "21.5"
   target_eco: "19"
-
-sensor:
-  - platform: homeassistant
-    id: temp_${zone_id}
-    entity_id: ${temp_entity}
-    # Internal: the source is already an HA entity, so re-exporting it would just
-    # duplicate it. The thermostat publishes the value as its current_temperature.
-    internal: true
-    unit_of_measurement: "°C"
-    device_class: temperature
-    accuracy_decimals: 1
-    filters:
-      # Ampio reports only when the reading changes, so this has to be generous or
-      # a stable room trips it. On timeout the filter emits NAN, which forces the
-      # thermostat action to OFF and closes the valve - the fail-safe for a dead
-      # sensor or an HA outage that stops the updates.
-      - timeout: 3h
+  temp_sensor_id: temp_${zone_id}
 
 switch:
   - platform: output
@@ -45,7 +35,7 @@ climate:
   - platform: thermostat
     id: termostat_${zone_id}
     name: "Ogrzewanie - ${zone_label}"
-    sensor: temp_${zone_id}
+    sensor: ${temp_sensor_id}
 
     # Thermoelectric actuators need ~3 min to open or close, so keep cycles long.
     min_heating_off_time: 300s

@@ -47,38 +47,67 @@ packages:
   # Inlined from boards/24x16_output.yaml so the curtain channels can be driven
   # as gpio switches with interlock (see switch: section below).
   outputs: !include boards/24x16_output.yaml
-  # Heating zones. Room temperatures are imported from Home Assistant, which gets
-  # them off the Ampio mserver's MQTT broker (ampio/from/<mac>/state/t/1 ->
-  # sensor.ampio_<room>_temp); each zone drives one thermoelectric valve.
+  # Heating zones. Each zone is a thermostat + one thermoelectric valve
+  # (zones/heating_zone.yaml) plus exactly one temperature *source* package that
+  # provides its temp_<zone_id> sensor - see the header of heating_zone.yaml.
+  #
+  # Most rooms take their temperature from Home Assistant, which gets it off the
+  # Ampio mserver's MQTT broker (ampio/from/<mac>/state/t/1 ->
+  # sensor.czujnik_<room>). The bedroom is the exception: its probe is a boneIO
+  # Edge Temp on this board's own RS-485 bus, so it is read locally.
+  temp_lazienka: !include
+    file: zones/ha_temp_source.yaml
+    vars:
+      zone_id: lazienka
+      temp_entity: sensor.czujnik_lazienka # ampio/from/1B6B0/state/t/1
   zone_lazienka: !include
     file: zones/heating_zone.yaml
     vars:
       zone_id: lazienka
       zone_label: Łazienka
-      temp_entity: sensor.czujnik_lazienka # ampio/from/1B6B0/state/t/1
       valve_output: out_21
       target_home: "23"
       target_eco: "21"
+  # Bedroom: no temperature source package at all. Its probe is a boneIO Edge Temp
+  # mounted in the wall-light-switch backbox, hanging off this board's own RS-485
+  # bus, so the thermostat reads that Modbus sensor directly via temp_sensor_id -
+  # no HA round-trip, and the loop survives an HA or MQTT outage completely. The
+  # sensor's fail-safe timeout is added by the sensor: !extend block below.
+  #
+  # This replaces sensor.homelab_temp1_temperature (a battery SONOFF Zigbee), which
+  # published a new temperature only once an hour - every valve transition in this
+  # zone fired within a second of that hourly report, in steps of up to 0.6 °C
+  # against a 0.5 °C band, giving 20h-on/10h-off cycles. The backbox runs warmer
+  # than room air; that is calibrated out in the probe itself, see the
+  # number: !extend block below.
   zone_sypialnia: !include
     file: zones/heating_zone.yaml
     vars:
       zone_id: sypialnia
       zone_label: Sypialnia
-      temp_entity: sensor.homelab_temp1_temperature # ampio/from/1C60E/state/t/1
       valve_output: out_19
+      temp_sensor_id: boneio_edge_temp_temperature
+  temp_salon: !include
+    file: zones/ha_temp_source.yaml
+    vars:
+      zone_id: salon
+      temp_entity: sensor.czujnik_salon # ampio/from/1C625/state/t/1
   zone_salon: !include
     file: zones/heating_zone.yaml
     vars:
       zone_id: salon
       zone_label: Salon
-      temp_entity: sensor.czujnik_salon # ampio/from/1C625/state/t/1
       valve_output: out_22
+  temp_gabinet: !include
+    file: zones/ha_temp_source.yaml
+    vars:
+      zone_id: gabinet
+      temp_entity: sensor.czujnik_gabinet # ampio/from/1C6ED/state/t/1
   zone_gabinet: !include
     file: zones/heating_zone.yaml
     vars:
       zone_id: gabinet
       zone_label: Gabinet
-      temp_entity: sensor.czujnik_gabinet # ampio/from/1C6ED/state/t/1
       valve_output: out_20
   # Motorised water valves, one package instance per valve. Each pair comes off a
   # single 4-core cable per room, so the comments map the core colour onto the
@@ -693,7 +722,40 @@ binary_sensor:
     name: "Mata ON (remote)"
     internal: true
 
+# Upstream boneio-edge-temp.yaml sets multiply: 0.1 on both calibration numbers,
+# but for the modbus_controller number platform multiply is a *write* factor whose
+# inverse is applied on read (modbus_number.cpp: write = multiply * value, read =
+# payload / multiply). The registers hold 0.1 units, so the factor has to be 10:
+# with 0.1 any realistic offset truncates to register 0, while HA goes on
+# displaying the value you asked for.
+# Overridden by id rather than forking the package; worth upstreaming.
+#
+# The bedroom probe's calibration value lives in its own ATtiny (reg 104), not in
+# this repo - read it off the entity. When re-deriving it (new probe, factory
+# reset), reference it to sensor.homelab_temp1_temperature, the SONOFF hanging in
+# free air - NOT to the Ampio sensor the other zones use, which sits on an
+# exterior wall and under-reads by an amount that deepens as it gets colder
+# outside.
+number:
+  - id: !extend boneio_edge_temp_cal_temp
+    multiply: 10
+  - id: !extend boneio_edge_temp_cal_hum
+    multiply: 10
+
 sensor:
+  # Fail-safe for the bedroom zone, which reads this probe directly (see
+  # zone_sypialnia above). modbus_controller does NOT publish NAN when a device
+  # stops answering - it logs "set offline" and the sensor keeps its last value
+  # forever - so without this the thermostat would hold a stale temperature and
+  # could leave the valve open indefinitely. The timeout filter emits NAN, which
+  # forces the thermostat action to OFF and closes the valve. 10 min = 10 missed
+  # polls at the probe's 60s update_interval. Appended to the package's own
+  # filters (merge concatenates lists), so the scaling still runs first; it also
+  # makes a dead probe visible in HA instead of showing a stale reading.
+  - id: !extend boneio_edge_temp_temperature
+    filters:
+      - timeout: 10min
+
   - platform: dallas_temp
     address: 0x280723322814e928
     name: "Dallas Sensor 1"
